@@ -130,7 +130,7 @@ class ParserSelectorExpressionTests: XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testSelectorExpression", testSelectorExpression),
     ("testContainsSelfExpression", testContainsSelfExpression),
     ("testGetterSelector", testGetterSelector),

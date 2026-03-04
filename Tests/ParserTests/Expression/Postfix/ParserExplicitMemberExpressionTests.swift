@@ -221,7 +221,7 @@ class ParserExplicitMemberExpressionTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testTupleMember", testTupleMember),
     ("testIdentifier", testIdentifier),
     ("testGenericArgumentClause", testGenericArgumentClause),

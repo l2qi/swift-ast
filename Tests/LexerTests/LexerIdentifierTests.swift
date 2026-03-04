@@ -94,7 +94,7 @@ class LexerIdentifierTests: XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testIdentifiers", testIdentifiers),
     ("testBacktickIdentifiers", testBacktickIdentifiers),
     ("testBacktickIdentifierMissingClosingBacktick", testBacktickIdentifierMissingClosingBacktick),

@@ -299,7 +299,7 @@ class ParserExtensionDeclarationTests: XCTestCase {
     )
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testName", testName),
     ("testAttributes", testAttributes),
     ("testModifiers", testModifiers),

@@ -134,7 +134,7 @@ class ParserIdentifierExpressionTests: XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testNameOnly", testNameOnly),
     ("testNameWithGeneric", testNameWithGeneric),
     ("testImplicitParameter", testImplicitParameter),

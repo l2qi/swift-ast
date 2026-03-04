@@ -32,7 +32,7 @@ class LexerBooleanLiteralTests: XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testTrue", testTrue),
     ("testFalse", testFalse),
   ]

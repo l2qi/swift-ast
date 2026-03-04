@@ -657,7 +657,7 @@ class ParserClosureExpressionTests: XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testEmptyClosure", testEmptyClosure),
     ("testSingleStatement", testSingleStatement),
     ("testMultipleStatements", testMultipleStatements),

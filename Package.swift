@@ -1,4 +1,4 @@
-// swift-tools-version:5.0
+// swift-tools-version:6.0
 
 /*
    Copyright 2015-2018 Ryuichi Intellectual Property and the Yanagiba project contributors
@@ -193,5 +193,5 @@ let package = Package(
       ]
     ),
   ],
-  swiftLanguageVersions: [.v5]
+  swiftLanguageModes: [.v6]
 )

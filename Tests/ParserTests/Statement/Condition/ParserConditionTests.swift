@@ -262,7 +262,7 @@ class ParserConditionTests: XCTestCase { // Note: we will test condition and con
     parseStatementAndTest("if foo < (bar) {}", "if foo < (bar) {}")
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testBooleanCondition", testBooleanCondition),
     ("testBooleanOperator", testBooleanOperator),
     ("testParenthesized", testParenthesized),

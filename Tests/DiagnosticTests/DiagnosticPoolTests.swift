@@ -36,9 +36,11 @@ fileprivate struct SourceTestLocation : SourceLocatable {
 }
 
 class DiagnosticPoolTests : XCTestCase {
+  var diagnosticPool = DiagnosticPool()
+
   override func setUp() {
     super.setUp()
-    DiagnosticPool.shared.clear()
+    diagnosticPool.clear()
   }
 
   fileprivate func retrieveDiagnostics() -> [Diagnostic] {
@@ -51,12 +53,12 @@ class DiagnosticPoolTests : XCTestCase {
     }
 
     let diagnosticConsumer = DiagnosticTestConsumer()
-    DiagnosticPool.shared.report(withConsumer: diagnosticConsumer)
+    diagnosticPool.report(withConsumer: diagnosticConsumer)
     return diagnosticConsumer.diagnostics
   }
 
   func testAppendFatal() {
-    _ = DiagnosticPool.shared.appendFatal(
+    _ = diagnosticPool.appendFatal(
       kind: DiagnosticTestKind(testKind: "fatal"),
       sourceLocatable: SourceTestLocation())
     let diagnostics = retrieveDiagnostics()
@@ -66,7 +68,7 @@ class DiagnosticPoolTests : XCTestCase {
 
   func testAppendError() {
     do {
-      try DiagnosticPool.shared.appendError(
+      try diagnosticPool.appendError(
         kind: DiagnosticTestKind(testKind: "error"),
         sourceLocatable: SourceTestLocation())
       let diagnostics = retrieveDiagnostics()
@@ -80,7 +82,7 @@ class DiagnosticPoolTests : XCTestCase {
   func testAppendTooManyErrors() {
     do {
       for _ in 0..<10 {
-        try DiagnosticPool.shared.appendError(
+        try diagnosticPool.appendError(
           kind: DiagnosticTestKind(testKind: "error"),
           sourceLocatable: SourceTestLocation())
       }
@@ -95,7 +97,7 @@ class DiagnosticPoolTests : XCTestCase {
 
   func testAppendWarning() {
     do {
-      try DiagnosticPool.shared.appendWarning(
+      try diagnosticPool.appendWarning(
         kind: DiagnosticTestKind(testKind: "warning"),
         sourceLocatable: SourceTestLocation())
       let diagnostics = retrieveDiagnostics()
@@ -109,7 +111,7 @@ class DiagnosticPoolTests : XCTestCase {
   func testAppendTooManyWarnings() {
     do {
       for _ in 0..<50 {
-        try DiagnosticPool.shared.appendWarning(
+        try diagnosticPool.appendWarning(
           kind: DiagnosticTestKind(testKind: "warning"),
           sourceLocatable: SourceTestLocation())
       }
@@ -123,10 +125,10 @@ class DiagnosticPoolTests : XCTestCase {
   }
 
   func testRestoreFromCheckpoint() {
-    XCTAssertFalse(DiagnosticPool.shared.restore(fromCheckpoint: ""))
+    XCTAssertFalse(diagnosticPool.restore(fromCheckpoint: ""))
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testAppendFatal", testAppendFatal),
     ("testAppendError", testAppendError),
     ("testAppendTooManyErrors", testAppendTooManyErrors),

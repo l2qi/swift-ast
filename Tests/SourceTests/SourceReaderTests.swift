@@ -55,7 +55,7 @@ class SourceReaderTests : XCTestCase {
     return FileManager.default.currentDirectoryPath.contains("Debug")
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testReading", testReading),
 //    ("testReadingFromCurrentPath", testReadingFromCurrentPath),
 //    ("testReadingFromParentPath", testReadingFromParentPath),

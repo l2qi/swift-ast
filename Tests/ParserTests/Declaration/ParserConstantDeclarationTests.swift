@@ -194,7 +194,7 @@ class ParserConstantDeclarationTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testDefineConstant", testDefineConstant),
     ("testDefineConstantWithTypeAnnotation", testDefineConstantWithTypeAnnotation),
     ("testDefineConstantWithInitializer", testDefineConstantWithInitializer),

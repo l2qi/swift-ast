@@ -32,12 +32,12 @@ class ParserTypeCastingPatternTests: XCTestCase {
     })
   }
 
-  func testIsPatternOnlyAvilableInSwitchCase() {
+  func testIsPatternOnlyAvilableInSwitchCase() async {
     let expct = expectation(description: "Expect an error because is-pattern is parsed out of switch-case.")
     parsePatternAndTest("is Foo", "", errorClosure: { _ in
       expct.fulfill()
     })
-    waitForExpectations(timeout: 3)
+    await waitForExpectations(timeout: 3)
   }
 
   func testAsPattern() {
@@ -64,7 +64,7 @@ class ParserTypeCastingPatternTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testIsPattern", testIsPattern),
     ("testIsPatternOnlyAvilableInSwitchCase", testIsPatternOnlyAvilableInSwitchCase),
     ("testAsPattern", testAsPattern),

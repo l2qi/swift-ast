@@ -115,7 +115,7 @@ class ParserTernaryConditionalOperatorExpressionTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testConditional", testConditional),
     ("testFunctions", testFunctions),
     ("testTryOperators", testTryOperators),

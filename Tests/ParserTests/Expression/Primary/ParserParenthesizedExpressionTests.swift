@@ -66,7 +66,7 @@ class ParserParenthesizedExpressionTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testParenthesizedExpression", testParenthesizedExpression),
     ("testContainsTupleExpression", testContainsTupleExpression),
     ("testHasIdentifier", testHasIdentifier),

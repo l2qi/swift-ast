@@ -38,7 +38,7 @@ class ParserWhileStatementTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testInfiniteLoop", testInfiniteLoop),
     ("testSourceRange", testSourceRange),
   ]

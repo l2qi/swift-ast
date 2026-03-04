@@ -16,9 +16,10 @@
 
 import XCTest
 
+@testable import Diagnostic
+@testable import Frontend
 @testable import Parser
 @testable import Sema
-@testable import Frontend
 
 class SemaIntegrationTests : XCTestCase {
   func testSequenceExpressionFolding() {
@@ -26,7 +27,8 @@ class SemaIntegrationTests : XCTestCase {
     // SequenceExpressionFoldingTests for testing the actual folding logic
 
     testIntegration("SemaTestResources", "SequenceExpressionFolding") { source -> String in
-      let parser = Parser(source: source)
+      let diagnosticPool = DiagnosticPool()
+      let parser = Parser(source: source, diagnosticPool: diagnosticPool)
       guard let topLevelDecl = try? parser.parse() else {
         return "error: failed in parsing the source \(source.identifier)."
       }
@@ -38,7 +40,7 @@ class SemaIntegrationTests : XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testSequenceExpressionFolding", testSequenceExpressionFolding),
   ]
 }

@@ -50,7 +50,7 @@ class ParserProtocolCompositionTypeTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testProtocolCompositionTypes", testProtocolCompositionTypes),
     ("testOldSyntax", testOldSyntax),
     ("testAmpAsPrefix", testAmpAsPrefix),

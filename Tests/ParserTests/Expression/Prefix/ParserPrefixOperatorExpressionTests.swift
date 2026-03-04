@@ -123,7 +123,7 @@ class ParserPrefixOperatorExpressionTests: XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testPrefixOperator", testPrefixOperator),
     ("testPostfixExpressionAsImplicitMemberExpression",
       testPostfixExpressionAsImplicitMemberExpression),

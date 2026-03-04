@@ -479,7 +479,7 @@ class ParserFunctionCallExpressionTests: XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testEmptyParameter", testEmptyParameter),
     ("testArgumentAsExpression", testArgumentAsExpression),
     ("testArgumentAsNamedExpression", testArgumentAsNamedExpression),

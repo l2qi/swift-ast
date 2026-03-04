@@ -34,7 +34,7 @@ class ParserSelfTypeTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testSelf", testSelf),
     ("testMixedWithOtherTypes", testMixedWithOtherTypes),
     ("testSourceRange", testSourceRange),

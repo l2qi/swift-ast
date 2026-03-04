@@ -79,7 +79,7 @@ class ParserTypeInheritanceClauseTests: XCTestCase {
     waitForExpectations(timeout: 3)
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testClassRequirement", testClassRequirement),
     ("testTypeInheritanceList", testTypeInheritanceList),
     ("testBothClassAndTypeInheritanceList", testBothClassAndTypeInheritanceList),

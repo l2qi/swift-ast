@@ -767,7 +767,7 @@ class ParserFunctionDeclarationTests: XCTestCase {
     )
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testNameIdentifier", testNameIdentifier),
     ("testNameOperator", testNameOperator),
     ("testReservedOperators", testReservedOperators),

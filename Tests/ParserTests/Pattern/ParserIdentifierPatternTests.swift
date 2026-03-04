@@ -77,7 +77,7 @@ class ParserIdentifierPatternTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testParseIdentifierPattern", testParseIdentifierPattern),
     ("testKeywordsUsedAsIdentifier", testKeywordsUsedAsIdentifier),
     ("testTypeAnnotation", testTypeAnnotation),

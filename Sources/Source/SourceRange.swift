@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-public struct SourceRange: Equatable, Hashable {
+public struct SourceRange: Equatable, Hashable, Sendable {
   // Note: range := [start..<end)
   public let start: SourceLocation
   public let end: SourceLocation

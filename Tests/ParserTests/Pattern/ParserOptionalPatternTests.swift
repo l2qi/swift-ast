@@ -104,7 +104,7 @@ class ParserOptionalPatternTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testIdentifierOptional", testIdentifierOptional),
     ("testWildcardOptional", testWildcardOptional),
     ("testEnumCasePatternOptional", testEnumCasePatternOptional),

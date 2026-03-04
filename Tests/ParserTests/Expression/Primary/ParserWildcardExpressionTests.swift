@@ -31,7 +31,7 @@ class ParserWildcardExpressionTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testParseWildcardExpression", testParseWildcardExpression),
     ("testSourceRange", testSourceRange),
   ]

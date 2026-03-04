@@ -49,7 +49,7 @@ class ParserDeferStatementTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testDefer", testDefer),
     ("testDeferNothing", testDeferNothing),
     ("testSourceRange", testSourceRange),

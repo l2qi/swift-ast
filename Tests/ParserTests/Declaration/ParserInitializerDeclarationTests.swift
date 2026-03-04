@@ -456,7 +456,7 @@ class ParserInitializerDeclarationTests: XCTestCase {
     )
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testNonfailable", testNonfailable),
     ("testOptionalFailable", testOptionalFailable),
     ("testImplicitlyUnwrappedFailable", testImplicitlyUnwrappedFailable),

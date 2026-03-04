@@ -36,7 +36,7 @@ class RangeOperatorTests: XCTestCase {
     parseDeclarationAndTest("let a = ..<1", "let a = ..<1")
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testClosedRangeOperators", testClosedRangeOperators),
     ("testHalfOpenRangeOperators", testHalfOpenRangeOperators),
     ("testOneSidedRanges", testOneSidedRanges),

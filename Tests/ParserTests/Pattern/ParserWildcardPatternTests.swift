@@ -50,7 +50,7 @@ class ParserWildcardPatternTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testParseWildcardPattern", testParseWildcardPattern),
     ("testTypeAnnotation", testTypeAnnotation),
     ("testSourceRange", testSourceRange),

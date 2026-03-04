@@ -232,7 +232,7 @@ class ParserDoStatementTests: XCTestCase {
     )
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testNoCatch", testNoCatch),
     ("testCatchAll", testCatchAll),
     ("testCatchPattern", testCatchPattern),

@@ -123,7 +123,7 @@ class ParserForInStatementTests: XCTestCase {
     )
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testItemInCollection", testItemInCollection),
     ("testCaseMatching", testCaseMatching),
     ("testWhereClause", testWhereClause),

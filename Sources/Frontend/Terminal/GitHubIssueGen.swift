@@ -33,14 +33,15 @@ func runGitHubIssueGen(for filePaths: [String]) -> Int32 {
 
   let outputPath = "swift-ast_github_issue_\(getCurrentDateString()).md"
 
+  let diagnosticPool = DiagnosticPool()
+
   let filePath = filePaths[0]
   var sourceFile: SourceFile?
   do {
     let source = try SourceReader.read(at: filePath)
     sourceFile = source
 
-    DiagnosticPool.shared.clear()
-    let parser = Parser(source: source)
+    let parser = Parser(source: source, diagnosticPool: diagnosticPool)
     _ = try parser.parse()
 
     print("""
@@ -53,7 +54,7 @@ func runGitHubIssueGen(for filePaths: [String]) -> Int32 {
     flush(content, to: outputPath)
   } catch {
     let diagnosticExtractor = DiagnosticExtractor()
-    DiagnosticPool.shared.report(withConsumer: diagnosticExtractor)
+    diagnosticPool.report(withConsumer: diagnosticExtractor)
     let diagnostics = diagnosticExtractor.diagnostics
     let content = genForParserError(
       sourceFile: sourceFile, diagnostics: diagnostics

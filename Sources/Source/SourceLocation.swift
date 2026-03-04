@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-public struct SourceLocation: Equatable, Hashable {
+public struct SourceLocation: Equatable, Hashable, Sendable {
   public let identifier: String
   public let line: Int
   public let column: Int

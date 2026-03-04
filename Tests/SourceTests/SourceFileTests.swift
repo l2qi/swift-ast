@@ -49,7 +49,7 @@ class SourceFileTests : XCTestCase {
     XCTAssertEqual(sourceFile.content, "hello world")
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testFile", testFile),
     ("testMemoryWithGivenUUID", testMemoryWithGivenUUID),
     ("testMemoryWithRandomUUID", testMemoryWithRandomUUID),

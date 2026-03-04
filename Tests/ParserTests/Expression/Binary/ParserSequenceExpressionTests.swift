@@ -265,7 +265,7 @@ class ParserSequenceExpressionTests: XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testBinaryOperators", testBinaryOperators),
     ("testAssignmentOperators", testAssignmentOperators),
     ("testTernaryConditionalOperators", testTernaryConditionalOperators),

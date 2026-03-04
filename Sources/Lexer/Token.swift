@@ -18,7 +18,7 @@ import Source
 import Diagnostic
 
 public struct Token {
-    public enum Kind: Equatable {
+    public enum Kind: Equatable, Sendable {
     case invalid(TokenInvalidReason)
 
     case eof, lineFeed

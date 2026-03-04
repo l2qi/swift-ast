@@ -97,7 +97,7 @@ class ParserInitializerExpressionTests: XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testInitExpression", testInitExpression),
     ("testArgumentName", testArgumentName),
     ("testUnderscoreAsArgumentName", testUnderscoreAsArgumentName),

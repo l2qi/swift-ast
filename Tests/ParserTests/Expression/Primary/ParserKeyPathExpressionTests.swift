@@ -188,7 +188,7 @@ class ParserKeyPathExpressionTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testOneComponent", testOneComponent),
     ("testMultipleComponents", testMultipleComponents),
     ("testComponentsWithPostfixes", testComponentsWithPostfixes),

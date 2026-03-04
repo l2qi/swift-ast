@@ -33,7 +33,7 @@ class ParserAccessLevelModifierTests: XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testModifiers", testModifiers),
   ]
 }

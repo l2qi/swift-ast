@@ -16,6 +16,7 @@
 
 import XCTest
 
+@testable import Diagnostic
 @testable import Frontend
 @testable import Parser
 
@@ -97,7 +98,8 @@ class TTYASTDumpTests : XCTestCase {
     ]
     for testName in testNames {
       testIntegration(resourceName, testName) { source -> String in
-        let parser = Parser(source: source)
+        let diagnosticPool = DiagnosticPool()
+        let parser = Parser(source: source, diagnosticPool: diagnosticPool)
         guard let topLevelDecl = try? parser.parse() else {
           return "error: failed in parsing the source \(source.identifier)."
         }
@@ -106,7 +108,7 @@ class TTYASTDumpTests : XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testASTDump", testASTDump),
   ]
 }

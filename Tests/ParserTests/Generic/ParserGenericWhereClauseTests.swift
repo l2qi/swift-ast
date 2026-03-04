@@ -112,7 +112,7 @@ class ParserGenericWhereClauseTests: XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testSingleTypeConformanceRequirement", testSingleTypeConformanceRequirement),
     ("testSingleProtocolConformanceRequirement", testSingleProtocolConformanceRequirement),
     ("testSingleOldSyntaxProtocolConformanceRequirement", testSingleOldSyntaxProtocolConformanceRequirement),

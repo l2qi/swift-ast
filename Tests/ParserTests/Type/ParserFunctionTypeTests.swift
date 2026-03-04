@@ -96,7 +96,7 @@ class ParserFunctionTypeTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testFunctionTypes", testFunctionTypes),
     ("testThrowsException", testThrowsException),
     ("testRethrowsException", testRethrowsException),

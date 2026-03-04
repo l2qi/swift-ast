@@ -89,7 +89,7 @@ class ParserGenericParameterClauseTests: XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testSingleParameter", testSingleParameter),
     ("testMultipleParameters", testMultipleParameters),
     ("testTypeConformance", testTypeConformance),

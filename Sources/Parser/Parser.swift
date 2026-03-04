@@ -15,16 +15,19 @@
 */
 
 import AST
+import Diagnostic
 import Lexer
 import Source
 
 public class Parser {
   let _sourceFile: SourceFile
   let _lexer: Lexer
+  let _diagnosticPool: DiagnosticPool
 
-  public init(source: SourceFile) {
+  public init(source: SourceFile, diagnosticPool: DiagnosticPool) {
     _sourceFile = source
     _lexer = Lexer(source: source)
+    _diagnosticPool = diagnosticPool
   }
 
   public func parse() throws -> TopLevelDeclaration {

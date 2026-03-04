@@ -55,7 +55,7 @@ class ParserMetatypeTypeTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testWithTypeIdentifier", testWithTypeIdentifier),
     ("testWithContainerTypes", testWithContainerTypes),
     ("testWithOptionalTypes", testWithOptionalTypes),

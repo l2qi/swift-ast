@@ -262,7 +262,7 @@ class ScannerTests: XCTestCase {
     XCTAssertEqual(scanner.peek(), "\n")
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testEmptyContent", testEmptyContent),
     ("testCharacters", testCharacters),
     ("testEmoji", testEmoji),

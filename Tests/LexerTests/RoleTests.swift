@@ -217,7 +217,7 @@ class RoleTests: XCTestCase {
     XCTAssertEqual(role(of: "\u{1}"), .unknown)
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testEmptyContent", testEmptyContent),
     ("testLineFeed", testLineFeed),
     ("testCarriageReturn", testCarriageReturn),

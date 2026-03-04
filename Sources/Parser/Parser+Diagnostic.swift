@@ -28,10 +28,6 @@ extension Parser {
   func _raiseWarning(_ kind: ParserErrorKind) throws {
     try _diagnosticPool.appendWarning(kind: kind, sourceLocatable: _lexer.look())
   }
-
-  var _diagnosticPool: DiagnosticPool {
-    return .shared
-  }
 }
 
 public enum ParserErrorKind : DiagnosticKind {

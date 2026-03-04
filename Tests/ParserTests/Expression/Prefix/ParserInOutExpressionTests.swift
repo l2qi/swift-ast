@@ -35,7 +35,7 @@ class ParserInOutExpressionTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testInOut", testInOut),
     ("testSourceRange", testSourceRange),
   ]
