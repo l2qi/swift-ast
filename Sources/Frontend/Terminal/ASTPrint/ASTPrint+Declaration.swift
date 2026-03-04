@@ -104,6 +104,32 @@ extension Collection where Iterator.Element == PatternInitializer {
   }
 }
 
+extension ActorDeclaration.Member {
+  var ttyPrint: String {
+    switch self {
+    case .declaration(let decl):
+      return decl.ttyPrint
+    case .compilerControl(let stmt):
+      return stmt.ttyPrint
+    }
+  }
+}
+
+extension ActorDeclaration : TTYASTPrintRepresentable {
+  var ttyPrint: String {
+    let attrsText = attributes.isEmpty ? "" : "\(attributes.textDescription) "
+    let modifierText = accessLevelModifier.map({ "\($0.textDescription) " }) ?? ""
+    let headText = "\(attrsText)\(modifierText)actor \(name)"
+    let genericParameterClauseText = genericParameterClause?.textDescription ?? ""
+    let typeText = typeInheritanceClause?.textDescription ?? ""
+    let whereText = genericWhereClause.map({ " \($0.textDescription)" }) ?? ""
+    let neckText = "\(genericParameterClauseText)\(typeText)\(whereText)"
+    let membersText = members.map({ $0.ttyPrint }).joined(separator: "\n")
+    let memberText = members.isEmpty ? "" : "\n\(membersText.indented)\n"
+    return "\(headText)\(neckText) {" + memberText + "}"
+  }
+}
+
 extension ClassDeclaration.Member {
   var ttyPrint: String {
     switch self {

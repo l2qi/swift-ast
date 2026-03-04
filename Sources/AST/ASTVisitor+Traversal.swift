@@ -34,6 +34,8 @@ extension ASTVisitor {
     swift-lint:rule_configure(CYCLOMATIC_COMPLEXITY=16)
     */
     switch declaration {
+    case let decl as ActorDeclaration:
+      return try traverse(decl)
     case let decl as ClassDeclaration:
       return try traverse(decl)
     case let decl as ConstantDeclaration:
@@ -67,6 +69,21 @@ extension ASTVisitor {
     default:
       return true // no implementation for this declaration, just continue
     }
+  }
+
+  public func traverse(_ decl: ActorDeclaration) throws -> Bool {
+    guard try visit(decl) else { return false }
+
+    for member in decl.members {
+      switch member {
+      case .declaration(let decl):
+        guard try traverse(decl) else { return false }
+      case .compilerControl(let stmt):
+        guard try traverse(stmt) else { return false }
+      }
+    }
+
+    return true
   }
 
   public func traverse(_ decl: ClassDeclaration) throws -> Bool {
@@ -488,6 +505,8 @@ extension ASTVisitor {
     switch expression {
     case let expr as AssignmentOperatorExpression:
       return try traverse(expr)
+    case let expr as AwaitExpression:
+      return try traverse(expr)
     case let expr as BinaryOperatorExpression:
       return try traverse(expr)
     case let expr as ClosureExpression:
@@ -556,6 +575,11 @@ extension ASTVisitor {
     guard try visit(expr) else { return false }
     guard try traverse(expr.leftExpression) else { return false }
     return try traverse(expr.rightExpression)
+  }
+
+  public func traverse(_ expr: AwaitExpression) throws -> Bool {
+    guard try visit(expr) else { return false }
+    return try traverse(expr.expression)
   }
 
   public func traverse(_ expr: BinaryOperatorExpression) throws -> Bool {

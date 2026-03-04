@@ -20,6 +20,7 @@ public protocol ASTVisitor {
 
   // Declarations
 
+  func visit(_: ActorDeclaration) throws -> Bool
   func visit(_: ClassDeclaration) throws -> Bool
   func visit(_: ConstantDeclaration) throws -> Bool
   func visit(_: DeinitializerDeclaration) throws -> Bool
@@ -57,6 +58,7 @@ public protocol ASTVisitor {
   // Expressions
 
   func visit(_: AssignmentOperatorExpression) throws -> Bool
+  func visit(_: AwaitExpression) throws -> Bool
   func visit(_: BinaryOperatorExpression) throws -> Bool
   func visit(_: ClosureExpression) throws -> Bool
   func visit(_: ExplicitMemberExpression) throws -> Bool
@@ -95,6 +97,10 @@ extension ASTVisitor {
   }
 
   // Declarations
+
+  public func visit(_: ActorDeclaration) throws -> Bool {
+    return true
+  }
 
   public func visit(_: ClassDeclaration) throws -> Bool {
     return true
@@ -221,6 +227,10 @@ extension ASTVisitor {
   // Expressions
 
   public func visit(_: AssignmentOperatorExpression) throws -> Bool {
+    return true
+  }
+
+  public func visit(_: AwaitExpression) throws -> Bool {
     return true
   }
 

@@ -461,6 +461,12 @@ private class FoldingVisitor : ASTVisitor {
     return true
   }
 
+  func visit(_ expr: AwaitExpression) throws -> Bool {
+    let foldedExpr = foldExpression(expr.expression)
+    expr.replaceExpression(with: foldedExpr)
+    return true
+  }
+
   func visit(_ expr: TryOperatorExpression) throws -> Bool {
     switch expr.kind {
     case .try(let expression):

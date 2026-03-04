@@ -127,6 +127,17 @@ extension Parser {
           startLocation: startLocation)
       }
 
+      // try parsing actor declaration
+      if case .identifier(let keyword, false) = _lexer.look().kind,
+        keyword == "actor"
+      {
+        _lexer.advance()
+        return try parseActorDeclaration(
+          withAttributes: attrs,
+          modifiers: modifiers,
+          startLocation: startLocation)
+      }
+
       // try parsing precedence group declaration
       if attrs.isEmpty,
         modifiers.isEmpty,
@@ -668,6 +679,55 @@ extension Parser {
       members: members)
     classDecl.setSourceRange(startLocation, endLocation)
     return classDecl
+  }
+
+  private func parseActorDeclaration(
+    withAttributes attrs: Attributes,
+    modifiers: DeclarationModifiers,
+    startLocation: SourceLocation
+  ) throws -> ActorDeclaration {
+    var accessLevelModifier: AccessLevelModifier?
+    if modifiers.count == 1, case .accessLevel(let modifier) = modifiers[0] {
+      accessLevelModifier = modifier
+    }
+
+    guard let name = _lexer.look().kind.structName?.id else {
+      throw _raiseFatal(.missingActorName)
+    }
+    _lexer.advance()
+
+    let genericParameterClause = try parseGenericParameterClause()
+    let typeInheritanceClause = try parseTypeInheritanceClause()
+    let genericWhereClause = try parseGenericWhereClause()
+
+    try match(.leftBrace, orFatal: .leftBraceExpected("actor declaration body"))
+
+    var endLocation = getEndLocation()
+    var members: [ActorDeclaration.Member] = []
+    while !_lexer.match(.rightBrace) {
+      let hashStartLocation = getStartLocation()
+      if _lexer.match(.hash) {
+        let compCtrlStmt = try parseCompilerControlStatement(startLocation: hashStartLocation)
+        members.append(.compilerControl(compCtrlStmt))
+      } else {
+        let decl = try parseDeclaration()
+        members.append(.declaration(decl))
+      }
+      endLocation = getEndLocation()
+
+      removeTrailingSemicolons()
+    }
+
+    let actorDecl = ActorDeclaration(
+      attributes: attrs,
+      accessLevelModifier: accessLevelModifier,
+      name: name,
+      genericParameterClause: genericParameterClause,
+      typeInheritanceClause: typeInheritanceClause,
+      genericWhereClause: genericWhereClause,
+      members: members)
+    actorDecl.setSourceRange(startLocation, endLocation)
+    return actorDecl
   }
 
   private func parseStructDeclaration(

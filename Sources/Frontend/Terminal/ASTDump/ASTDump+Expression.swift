@@ -429,6 +429,13 @@ extension TernaryConditionalOperatorExpression : TTYASTDumpRepresentable {
   }
 }
 
+extension AwaitExpression : TTYASTDumpRepresentable {
+  var ttyDump: String {
+    let head = dump("await_expr", sourceRange)
+    return "\(head)\n" + expression.ttyDump.indented
+  }
+}
+
 extension TryOperatorExpression : TTYASTDumpRepresentable {
   var ttyDump: String {
     let head = dump("try_expr", sourceRange)

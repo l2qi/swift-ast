@@ -39,6 +39,47 @@ extension CodeBlock : TTYASTDumpRepresentable {
   }
 }
 
+extension ActorDeclaration : TTYASTDumpRepresentable {
+  var ttyDump: String {
+    let head = dump("actor_decl", sourceRange)
+    var neck = "\n" + "name: \(name)".indented
+    if !attributes.isEmpty {
+      neck += "\n"
+      neck += "attributes: `\(attributes.textDescription)`".indented
+    }
+    if let accessLevel = accessLevelModifier {
+      neck += "\n"
+      neck += "access_level: \(accessLevel)".indented
+    }
+    if let genericParam = genericParameterClause {
+      neck += "\n"
+      neck += "generic_param: `\(genericParam.textDescription)`".indented
+    }
+    if let typeInheritance = typeInheritanceClause {
+      neck += "\n"
+      neck += "parent_types\(typeInheritance.textDescription)".indented
+    }
+    if let genericWhere = genericWhereClause {
+      neck += "\n"
+      neck += "generic_where: `\(genericWhere.textDescription)`".indented
+    }
+    let body: String
+    if members.isEmpty {
+      body = "<empty_body>".indented
+    } else {
+      body = members.map { member -> String in
+        switch member {
+        case .declaration(let decl):
+          return decl.ttyDump
+        case .compilerControl(let stmt):
+          return stmt.ttyDump
+        }
+      }.joined(separator: "\n").indented
+    }
+    return "\(head)\(neck)\n\(body)"
+  }
+}
+
 extension ClassDeclaration : TTYASTDumpRepresentable {
   var ttyDump: String {
     let head = dump("class_decl", sourceRange)

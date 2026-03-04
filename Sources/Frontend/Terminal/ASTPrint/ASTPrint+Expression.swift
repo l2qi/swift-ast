@@ -257,6 +257,12 @@ extension TernaryConditionalOperatorExpression : TTYASTPrintRepresentable {
   }
 }
 
+extension AwaitExpression : TTYASTPrintRepresentable {
+  var ttyPrint: String {
+    return "await \(expression.ttyPrint)"
+  }
+}
+
 extension TryOperatorExpression : TTYASTPrintRepresentable {
   var ttyPrint: String {
     let tryText: String
