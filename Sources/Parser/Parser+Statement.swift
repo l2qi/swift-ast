@@ -450,7 +450,14 @@ extension Parser {
   }
 
   private func parseAvailabilityCondition() throws -> Condition {
-    guard case .identifier("available", false) = _lexer.look().kind else {
+    // Check for both #available and #unavailable
+    let isUnavailable: Bool
+    switch _lexer.look().kind {
+    case .identifier("available", false):
+      isUnavailable = false
+    case .identifier("unavailable", false):
+      isUnavailable = true
+    default:
       throw _raiseFatal(.expectedAvailableKeyword)
     }
     _lexer.advance()
@@ -459,8 +466,10 @@ extension Parser {
       "iOS", "iOSApplicationExtension",
       "macOS", "macOSApplicationExtension",
       "OSX", // TODO: remove this line at a later time
-      "watchOS",
-      "tvOS",
+      "watchOS", "watchOSApplicationExtension",
+      "tvOS", "tvOSApplicationExtension",
+      "visionOS", "visionOSApplicationExtension",
+      "macCatalyst", "macCatalystApplicationExtension",
     ]
     var arguments: [AvailabilityCondition.Argument] = []
     repeat {
@@ -496,7 +505,7 @@ extension Parser {
       }
     } while _lexer.match(.comma)
     try match(.rightParen, orFatal: .expectedCloseParenAvailabilityCondition)
-    return .availability(AvailabilityCondition(arguments: arguments))
+    return .availability(AvailabilityCondition(isUnavailable: isUnavailable, arguments: arguments))
   }
 
   private func parseForInStatement(startLocation: SourceLocation) throws -> ForInStatement {

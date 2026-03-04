@@ -141,4 +141,103 @@ class ParserCompilerControlStatementTests: XCTestCase {
       // TODO: we will come back to this once the source location is parsed correctly
     })
   }
+
+  // MARK: - Phase 6: New Compilation Conditions
+
+  func testCompilerCondition() {
+    parseStatementAndTest("#if compiler(>=5.5)\nreturn", "#if compiler(>=5.5)")
+    parseStatementAndTest("#if compiler(<6.0)\nreturn", "#if compiler(<6.0)")
+    parseStatementAndTest(
+      "#if compiler(>=5.5)\nreturn",
+      "#if compiler(>=5.5)",
+      testClosure: { stmt in
+        guard let compCtrlStmt = stmt as? CompilerControlStatement else {
+          XCTFail("Failed in parsing a compiler control statement.")
+          return
+        }
+        guard case .if(let condition) = compCtrlStmt.kind else {
+          XCTFail("Failed in getting an if directive clause.")
+          return
+        }
+        XCTAssertEqual(condition, " compiler(>=5.5)")
+      }
+    )
+  }
+
+  func testCanImportCondition() {
+    parseStatementAndTest("#if canImport(Foundation)\nreturn", "#if canImport(Foundation)")
+    parseStatementAndTest("#if canImport(UIKit)\nreturn", "#if canImport(UIKit)")
+    parseStatementAndTest("#if canImport(SwiftUI)\nreturn", "#if canImport(SwiftUI)")
+    parseStatementAndTest(
+      "#if canImport(Foundation)\nreturn",
+      "#if canImport(Foundation)",
+      testClosure: { stmt in
+        guard let compCtrlStmt = stmt as? CompilerControlStatement else {
+          XCTFail("Failed in parsing a compiler control statement.")
+          return
+        }
+        guard case .if(let condition) = compCtrlStmt.kind else {
+          XCTFail("Failed in getting an if directive clause.")
+          return
+        }
+        XCTAssertEqual(condition, " canImport(Foundation)")
+      }
+    )
+  }
+
+  func testCanImportWithSubmodule() {
+    parseStatementAndTest("#if canImport(Foundation.Networking)\nreturn", "#if canImport(Foundation.Networking)")
+  }
+
+  func testTargetEnvironmentMacCatalyst() {
+    parseStatementAndTest("#if targetEnvironment(macCatalyst)\nreturn", "#if targetEnvironment(macCatalyst)")
+    parseStatementAndTest(
+      "#if targetEnvironment(macCatalyst)\nreturn",
+      "#if targetEnvironment(macCatalyst)",
+      testClosure: { stmt in
+        guard let compCtrlStmt = stmt as? CompilerControlStatement else {
+          XCTFail("Failed in parsing a compiler control statement.")
+          return
+        }
+        guard case .if(let condition) = compCtrlStmt.kind else {
+          XCTFail("Failed in getting an if directive clause.")
+          return
+        }
+        XCTAssertEqual(condition, " targetEnvironment(macCatalyst)")
+      }
+    )
+  }
+
+  func testTargetEnvironmentSimulator() {
+    parseStatementAndTest("#if targetEnvironment(simulator)\nreturn", "#if targetEnvironment(simulator)")
+  }
+
+  func testVisionOSCondition() {
+    parseStatementAndTest("#if os(visionOS)\nreturn", "#if os(visionOS)")
+    parseStatementAndTest(
+      "#if os(visionOS)\nreturn",
+      "#if os(visionOS)",
+      testClosure: { stmt in
+        guard let compCtrlStmt = stmt as? CompilerControlStatement else {
+          XCTFail("Failed in parsing a compiler control statement.")
+          return
+        }
+        guard case .if(let condition) = compCtrlStmt.kind else {
+          XCTFail("Failed in getting an if directive clause.")
+          return
+        }
+        XCTAssertEqual(condition, " os(visionOS)")
+      }
+    )
+  }
+
+  func testCombinedConditions() {
+    parseStatementAndTest("#if compiler(>=5.5) && canImport(SwiftUI)\nreturn", "#if compiler(>=5.5) && canImport(SwiftUI)")
+    parseStatementAndTest("#if os(iOS) || os(visionOS)\nreturn", "#if os(iOS) || os(visionOS)")
+    parseStatementAndTest("#if canImport(UIKit) && !os(visionOS)\nreturn", "#if canImport(UIKit) && !os(visionOS)")
+    parseStatementAndTest(
+      "#if compiler(>=6.0) && canImport(SwiftUI) && os(visionOS)\nreturn",
+      "#if compiler(>=6.0) && canImport(SwiftUI) && os(visionOS)"
+    )
+  }
 }
