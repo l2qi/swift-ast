@@ -76,9 +76,4 @@ class ParserBinaryOperatorExpressionTests: XCTestCase {
       })
     }
   }
-
-  static let allTests = [
-    ("testBinaryOperators", testBinaryOperators),
-    ("testSourceRange", testSourceRange),
-  ]
 }

@@ -129,13 +129,4 @@ class ParserSelectorExpressionTests: XCTestCase {
       })
     }
   }
-
-  static let allTests = [
-    ("testSelectorExpression", testSelectorExpression),
-    ("testContainsSelfExpression", testContainsSelfExpression),
-    ("testGetterSelector", testGetterSelector),
-    ("testSetterSelector", testSetterSelector),
-    ("testSelectorForMethods", testSelectorForMethods),
-    ("testSourceRange", testSourceRange),
-  ]
 }

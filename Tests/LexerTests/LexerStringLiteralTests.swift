@@ -564,33 +564,4 @@ class LexerStringLiteralTests: XCTestCase {
       XCTAssertEqual(t, .invalid(.newlineEscapesNotSupportedInStringLiteral))
     }
   }
-
-  static let allTests = [
-    ("testEmptyStringLiteral", testEmptyStringLiteral),
-    ("testSingleCharacter", testSingleCharacter),
-    ("testContainsEmptyCharacters", testContainsEmptyCharacters),
-    ("testContainsSpacesInBetween", testContainsSpacesInBetween),
-    ("testTwoStringLiterals", testTwoStringLiterals),
-    ("testTwoStringLiteralsWithAnIdentifierInBetween", testTwoStringLiteralsWithAnIdentifierInBetween),
-    ("testEscapedCharacters", testEscapedCharacters),
-    ("testInterpolatedText", testInterpolatedText),
-    ("testInterpolatedTextSamplesFromSwiftPLBook", testInterpolatedTextSamplesFromSwiftPLBook),
-    ("testMultipleInterpolated", testMultipleInterpolated),
-    ("testNestedInterpolated", testNestedInterpolated),
-    ("testOneDoubleQuote", testOneDoubleQuote),
-    ("testFunWithDoubleQuotes", testFunWithDoubleQuotes),
-    ("testUnicode", testUnicode),
-    ("testEmptyMultilineStaticStringLiterals", testEmptyMultilineStaticStringLiterals),
-    ("testSingleLineMultilineStringLiterals", testSingleLineMultilineStringLiterals),
-    ("testMultiLineMultilineStringLiterals", testMultiLineMultilineStringLiterals),
-    ("testMultilineIdentations", testMultilineIdentations),
-    ("testMultilineIndentationErrors", testMultilineIndentationErrors),
-    ("testMultilineDoubleQuoteFuns", testMultilineDoubleQuoteFuns),
-    ("testSinglelineMultilineComparisons", testSinglelineMultilineComparisons),
-    ("testInterpolatedTextInMultilineStringLiterals", testInterpolatedTextInMultilineStringLiterals),
-    ("testInvalidEscapeSequenceInStringLiteral", testInvalidEscapeSequenceInStringLiteral),
-    ("testNewlineEscapesInMultilineStringLiterals", testNewlineEscapesInMultilineStringLiterals),
-    ("testNewlineEscapeIsNotAllowedInLastLine", testNewlineEscapeIsNotAllowedInLastLine),
-    ("testNewlineEscapesNotSupportedInStringLiterals", testNewlineEscapesNotSupportedInStringLiterals),
-  ]
 }

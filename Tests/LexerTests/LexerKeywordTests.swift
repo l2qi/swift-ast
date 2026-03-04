@@ -109,8 +109,4 @@ class LexerKeywordTests: XCTestCase {
       }
     }
   }
-
-  static let allTests = [
-    ("testKeywords", testKeywords),
-  ]
 }

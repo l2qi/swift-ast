@@ -81,9 +81,4 @@ class DotYanagibaMergeTests : XCTestCase {
     XCTAssertEqual(result21.modules["xyz"]?.options["a"], DotYanagiba.Module.Option.int(3))
     XCTAssertEqual(result21.modules["xyz"]?.options["b"], DotYanagiba.Module.Option.string("b"))
   }
-
-  static let allTests = [
-    ("testCombine", testCombine),
-    ("testResolve", testResolve),
-  ]
 }

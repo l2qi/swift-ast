@@ -26,8 +26,4 @@ class SourceLocationTests : XCTestCase {
     XCTAssertEqual(loc.column, 0)
     XCTAssertEqual(loc.description, "dummy:0:0")
   }
-
-  static let allTests = [
-    ("testDummyLocation", testDummyLocation),
-  ]
 }

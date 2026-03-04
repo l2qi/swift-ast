@@ -264,12 +264,4 @@ class ParserSequenceExpressionTests: XCTestCase {
       })
     }
   }
-
-  static let allTests = [
-    ("testBinaryOperators", testBinaryOperators),
-    ("testAssignmentOperators", testAssignmentOperators),
-    ("testTernaryConditionalOperators", testTernaryConditionalOperators),
-    ("testTypeCastingOperators", testTypeCastingOperators),
-    ("testCombinations", testCombinations),
-  ]
 }

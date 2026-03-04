@@ -30,9 +30,4 @@ class ParserWildcardExpressionTests: XCTestCase {
       XCTAssertEqual(expr.sourceRange, getRange(1, 1, 1, 2))
     })
   }
-
-  static let allTests = [
-    ("testParseWildcardExpression", testParseWildcardExpression),
-    ("testSourceRange", testSourceRange),
-  ]
 }

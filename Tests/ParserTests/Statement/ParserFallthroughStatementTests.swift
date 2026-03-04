@@ -31,9 +31,4 @@ class ParserFallthroughStatementTests: XCTestCase {
       XCTAssertEqual(stmt.sourceRange, getRange(1, 1, 1, 12))
     })
   }
-
-  static let allTests = [
-    ("testFallthrough", testFallthrough),
-    ("testSourceRange", testSourceRange),
-  ]
 }

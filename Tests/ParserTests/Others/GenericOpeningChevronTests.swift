@@ -38,11 +38,4 @@ class GenericOpeningChevronTests: XCTestCase {
     let result = parse("func simpleMax <T: Comparable>(_ x: T, _ y: T) -> T")
     XCTAssertEqual(result.statements[0].textDescription, "func simpleMax<T: Comparable>(_ x: T, _ y: T) -> T")
   }
-
-  static let allTests = [
-    ("testArgumentOpeningChevronImmediatelyFollow", testArgumentOpeningChevronImmediatelyFollow),
-    ("testArgumentOpeningChevronNoNeedImmediatelyFollow", testArgumentOpeningChevronNoNeedImmediatelyFollow),
-    ("testParameterOpeningChevronImmediatelyFollow", testParameterOpeningChevronImmediatelyFollow),
-    ("testParameterOpeningChevronNoNeedImmediatelyFollow", testParameterOpeningChevronNoNeedImmediatelyFollow),
-  ]
 }

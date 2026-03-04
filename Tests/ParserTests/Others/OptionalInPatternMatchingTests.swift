@@ -64,9 +64,4 @@ class OptionalInPatternMatchingTests: XCTestCase {
     }
     """)
   }
-
-  static let allTests = [
-    ("testOptionalsInSwitch", testOptionalsInSwitch),
-    ("testOptionalsInCondition", testOptionalsInCondition),
-  ]
 }

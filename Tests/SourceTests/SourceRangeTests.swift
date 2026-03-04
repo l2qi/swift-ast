@@ -30,8 +30,4 @@ class SourceRangeTests : XCTestCase {
     XCTAssertEqual(range.end.column, 0)
     XCTAssertEqual(range.description, "dummy:0:0-0:0")
   }
-
-  static let allTests = [
-    ("testDummyRange", testDummyRange),
-  ]
 }

@@ -48,10 +48,4 @@ class SourceFileTests : XCTestCase {
     XCTAssertEqual(sourceFile.identifier, uuid.uuidString)
     XCTAssertEqual(sourceFile.content, "hello world")
   }
-
-  static let allTests = [
-    ("testFile", testFile),
-    ("testMemoryWithGivenUUID", testMemoryWithGivenUUID),
-    ("testMemoryWithRandomUUID", testMemoryWithRandomUUID),
-  ]
 }

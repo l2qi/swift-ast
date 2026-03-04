@@ -170,20 +170,4 @@ class KeywordUsedAsIdentifierTests: XCTestCase {
       XCTAssertEqual(result.statements[0].textDescription, "let \(keyword)")
     }
   }
-
-  static let allTests = [
-    ("testKeywordUsedInTupleType", testKeywordUsedInTupleType),
-    ("testKeywordUsedInFunctionType", testKeywordUsedInFunctionType),
-    ("testKeywordUsedInSelfExpression", testKeywordUsedInSelfExpression),
-    ("testKeywordUsedInClosureExpressionParameterName", testKeywordUsedInClosureExpressionParameterName),
-    ("testKeywordUsedInImplicitMemberExpression", testKeywordUsedInImplicitMemberExpression),
-    ("testKeywordUsedInTupleExpression", testKeywordUsedInTupleExpression),
-    ("testKeywordUsedInExplicitMemberExpression", testKeywordUsedInExplicitMemberExpression),
-    ("testKeywordUsedInEnumCasePattern", testKeywordUsedInEnumCasePattern),
-    ("testKeywordUsedInSwitchCase", testKeywordUsedInSwitchCase),
-    ("testKeywordUsedInTuplePattern", testKeywordUsedInTuplePattern),
-    ("testKeywordUsedInFunctionCall", testKeywordUsedInFunctionCall),
-    ("testKeywordUsedInFunctionDecl", testKeywordUsedInFunctionDecl),
-    ("testKeywordUsedInConstantDecl", testKeywordUsedInConstantDecl),
-  ]
 }

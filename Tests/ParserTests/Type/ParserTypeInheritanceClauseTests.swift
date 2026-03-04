@@ -54,39 +54,24 @@ class ParserTypeInheritanceClauseTests: XCTestCase {
 
   func testNoColon() {
     let typeParser = getParser("A, B, C")
-    let nilExpectation = expectation(description: "Expect type inheritance clause to be nil.")
     do {
       if let _ = try typeParser.parseTypeInheritanceClause() {
         XCTFail("Should not get a type inheritance clause.")
-      } else {
-        nilExpectation.fulfill()
       }
     } catch {
       XCTFail("Caught exception when getting a type inheritance clause.")
     }
-    waitForExpectations(timeout: 3)
   }
 
   func testClassRequirementMustBeTheFirst() {
     let typeParser = getParser(": A, class, B")
-    let nilExpectation = expectation(description: "Expect type inheritance clause to be nil.")
     do {
       _ = try typeParser.parseTypeInheritanceClause()
       XCTFail("Should not get a type inheritance clause.")
     } catch {
-      nilExpectation.fulfill()
+      // Expected: class requirement must be first
     }
-    waitForExpectations(timeout: 3)
   }
-
-  static let allTests = [
-    ("testClassRequirement", testClassRequirement),
-    ("testTypeInheritanceList", testTypeInheritanceList),
-    ("testBothClassAndTypeInheritanceList", testBothClassAndTypeInheritanceList),
-    ("testTypeInheritanceListWithMultipleTypes", testTypeInheritanceListWithMultipleTypes),
-    ("testNoColon", testNoColon),
-    ("testClassRequirementMustBeTheFirst", testClassRequirementMustBeTheFirst),
-  ]
 }
 
 fileprivate func parseTypeInheritanceClauseAndTest(_ content: String,

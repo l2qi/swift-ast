@@ -138,16 +138,4 @@ class ParserSelfExpressionTests: XCTestCase {
       })
     }
   }
-
-  static let allTests = [
-    ("testSelfExpression", testSelfExpression),
-    ("testSelfMethodExpression", testSelfMethodExpression),
-    ("testSelfSubscriptExpression", testSelfSubscriptExpression),
-    ("testSelfSubscriptExprWithExprList", testSelfSubscriptExprWithExprList),
-    ("testSelfSubscriptExprWithVariables", testSelfSubscriptExprWithVariables),
-    ("testSelfSubscriptArgumentWithIdentifier", testSelfSubscriptArgumentWithIdentifier),
-    ("testSelfInitializerExpression", testSelfInitializerExpression),
-    ("testArgumentListOnSameLine", testArgumentListOnSameLine),
-    ("testSourceRange", testSourceRange),
-  ]
 }

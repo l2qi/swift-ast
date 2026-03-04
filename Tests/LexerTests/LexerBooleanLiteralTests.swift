@@ -31,9 +31,4 @@ class LexerBooleanLiteralTests: XCTestCase {
       XCTAssertEqual($0, .booleanLiteral(false))
     }
   }
-
-  static let allTests = [
-    ("testTrue", testTrue),
-    ("testFalse", testFalse),
-  ]
 }

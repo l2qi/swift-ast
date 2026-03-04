@@ -44,10 +44,4 @@ class ParserKeyPathStringExpressionTests: XCTestCase {
       XCTAssertEqual(expr.sourceRange, getRange(1, 1, 1, 14))
     })
   }
-
-  static let allTests = [
-    ("testKeyPathStringExpression", testKeyPathStringExpression),
-    ("testContainsSelfExpression", testContainsSelfExpression),
-    ("testSourceRange", testSourceRange),
-  ]
 }

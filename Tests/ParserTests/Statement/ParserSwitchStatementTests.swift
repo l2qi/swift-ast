@@ -196,14 +196,4 @@ class ParserSwitchStatementTests: XCTestCase {
       XCTAssertEqual(stmt.sourceRange, getRange(1, 1, 1, 14))
     })
   }
-
-  static let allTests = [
-    ("testEmptySwitch", testEmptySwitch),
-    ("testDefault", testDefault),
-    ("testSimpleCase", testSimpleCase),
-    ("testCaseWithWhereCondition", testCaseWithWhereCondition),
-    ("testCaseItems", testCaseItems),
-    ("testCasesAndDefault", testCasesAndDefault),
-    ("testSourceRange", testSourceRange),
-  ]
 }

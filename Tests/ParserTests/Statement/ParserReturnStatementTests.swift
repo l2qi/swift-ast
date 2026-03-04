@@ -89,11 +89,4 @@ class ParserReturnStatementTests: XCTestCase {
       XCTAssertEqual(stmt.sourceRange, getRange(1, 1, 1, 11))
     })
   }
-
-  static let allTests = [
-    ("testReturn", testReturn),
-    ("testReturnWithExpression", testReturnWithExpression),
-    ("testReturnWithExprInNewLine", testReturnWithExprInNewLine),
-    ("testSourceRange", testSourceRange),
-  ]
 }

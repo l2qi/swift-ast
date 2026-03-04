@@ -231,15 +231,4 @@ class ParserDoStatementTests: XCTestCase {
       }
     )
   }
-
-  static let allTests = [
-    ("testNoCatch", testNoCatch),
-    ("testCatchAll", testCatchAll),
-    ("testCatchPattern", testCatchPattern),
-    ("testCatchWhere", testCatchWhere),
-    ("testCatchPatternAndWhere", testCatchPatternAndWhere),
-    ("testMultipleCatches", testMultipleCatches),
-    ("testCatchPatternMatching", testCatchPatternMatching),
-    ("testSourceRange", testSourceRange),
-  ]
 }

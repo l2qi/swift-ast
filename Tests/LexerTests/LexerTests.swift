@@ -281,28 +281,4 @@ class LexerTests: XCTestCase {
     XCTAssertTrue(Token.Kind.booleanLiteral(false).isEqual(to: .booleanLiteral(false)))
     XCTAssertFalse(Token.Kind.booleanLiteral(false).isEqual(to: .booleanLiteral(true)))
   }
-
-  static let allTests = [
-    ("testEmptyContent", testEmptyContent),
-    ("testArrow", testArrow),
-    ("testAssignmentOperator", testAssignmentOperator),
-    ("testAt", testAt),
-    ("testHash", testHash),
-    ("testBackslash", testBackslash),
-    ("testColon", testColon),
-    ("testComma", testComma),
-    ("testDot", testDot),
-    ("testSemicolon", testSemicolon),
-    ("testUnderscore", testUnderscore),
-    ("testLeftParen", testLeftParen),
-    ("testRightParen", testRightParen),
-    ("testLeftBrace", testLeftBrace),
-    ("testRightBrace", testRightBrace),
-    ("testLeftSquare", testLeftSquare),
-    ("testRightSquare", testRightSquare),
-    ("testAllSpacesAreSkipped", testAllSpacesAreSkipped),
-    ("testLineFeed", testLineFeed),
-    ("testSegmentShowUpAtInvalidLocation", testSegmentShowUpAtInvalidLocation),
-    ("testEqutables", testEqutables),
-  ]
 }

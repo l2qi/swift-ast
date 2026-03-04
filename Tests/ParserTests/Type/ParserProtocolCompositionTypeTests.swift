@@ -49,11 +49,4 @@ class ParserProtocolCompositionTypeTests: XCTestCase {
       XCTAssertEqual(type.sourceRange, getRange(1, 1, 1, 21))
     })
   }
-
-  static let allTests = [
-    ("testProtocolCompositionTypes", testProtocolCompositionTypes),
-    ("testOldSyntax", testOldSyntax),
-    ("testAmpAsPrefix", testAmpAsPrefix),
-    ("testSourceRange", testSourceRange),
-  ]
 }

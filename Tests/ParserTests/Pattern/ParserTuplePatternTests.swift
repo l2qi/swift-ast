@@ -102,14 +102,13 @@ class ParserTuplePatternTests: XCTestCase {
     parsePatternAndTest("(x?, y?)", "(x?, y?)")
   }
 
-  func testFromForInOrVarDecl() async {
+  func testFromForInOrVarDecl() {
     parsePatternAndTest("(let a, let b)", "(let a, let b)")
-    let expct = expectation(description:
-      "Expect an error because var decl is not allowed in a tuple pattern that is already in a var decl.")
+    var didError = false
     parsePatternAndTest("(let a, let b)", "", fromForInOrVarDecl: true, errorClosure: { _ in
-      expct.fulfill()
+      didError = true
     })
-    await waitForExpectations(timeout: 3)
+    XCTAssertTrue(didError)
 
     parsePatternAndTest("(): Void", "(): Void")
     parsePatternAndTest("(): Void", "(): Void", fromForInOrVarDecl: true)
@@ -140,15 +139,4 @@ class ParserTuplePatternTests: XCTestCase {
       XCTAssertEqual(pttrn.sourceRange, getRange(1, 1, 1, 9))
     })
   }
-
-  static let allTests = [
-    ("testEmptyTuple", testEmptyTuple),
-    ("testMultipleElements", testMultipleElements),
-    ("testIdentifiers", testIdentifiers),
-    ("testSpaces", testSpaces),
-    ("testOptional", testOptional),
-    ("testFromForInOrVarDecl", testFromForInOrVarDecl),
-    ("testTypeAnnotation", testTypeAnnotation),
-    ("testSourceRange", testSourceRange),
-  ]
 }

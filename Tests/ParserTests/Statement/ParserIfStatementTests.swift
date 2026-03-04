@@ -108,12 +108,4 @@ class ParserIfStatementTests: XCTestCase {
       XCTAssertEqual(stmt.sourceRange, getRange(1, 1, 1, 33))
     })
   }
-
-  static let allTests = [
-    ("testIf", testIf),
-    ("testElse", testElse),
-    ("testElseIf", testElseIf),
-    ("testIfElseIfElse", testIfElseIfElse),
-    ("testSourceRange", testSourceRange),
-  ]
 }

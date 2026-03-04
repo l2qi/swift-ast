@@ -49,10 +49,4 @@ class ParserWildcardPatternTests: XCTestCase {
       XCTAssertEqual(pttrn.sourceRange, getRange(1, 1, 1, 12))
     })
   }
-
-  static let allTests = [
-    ("testParseWildcardPattern", testParseWildcardPattern),
-    ("testTypeAnnotation", testTypeAnnotation),
-    ("testSourceRange", testSourceRange),
-  ]
 }

@@ -67,10 +67,4 @@ class ParserDeinitializerDeclarationTests: XCTestCase {
       }
     )
   }
-
-  static let allTests = [
-    ("testDeinit", testDeinit),
-    ("testAttributes", testAttributes),
-    ("testSourceRange", testSourceRange),
-  ]
 }

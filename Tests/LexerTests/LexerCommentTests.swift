@@ -139,15 +139,4 @@ class LexerCommentTests: XCTestCase {
       XCTAssertEqual($0, .invalid(.reserved))
     }
   }
-
-  static let allTests = [
-    ("testSingleLineComment", testSingleLineComment),
-    ("testMultipleSingleLineComments", testMultipleSingleLineComments),
-    ("testSingleLineMultipleLineComment", testSingleLineMultipleLineComment),
-    ("testMultiLineMultipleLineComment", testMultiLineMultipleLineComment),
-    ("testNestedMultipleLineComments", testNestedMultipleLineComments),
-    ("testMultipleLineCommentsOneNextToTheOther", testMultipleLineCommentsOneNextToTheOther),
-    ("testUnbalanceMultipleLineComment", testUnbalanceMultipleLineComment),
-    ("testMultipleLineCommentTail", testMultipleLineCommentTail),
-  ]
 }

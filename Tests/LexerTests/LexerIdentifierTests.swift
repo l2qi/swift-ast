@@ -93,14 +93,4 @@ class LexerIdentifierTests: XCTestCase {
       XCTAssertNil(t.structName)
     }
   }
-
-  static let allTests = [
-    ("testIdentifiers", testIdentifiers),
-    ("testBacktickIdentifiers", testBacktickIdentifiers),
-    ("testBacktickIdentifierMissingClosingBacktick", testBacktickIdentifierMissingClosingBacktick),
-    ("testImplicitParameterName", testImplicitParameterName),
-    ("testBindingReferences", testBindingReferences),
-    ("testDollarSignCanBeUsedAsIdentifierBody", testDollarSignCanBeUsedAsIdentifierBody),
-    ("testStructName", testStructName),
-  ]
 }

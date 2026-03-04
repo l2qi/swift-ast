@@ -141,13 +141,4 @@ class ASTVisitorTopLevelDeclTraversalTests : XCTestCase {
     XCTAssertFalse(try visitor.traverse(localTopLevelDecl))
     XCTAssertEqual(visitor.carryover, "01initstop")
   }
-
-  static let allTests = [
-    ("testDefaultTraversal", testDefaultTraversal),
-    ("testStopAtTopLevelDecl", testStopAtTopLevelDecl),
-    ("testStopAtImportDecl", testStopAtImportDecl),
-    ("testStopAtIfStmt", testStopAtIfStmt),
-    ("testStopAtLiteralExpression", testStopAtLiteralExpression),
-    ("testStopFromNestedDecl", testStopFromNestedDecl),
-  ]
 }

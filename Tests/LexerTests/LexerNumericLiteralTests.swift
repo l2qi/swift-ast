@@ -173,14 +173,4 @@ class LexerNumericLiteralTests: XCTestCase {
       XCTAssertEqual(r, longString)
     }
   }
-
-  static let allTests = [
-    ("testBinaryLiterals", testBinaryLiterals),
-    ("testOctalLiterals", testOctalLiterals),
-    ("testDecimalLiterals", testDecimalLiterals),
-    ("testHexadecimalLiterals", testHexadecimalLiterals),
-    ("testDecimalFloatingLiterals", testDecimalFloatingLiterals),
-    ("testHexadecimalFloatingLiterals", testHexadecimalFloatingLiterals),
-    ("testLongDecimalNumbers", testLongDecimalNumbers),
-  ]
 }

@@ -96,13 +96,4 @@ class ParserInitializerExpressionTests: XCTestCase {
       })
     }
   }
-
-  static let allTests = [
-    ("testInitExpression", testInitExpression),
-    ("testArgumentName", testArgumentName),
-    ("testUnderscoreAsArgumentName", testUnderscoreAsArgumentName),
-    ("testMultipleArgumentNames", testMultipleArgumentNames),
-    ("testNestedInitExpression", testNestedInitExpression),
-    ("testSourceRange", testSourceRange),
-  ]
 }

@@ -137,12 +137,4 @@ class ParserTopLevelDeclarationTests: XCTestCase {
       XCTFail("Failed in parsing a top level declaration.")
     }
   }
-
-  static let allTests = [
-    ("testSimpleCase", testSimpleCase),
-    ("testComments", testComments),
-    ("testShebang", testShebang),
-    ("testSourceRange", testSourceRange),
-    ("testLexicalParent", testLexicalParent),
-  ]
 }

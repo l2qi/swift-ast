@@ -48,10 +48,4 @@ class ParserTupleTypeTests: XCTestCase {
       }
     )
   }
-
-  static let allTests = [
-    ("testElementsWithTypeOnly", testElementsWithTypeOnly),
-    ("testElementsWithName", testElementsWithName),
-    ("testSourceRange", testSourceRange),
-  ]
 }

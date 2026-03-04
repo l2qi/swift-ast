@@ -32,8 +32,4 @@ class ParserAccessLevelModifierTests: XCTestCase {
       XCTAssertEqual(accessModifier, modifier)
     }
   }
-
-  static let allTests = [
-    ("testModifiers", testModifiers),
-  ]
 }

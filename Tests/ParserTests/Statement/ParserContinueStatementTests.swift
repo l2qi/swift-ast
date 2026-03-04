@@ -58,11 +58,4 @@ class ParserContinueStatementTests: XCTestCase {
       XCTAssertEqual(stmt.sourceRange, getRange(1, 1, 1, 13))
     })
   }
-
-  static let allTests = [
-    ("testContinue", testContinue),
-    ("testContinueWithLabelName", testContinueWithLabelName),
-    ("testLabelNameNotImmediateFollow", testLabelNameNotImmediateFollow),
-    ("testSourceRange", testSourceRange),
-  ]
 }

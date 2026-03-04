@@ -70,13 +70,4 @@ class ParserOptionalChainingExpressionTests: XCTestCase {
       })
     }
   }
-
-  static let allTests = [
-    ("testOptional", testOptional),
-    ("testTwoOptional", testTwoOptional),
-    ("testOptionalForced", testOptionalForced),
-    ("testNotImmediateFollow", testNotImmediateFollow),
-    ("testQuestionInTheMiddle", testQuestionInTheMiddle),
-    ("testSourceRange", testSourceRange),
-  ]
 }

@@ -46,11 +46,4 @@ class ParserTypeIdentifierTests: XCTestCase {
       XCTAssertEqual(type.sourceRange, getRange(1, 1, 1, 24))
     })
   }
-
-  static let allTests = [
-    ("testOneName", testOneName),
-    ("testMultipleNames", testMultipleNames),
-    ("testGenericArgumentClause", testGenericArgumentClause),
-    ("testSourceRange", testSourceRange),
-  ]
 }

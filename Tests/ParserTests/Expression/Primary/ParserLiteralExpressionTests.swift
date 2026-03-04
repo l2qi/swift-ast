@@ -827,31 +827,4 @@ class ParserLiteralExpressionTests: XCTestCase {
       })
     }
   }
-
-  static let allTests = [
-    ("testNilLiteral", testNilLiteral),
-    ("testTrueBooleanLiteral", testTrueBooleanLiteral),
-    ("testFalseBooleanLiteral", testFalseBooleanLiteral),
-    ("testIntegerLiteral", testIntegerLiteral),
-    ("testFloatingPointLiteral", testFloatingPointLiteral),
-    ("testStaticStringLiteral", testStaticStringLiteral),
-    ("testInterpolatedStringLiteral", testInterpolatedStringLiteral),
-    ("testInterpolatedStringExpressionsContainFunctionCallExpr",
-      testInterpolatedStringExpressionsContainFunctionCallExpr),
-    ("testEmptyInterpolatedTextItem", testEmptyInterpolatedTextItem),
-    ("testEmptyArrayLiteral", testEmptyArrayLiteral),
-    ("testSimpleArrayLiteral", testSimpleArrayLiteral),
-    ("testArrayEndingWithComma", testArrayEndingWithComma),
-    ("testArrayWithArrays", testArrayWithArrays),
-    ("testArrayWithDictionaries", testArrayWithDictionaries),
-    ("testArrayLiteralContainsAllLiterals", testArrayLiteralContainsAllLiterals),
-    ("testEmptyDictionaryLiteral", testEmptyDictionaryLiteral),
-    ("testSimpleDictionaryLiteral", testSimpleDictionaryLiteral),
-    ("testDictinoaryEndingWithComma", testDictinoaryEndingWithComma),
-    ("testDictionaryWithDictionaries", testDictionaryWithDictionaries),
-    ("testDictionaryWithArrays", testDictionaryWithArrays),
-    ("testDictionaryLiteralContainsAllLiterals", testDictionaryLiteralContainsAllLiterals),
-    ("testMagicLiterals", testMagicLiterals),
-    ("testSourceRange", testSourceRange),
-  ]
 }

@@ -58,11 +58,4 @@ class ParserBreakStatementTests: XCTestCase {
       XCTAssertEqual(stmt.sourceRange, getRange(1, 1, 1, 10))
     })
   }
-
-  static let allTests = [
-    ("testBreak", testBreak),
-    ("testBreakWithLabelName", testBreakWithLabelName),
-    ("testLabelNameNotImmediateFollow", testLabelNameNotImmediateFollow),
-    ("testSourceRange", testSourceRange),
-  ]
 }

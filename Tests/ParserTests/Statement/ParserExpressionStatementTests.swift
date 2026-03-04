@@ -50,9 +50,4 @@ class ParserExpressionStatementTests: XCTestCase {
       XCTFail("Failed in parsing a list of expressions as statements.")
     }
   }
-
-  static let allTests = [
-    ("testAssignmentOpExprStmt", testAssignmentOpExprStmt),
-    ("testExpressions", testExpressions),
-  ]
 }

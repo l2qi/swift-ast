@@ -261,19 +261,4 @@ class ParserConditionTests: XCTestCase { // Note: we will test condition and con
     parseStatementAndTest("if foo < bar {}", "if foo < bar {}")
     parseStatementAndTest("if foo < (bar) {}", "if foo < (bar) {}")
   }
-
-  static let allTests = [
-    ("testBooleanCondition", testBooleanCondition),
-    ("testBooleanOperator", testBooleanOperator),
-    ("testParenthesized", testParenthesized),
-    ("testAvailableToAll", testAvailableToAll),
-    ("testAvailableToMajorVersion", testAvailableToMajorVersion),
-    ("testAvailableToMinorVersion", testAvailableToMinorVersion),
-    ("testAvailableToPatchVersion", testAvailableToPatchVersion),
-    ("testCaseCondition",testCaseCondition),
-    ("testExprPatternIsAssignmentOperatorExpr", testExprPatternIsAssignmentOperatorExpr),
-    ("testLetCondition", testLetCondition),
-    ("testVarCondition", testVarCondition),
-    ("testOpenChveronIsProperlyChecked", testOpenChveronIsProperlyChecked),
-  ]
 }

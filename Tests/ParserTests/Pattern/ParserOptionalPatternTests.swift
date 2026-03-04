@@ -103,12 +103,4 @@ class ParserOptionalPatternTests: XCTestCase {
       XCTAssertEqual(pttrn.sourceRange, getRange(1, 1, 1, 8))
     })
   }
-
-  static let allTests = [
-    ("testIdentifierOptional", testIdentifierOptional),
-    ("testWildcardOptional", testWildcardOptional),
-    ("testEnumCasePatternOptional", testEnumCasePatternOptional),
-    ("testTuplePatternOptional", testTuplePatternOptional),
-    ("testSourceRange", testSourceRange),
-  ]
 }

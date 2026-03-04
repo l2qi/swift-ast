@@ -74,13 +74,4 @@ class ParserTryOperatorExpressionTests: XCTestCase {
       })
     }
   }
-
-  static let allTests = [
-    ("testTry", testTry),
-    ("testForcedTry", testForcedTry),
-    ("testOptionalTry", testOptionalTry),
-    ("testTryBinaryExpressions", testTryBinaryExpressions),
-    ("testTryScopes", testTryScopes),
-    ("testSourceRange", testSourceRange),
-  ]
 }

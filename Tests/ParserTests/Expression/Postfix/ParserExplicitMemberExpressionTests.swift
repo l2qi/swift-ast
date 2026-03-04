@@ -220,16 +220,4 @@ class ParserExplicitMemberExpressionTests: XCTestCase {
       XCTAssertEqual(postfixExpr1.sourceRange, getRange(1, 1, 1, 5))
     })
   }
-
-  static let allTests = [
-    ("testTupleMember", testTupleMember),
-    ("testIdentifier", testIdentifier),
-    ("testGenericArgumentClause", testGenericArgumentClause),
-    ("testArgumentName", testArgumentName),
-    ("testUnderscoreAsArgumentName", testUnderscoreAsArgumentName),
-    ("testNested", testNested),
-    ("testImplicitParameterName", testImplicitParameterName),
-    ("testPostfixExpressionAsLiteralExpression", testPostfixExpressionAsLiteralExpression),
-    ("testSourceRange", testSourceRange),
-  ]
 }

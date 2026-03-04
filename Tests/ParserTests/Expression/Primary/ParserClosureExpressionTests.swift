@@ -656,33 +656,4 @@ class ParserClosureExpressionTests: XCTestCase {
       })
     }
   }
-
-  static let allTests = [
-    ("testEmptyClosure", testEmptyClosure),
-    ("testSingleStatement", testSingleStatement),
-    ("testMultipleStatements", testMultipleStatements),
-    ("testOneCaptureItem", testOneCaptureItem),
-    ("testCaptureItemSpecifier", testCaptureItemSpecifier),
-    ("testMultiCaptureItem", testMultiCaptureItem),
-    ("testCaptureListAndStatements", testCaptureListAndStatements),
-    ("testEmptyParameterList", testEmptyParameterList),
-    ("testParamName", testParamName),
-    ("testParamNameAndTypeAnnotation", testParamNameAndTypeAnnotation),
-    ("testParamNameAndTypeAnnotationVarargs", testParamNameAndTypeAnnotationVarargs),
-    ("testMultipleParameters", testMultipleParameters),
-    ("testOneIdentifier", testOneIdentifier),
-    ("testMultipleIdentifiers", testMultipleIdentifiers),
-    ("testParameterListAndStatements", testParameterListAndStatements),
-    ("testIdentifierListAndStatements", testIdentifierListAndStatements),
-    ("testThrows", testThrows),
-    ("testFunctionResult", testFunctionResult),
-    ("testFunctionResultWithAttributes", testFunctionResultWithAttributes),
-    ("testThrowsAndFunctionResult", testThrowsAndFunctionResult),
-    ("testCaptureListAndFullSignature", testCaptureListAndFullSignature),
-    ("testStatementsStartWithLeftParen", testStatementsStartWithLeftParen),
-    ("testStatementStartWithLeftSquare", testStatementStartWithLeftSquare),
-    ("testStatementsStartWithIdentifier", testStatementsStartWithIdentifier),
-    ("testImplicitlyReturnTuple", testImplicitlyReturnTuple),
-    ("testSourceRange", testSourceRange),
-  ]
 }

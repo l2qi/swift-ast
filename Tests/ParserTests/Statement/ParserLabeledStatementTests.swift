@@ -106,14 +106,4 @@ class ParserLabeledStatementTests: XCTestCase {
       XCTAssertEqual(stmt.sourceRange, getRange(1, 1, 1, 22))
     })
   }
-
-  static let allTests = [
-    ("testLabeledFor", testLabeledFor),
-    ("testLabeledWhile", testLabeledWhile),
-    ("testLabeledRepeat", testLabeledRepeat),
-    ("testLabeledIf", testLabeledIf),
-    ("testLabeledSwitch", testLabeledSwitch),
-    ("testLabeledDo", testLabeledDo),
-    ("testSourceRange", testSourceRange),
-  ]
 }

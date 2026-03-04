@@ -217,43 +217,4 @@ class RoleTests: XCTestCase {
     XCTAssertEqual(role(of: "\u{1}"), .unknown)
   }
 
-  static let allTests = [
-    ("testEmptyContent", testEmptyContent),
-    ("testLineFeed", testLineFeed),
-    ("testCarriageReturn", testCarriageReturn),
-    ("testLeftParen", testLeftParen),
-    ("testRightParen", testRightParen),
-    ("testLeftBrace", testLeftBrace),
-    ("testRightBrace", testRightBrace),
-    ("testLeftSquare", testLeftSquare),
-    ("testRightSquare", testRightSquare),
-    ("testPeriod", testPeriod),
-    ("testComma", testComma),
-    ("testColon", testColon),
-    ("testSemicolon", testSemicolon),
-    ("testEqual", testEqual),
-    ("testAt", testAt),
-    ("testHash", testHash),
-    ("testAmp", testAmp),
-    ("testMinus", testMinus),
-    ("testBacktick", testBacktick),
-    ("testBackslash", testBackslash),
-    ("testDollar", testDollar),
-    ("testDoubleQuote", testDoubleQuote),
-    ("testExclaim", testExclaim),
-    ("testQuestion", testQuestion),
-    ("testLessThan", testLessThan),
-    ("testGreaterThan", testGreaterThan),
-    ("testUnderscore", testUnderscore),
-    ("testSlash", testSlash),
-    ("testAsterisk", testAsterisk),
-    ("testDigits", testDigits),
-    ("testSpaces", testSpaces),
-    ("testOperatorHeads", testOperatorHeads),
-    ("testOperatorBody", testOperatorBody),
-    ("testIdentifierHeads", testIdentifierHeads),
-    ("testIdentifierBody", testIdentifierBody),
-    ("testStartOfHeading", testStartOfHeading),
-  ]
-
 }

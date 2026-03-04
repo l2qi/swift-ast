@@ -58,19 +58,18 @@ class ParserEnumCasePatternTests: XCTestCase {
     })
   }
 
-  func testTuplesWithValueBinding() async {
+  func testTuplesWithValueBinding() {
     parsePatternAndTest("let .foo(a, b)", "let .foo(a, b)")
     parsePatternAndTest(".foo(let a, let b)", ".foo(let a, let b)")
     parsePatternAndTest("let .foo(_, b)", "let .foo(_, b)")
     parsePatternAndTest("let .foo(_?, b?)", "let .foo(_?, b?)", forPatternMatching: true)
     parsePatternAndTest(".foo(let _?, let b?)", ".foo(let _?, let b?)", forPatternMatching: true)
     parsePatternAndTest(".foo(nil, _?)", ".foo(nil, _?)", forPatternMatching: true)
-    let expct = expectation(description:
-      "Expect an error because var decl is not allowed in a tuple pattern that is already in a var decl.")
+    var didError = false
     parsePatternAndTest(".foo(let a)", "", fromForInOrVarDecl: true, errorClosure: { _ in
-      expct.fulfill()
+      didError = true
     })
-    await fulfillment(of: [expct], timeout: 3.0)
+    XCTAssertTrue(didError)
   }
 
   func testBasicTypeIdentifier() {
@@ -128,15 +127,4 @@ class ParserEnumCasePatternTests: XCTestCase {
       XCTAssertEqual(pttrn.sourceRange, getRange(1, 1, 1, 24))
     })
   }
-
-  static let allTests = [
-    ("testEnumCaseName", testEnumCaseName),
-    ("testEmptyTuple", testEmptyTuple),
-    ("testTuple", testTuple),
-    ("testTuplesWithValueBinding", testTuplesWithValueBinding),
-    ("testBasicTypeIdentifier", testBasicTypeIdentifier),
-    ("testTypeIdentifierWithGeneric", testTypeIdentifierWithGeneric),
-    ("testBothTypeIdentifierAndTuple", testBothTypeIdentifierAndTuple),
-    ("testSourceRange", testSourceRange),
-  ]
 }

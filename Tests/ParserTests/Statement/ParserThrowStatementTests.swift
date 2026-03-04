@@ -37,9 +37,4 @@ class ParserThrowStatementTests: XCTestCase {
       XCTAssertEqual(stmt.sourceRange, getRange(1, 1, 1, 10))
     })
   }
-
-  static let allTests = [
-    ("testThrow", testThrow),
-    ("testSourceRange", testSourceRange),
-  ]
 }

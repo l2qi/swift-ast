@@ -478,28 +478,4 @@ class ParserFunctionCallExpressionTests: XCTestCase {
       })
     }
   }
-
-  static let allTests = [
-    ("testEmptyParameter", testEmptyParameter),
-    ("testArgumentAsExpression", testArgumentAsExpression),
-    ("testArgumentAsNamedExpression", testArgumentAsNamedExpression),
-    ("testArgumentAsOperator", testArgumentAsOperator),
-    ("testOperators", testOperators),
-    ("testArgumentAsNamedOperator", testArgumentAsNamedOperator),
-    ("testArgumentsStartWithMinusSign", testArgumentsStartWithMinusSign),
-    ("testArgumentsStartWithExclamation", testArgumentsStartWithExclamation),
-    ("testMultipleArguments", testMultipleArguments),
-    ("testClosureArgument", testClosureArgument),
-    ("testTrailingClosureOneArgument", testTrailingClosureOneArgument),
-    ("testTrailingClosureZeroArgument", testTrailingClosureZeroArgument),
-    ("testTrailingClosureNoArgumentClause", testTrailingClosureNoArgumentClause),
-    ("testTrailingClosureSameLine", testTrailingClosureSameLine),
-    ("testDistinguishFromExplicitMemberExpr", testDistinguishFromExplicitMemberExpr),
-    ("testMemoryReference", testMemoryReference),
-    ("testNamedMemoryReference", testNamedMemoryReference),
-    ("testArgumentAsFunctionCallExprWithTrailingClosure", testArgumentAsFunctionCallExprWithTrailingClosure),
-    ("testArgumentAsEmptyDictionary", testArgumentAsEmptyDictionary),
-    ("testPostfixExpressionAsLiteralExpression", testPostfixExpressionAsLiteralExpression),
-    ("testSourceRange", testSourceRange),
-  ]
 }

@@ -70,13 +70,4 @@ class ParserForcedValueExpressionTests: XCTestCase {
       })
     }
   }
-
-  static let allTests = [
-    ("testForced", testForced),
-    ("testTwoForced", testTwoForced),
-    ("testForcedOptional", testForcedOptional),
-    ("testNotImmediateFollow", testNotImmediateFollow),
-    ("testExclaimInTheMiddle", testExclaimInTheMiddle),
-    ("testSourceRange", testSourceRange),
-  ]
 }

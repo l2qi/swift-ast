@@ -107,8 +107,4 @@ class TTYASTPrintTests : XCTestCase {
       }
     }
   }
-
-  static let allTests = [
-    ("testASTPrint", testASTPrint),
-  ]
 }

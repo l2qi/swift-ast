@@ -129,15 +129,4 @@ class ParserSuperclassExpressionTests: XCTestCase {
       })
     }
   }
-
-  static let allTests = [
-    ("testSuperclassMethodExpression", testSuperclassMethodExpression),
-    ("testSuperclassSubscriptExpression", testSuperclassSubscriptExpression),
-    ("testSuperclassSubscriptExprWithExprList", testSuperclassSubscriptExprWithExprList),
-    ("testSuperclassSubscriptExprWithVariables", testSuperclassSubscriptExprWithVariables),
-    ("testSuperclassSubscriptArgumentWithIdentifier", testSuperclassSubscriptArgumentWithIdentifier),
-    ("testSuperclassInitializerExpression", testSuperclassInitializerExpression),
-    ("testArgumentListOnSameLine", testArgumentListOnSameLine),
-    ("testSourceRange", testSourceRange),
-  ]
 }
