@@ -63,13 +63,4 @@ class ParserSubscriptExpressionTests: XCTestCase {
       })
     }
   }
-
-  static let allTests = [
-    ("testSingleExpr", testSingleExpr),
-    ("testMultipleExprs", testMultipleExprs),
-    ("testVariables", testVariables),
-    ("testArgumentWithIdentifier", testArgumentWithIdentifier),
-    ("testArgumentListOnSameLine", testArgumentListOnSameLine),
-    ("testSourceRange", testSourceRange),
-  ]
 }

@@ -44,10 +44,4 @@ class ParserImplicitMemberExpressionTests: XCTestCase {
       XCTAssertEqual(expr.sourceRange, getRange(1, 1, 1, 5))
     })
   }
-
-  static let allTests = [
-    ("testImplicitMember", testImplicitMember),
-    ("testSpacesBetweenDotAndIdentifier", testSpacesBetweenDotAndIdentifier),
-    ("testSourceRange", testSourceRange),
-  ]
 }

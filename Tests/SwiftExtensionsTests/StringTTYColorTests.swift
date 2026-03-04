@@ -42,9 +42,4 @@ class StringTTYColorTests : XCTestCase {
     XCTAssertEqual("abc".colored(with: .white), "\u{001B}[37mabc\u{001B}[0m")
     XCTAssertEqual("abc".colored(with: .default), "\u{001B}[0mabc\u{001B}[0m")
   }
-
-  static let allTests = [
-    ("testColorTTYCode", testColorTTYCode),
-    ("testColoredString", testColoredString),
-  ]
 }

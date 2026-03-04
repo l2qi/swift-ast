@@ -34,9 +34,4 @@ class ParserInOutExpressionTests: XCTestCase {
       XCTAssertEqual(expr.sourceRange, getRange(1, 1, 1, 5))
     })
   }
-
-  static let allTests = [
-    ("testInOut", testInOut),
-    ("testSourceRange", testSourceRange),
-  ]
 }

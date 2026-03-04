@@ -44,10 +44,4 @@ class ParserPostfixSelfExpressionTests: XCTestCase {
       XCTAssertEqual(expr.sourceRange, getRange(1, 1, 1, 9))
     })
   }
-
-  static let allTests = [
-    ("testPostfixSelfExpression", testPostfixSelfExpression),
-    ("testTwoSelf", testTwoSelf),
-    ("testSourceRange", testSourceRange),
-  ]
 }

@@ -20,8 +20,4 @@ class ParserOpaqueTypeTests: XCTestCase {
   func testOpaqueType() {
     parseTypeAndTest("some Thing", "Opaque<Thing>")
   }
-
-  static let allTests = [
-    ("testOpaqueType", testOpaqueType),
-  ]
 }

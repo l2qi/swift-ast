@@ -32,12 +32,12 @@ class ParserTypeCastingPatternTests: XCTestCase {
     })
   }
 
-  func testIsPatternOnlyAvilableInSwitchCase() async {
-    let expct = expectation(description: "Expect an error because is-pattern is parsed out of switch-case.")
+  func testIsPatternOnlyAvilableInSwitchCase() {
+    var didError = false
     parsePatternAndTest("is Foo", "", errorClosure: { _ in
-      expct.fulfill()
+      didError = true
     })
-    await waitForExpectations(timeout: 3)
+    XCTAssertTrue(didError)
   }
 
   func testAsPattern() {
@@ -63,11 +63,4 @@ class ParserTypeCastingPatternTests: XCTestCase {
       XCTAssertEqual(pttrn.sourceRange, getRange(1, 1, 1, 15))
     })
   }
-
-  static let allTests = [
-    ("testIsPattern", testIsPattern),
-    ("testIsPatternOnlyAvilableInSwitchCase", testIsPatternOnlyAvilableInSwitchCase),
-    ("testAsPattern", testAsPattern),
-    ("testSourceRange", testSourceRange),
-  ]
 }

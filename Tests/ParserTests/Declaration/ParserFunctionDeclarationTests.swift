@@ -766,34 +766,4 @@ class ParserFunctionDeclarationTests: XCTestCase {
       }
     )
   }
-
-  static let allTests = [
-    ("testNameIdentifier", testNameIdentifier),
-    ("testNameOperator", testNameOperator),
-    ("testReservedOperators", testReservedOperators),
-    ("testAttributes", testAttributes),
-    ("testModifiers", testModifiers),
-    ("testAttributesAndModifiers", testAttributesAndModifiers),
-    ("testGenericParameterClause", testGenericParameterClause),
-    ("testParameter", testParameter),
-    ("testInoutParameter", testInoutParameter),
-    ("testSpecifyingArgumentLabels", testSpecifyingArgumentLabels),
-    ("testOmittingArgumentLabels", testOmittingArgumentLabels),
-    ("testParameterWithDefaultArgument", testParameterWithDefaultArgument),
-    ("testVariadicParameter", testVariadicParameter),
-    ("testProtocolCompositionParameter", testProtocolCompositionParameter),
-    ("testMultipleParameters", testMultipleParameters),
-    ("testFunctionThatThrows", testFunctionThatThrows),
-    ("testFunctionThatRethrows", testFunctionThatRethrows),
-    ("testFunctionResult", testFunctionResult),
-    ("testThrowsWithResult", testThrowsWithResult),
-    ("testRethrowsWithResult", testRethrowsWithResult),
-    ("testGenericWhereClause", testGenericWhereClause),
-    ("testFunctionBody", testFunctionBody),
-    ("testWhereClauseAndBody", testWhereClauseAndBody),
-    ("testArgumentCanHaveNoInternalName", testArgumentCanHaveNoInternalName),
-    ("testArgumentAsFunctionType", testArgumentAsFunctionType),
-    ("testOthers", testOthers),
-    ("testSourceRange", testSourceRange),
-  ]
 }

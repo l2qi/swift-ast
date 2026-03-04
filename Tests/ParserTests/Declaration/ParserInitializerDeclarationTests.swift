@@ -455,25 +455,4 @@ class ParserInitializerDeclarationTests: XCTestCase {
       }
     )
   }
-
-  static let allTests = [
-    ("testNonfailable", testNonfailable),
-    ("testOptionalFailable", testOptionalFailable),
-    ("testImplicitlyUnwrappedFailable", testImplicitlyUnwrappedFailable),
-    ("testAttributes", testAttributes),
-    ("testModifiers", testModifiers),
-    ("testAttributesAndModifiers", testAttributesAndModifiers),
-    ("testGenericParameterClause", testGenericParameterClause),
-    ("testParameter", testParameter),
-    ("testInoutParameter", testInoutParameter),
-    ("testSpecifyingArgumentLabels", testSpecifyingArgumentLabels),
-    ("testOmittingArgumentLabels", testOmittingArgumentLabels),
-    ("testParameterWithDefaultArgument", testParameterWithDefaultArgument),
-    ("testVariadicParameter", testVariadicParameter),
-    ("testMultipleParameters", testMultipleParameters),
-    ("testInitializerThatThrows", testInitializerThatThrows),
-    ("testInitializerThatRethrows", testInitializerThatRethrows),
-    ("testGenericWhereClause", testGenericWhereClause),
-    ("testSourceRange", testSourceRange),
-  ]
 }

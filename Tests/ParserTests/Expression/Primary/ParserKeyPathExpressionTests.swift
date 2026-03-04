@@ -187,12 +187,4 @@ class ParserKeyPathExpressionTests: XCTestCase {
       XCTAssertEqual(expr.sourceRange, getRange(1, 1, 1, 6))
     })
   }
-
-  static let allTests = [
-    ("testOneComponent", testOneComponent),
-    ("testMultipleComponents", testMultipleComponents),
-    ("testComponentsWithPostfixes", testComponentsWithPostfixes),
-    ("testType", testType),
-    ("testSourceRange", testSourceRange),
-  ]
 }

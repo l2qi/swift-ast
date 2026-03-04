@@ -37,9 +37,4 @@ class ParserGuardStatementTests: XCTestCase {
       XCTAssertEqual(stmt.sourceRange, getRange(1, 1, 1, 18))
     })
   }
-
-  static let allTests = [
-    ("testGuardStmt", testGuardStmt),
-    ("testSourceRange", testSourceRange),
-  ]
 }

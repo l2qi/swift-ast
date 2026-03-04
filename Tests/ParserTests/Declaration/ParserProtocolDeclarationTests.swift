@@ -421,31 +421,4 @@ class ParserProtocolDeclarationTests: XCTestCase {
       }
     )
   }
-
-  static let allTests = [
-    ("testName", testName),
-    ("testAttributes", testAttributes),
-    ("testModifiers", testModifiers),
-    ("testAttributesAndModifier", testAttributesAndModifier),
-    ("testTypeInheritance", testTypeInheritance),
-    // property member
-    ("testPropertyMember", testPropertyMember),
-    ("testPropertyMemberWithAttributes", testPropertyMemberWithAttributes),
-    ("testPropertyMemberWithModifier", testPropertyMemberWithModifier),
-    ("testPropertyMemberWithAttributesAndModifier", testPropertyMemberWithAttributesAndModifier),
-    // method member
-    ("testMethodMember", testMethodMember),
-    // initializer member
-    ("testInitializerMember", testInitializerMember),
-    // subscript member
-    ("testSubscriptMember", testSubscriptMember),
-    // associated-type member
-    ("testAssociatedTypeMember", testAssociatedTypeMember),
-    // compiler-control member
-    ("testCompilerControlMember", testCompilerControlMember),
-    // combinations
-    ("testMembers", testMembers),
-    // context
-    ("testSourceRange", testSourceRange),
-  ]
 }

@@ -42,9 +42,4 @@ class ShebangIntegrationTests : XCTestCase {
       return topLevelDecl.ttyDump
     }
   }
-
-  static let allTests = [
-    ("testShebangPrint", testShebangPrint),
-    ("testShebangDump", testShebangDump),
-  ]
 }

@@ -87,8 +87,4 @@ class LexerCheckpointTests: XCTestCase {
 
     XCTAssertEqual(lexer.look().kind, .underscore)
   }
-
-  static let allTests = [
-    ("testCheckpoints", testCheckpoints),
-  ]
 }

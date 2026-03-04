@@ -262,14 +262,6 @@ class ScannerTests: XCTestCase {
     XCTAssertEqual(scanner.peek(), "\n")
   }
 
-  static let allTests = [
-    ("testEmptyContent", testEmptyContent),
-    ("testCharacters", testCharacters),
-    ("testEmoji", testEmoji),
-    ("testRyuichiLovesSushiAtCafé", testRyuichiLovesSushiAtCafé),
-    ("testCheckpoints", testCheckpoints),
-  ]
-
   private func char(_ str: String, _ role: Role) -> Char {
     guard let unicodeScalar = UnicodeScalar(str) else {
       XCTFail("Failed in converting string `\(str)` to UnicodeScalar.")

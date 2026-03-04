@@ -54,10 +54,4 @@ class SourceReaderTests : XCTestCase {
   private var isXcode10: Bool {
     return FileManager.default.currentDirectoryPath.contains("Debug")
   }
-
-  static let allTests = [
-    ("testReading", testReading),
-//    ("testReadingFromCurrentPath", testReadingFromCurrentPath),
-//    ("testReadingFromParentPath", testReadingFromParentPath),
-  ]
 }

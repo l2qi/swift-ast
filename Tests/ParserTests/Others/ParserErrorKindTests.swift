@@ -365,16 +365,4 @@ class ParserErrorKindTests : XCTestCase {
     parseProblematic("protocol Foo : Bar, class)", .fatal, .lateClassRequirement)
     parseProblematic("protocol Foo : class, _)", .fatal, .expectedTypeRestriction)
   }
-
-  static let allTests = [
-    ("testAttributes", testAttributes),
-    ("testCodeBlock", testCodeBlock),
-    ("testDeclarations", testDeclarations),
-    ("testExpressions", testExpressions),
-    ("testPlaygroundLiterals", testPlaygroundLiterals),
-    ("testGenerics", testGenerics),
-    ("testPatterns", testPatterns),
-    ("testStatements", testStatements),
-    ("testTypes", testTypes),
-  ]
 }

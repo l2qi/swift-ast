@@ -177,12 +177,4 @@ class LexerOperatorTests: XCTestCase {
       }
     }
   }
-
-  static let allTests = [
-    ("testSinglePunctuatorAsPrefix", testSinglePunctuatorAsPrefix),
-    ("testSinglePunctuatorAsBinary", testSinglePunctuatorAsBinary),
-    ("testSinglePunctuatorAsPostfix", testSinglePunctuatorAsPostfix),
-    ("testOperators", testOperators),
-    ("testDotOperators", testDotOperators),
-  ]
 }

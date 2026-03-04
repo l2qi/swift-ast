@@ -299,19 +299,4 @@ class ParserPrecedenceGroupDeclarationTests: XCTestCase {
       }
     )
   }
-
-  static let allTests = [
-    ("testName", testName),
-    ("testHigherThanSingle", testHigherThanSingle),
-    ("testHigherThanMultiple", testHigherThanMultiple),
-    ("testLowerThanSingle", testLowerThanSingle),
-    ("testLowerThanMultiple", testLowerThanMultiple),
-    ("testAssignmentTrue", testAssignmentTrue),
-    ("testAssignmentFalse", testAssignmentFalse),
-    ("testAssociativityLeft", testAssociativityLeft),
-    ("testAssociativityRight", testAssociativityRight),
-    ("testAssociativityNone", testAssociativityNone),
-    ("testCombination", testCombination),
-    ("testSourceRange", testSourceRange),
-  ]
 }

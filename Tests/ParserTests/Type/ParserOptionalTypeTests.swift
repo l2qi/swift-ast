@@ -44,12 +44,4 @@ class ParserOptionalTypeTests: XCTestCase {
       XCTAssertEqual(type.sourceRange, getRange(1, 1, 1, 6))
     })
   }
-
-  static let allTests = [
-    ("testOptionalType", testOptionalType),
-    ("testTwoOptionalTypes", testTwoOptionalTypes),
-    ("testWrappingAnImplicitlyUnwrappedOptionalType", testWrappingAnImplicitlyUnwrappedOptionalType),
-    ("testQuestionMarkDoesNotFollowTheTypeImmeidately", testQuestionMarkDoesNotFollowTheTypeImmeidately),
-    ("testSourceRange", testSourceRange),
-  ]
 }

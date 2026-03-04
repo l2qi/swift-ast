@@ -65,13 +65,4 @@ class ParserParenthesizedExpressionTests: XCTestCase {
       XCTAssertEqual(expr.sourceRange, getRange(1, 1, 1, 6))
     })
   }
-
-  static let allTests = [
-    ("testParenthesizedExpression", testParenthesizedExpression),
-    ("testContainsTupleExpression", testContainsTupleExpression),
-    ("testHasIdentifier", testHasIdentifier),
-    ("testZeroElement", testZeroElement),
-    ("testMoreThanOneElement", testMoreThanOneElement),
-    ("testSourceRange", testSourceRange),
-  ]
 }

@@ -71,9 +71,4 @@ class ParserPostfixOperatorExpressionTests: XCTestCase {
       })
     }
   }
-
-  static let allTests = [
-    ("testPostfixOperator", testPostfixOperator),
-    ("testSourceRange", testSourceRange),
-  ]
 }

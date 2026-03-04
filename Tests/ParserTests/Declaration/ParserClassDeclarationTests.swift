@@ -426,24 +426,4 @@ class ParserClassDeclarationTests: XCTestCase {
       }
     )
   }
-
-  static let allTests = [
-    ("testName", testName),
-    ("testAttributes", testAttributes),
-    ("testModifiers", testModifiers),
-    ("testAttributesAndModifier", testAttributesAndModifier),
-    ("testFinal", testFinal),
-    ("testAttributesAndModifierAndFinal", testAttributesAndModifierAndFinal),
-    ("testAttributesAndFinalAndModifier", testAttributesAndFinalAndModifier),
-    ("testGenericParameterClause", testGenericParameterClause),
-    ("testTypeInheritance", testTypeInheritance),
-    ("testGenericWhereClause", testGenericWhereClause),
-    ("testGenericParameterTypeInheritanceAndGenericWhere", testGenericParameterTypeInheritanceAndGenericWhere),
-    ("testDeclarationMember", testDeclarationMember),
-    ("testMultipleDeclarationMembers", testMultipleDeclarationMembers),
-    ("testNestedClassDecl", testNestedClassDecl),
-    ("testMembersWithSemicolons", testMembersWithSemicolons),
-    ("testCompilerControlMember", testCompilerControlMember),
-    ("testSourceRange", testSourceRange),
-  ]
 }

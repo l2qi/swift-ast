@@ -38,12 +38,4 @@ class ParserArrayTypeTests: XCTestCase {
       XCTAssertEqual(type.sourceRange, getRange(1, 1, 1, 10))
     })
   }
-
-  static let allTests = [
-    ("testOneDimension", testOneDimension),
-    ("testTwoDimensions", testTwoDimensions),
-    ("testThreeDimensions", testThreeDimensions),
-    ("testElementAsDictionaryType", testElementAsDictionaryType),
-    ("testSourceRange", testSourceRange),
-  ]
 }

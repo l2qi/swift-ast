@@ -107,8 +107,4 @@ class TTYASTDumpTests : XCTestCase {
       }
     }
   }
-
-  static let allTests = [
-    ("testASTDump", testASTDump),
-  ]
 }

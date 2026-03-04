@@ -111,13 +111,4 @@ class ParserGenericWhereClauseTests: XCTestCase {
       XCTFail("Failed in getting a generic where clause.")
     }
   }
-
-  static let allTests = [
-    ("testSingleTypeConformanceRequirement", testSingleTypeConformanceRequirement),
-    ("testSingleProtocolConformanceRequirement", testSingleProtocolConformanceRequirement),
-    ("testSingleOldSyntaxProtocolConformanceRequirement", testSingleOldSyntaxProtocolConformanceRequirement),
-    ("testSingleSameTypeRequirement", testSingleSameTypeRequirement),
-    ("testMultipleRequirements", testMultipleRequirements),
-    ("testSelfRequirements", testSelfRequirements),
-  ]
 }

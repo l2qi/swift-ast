@@ -54,12 +54,4 @@ class ParserMetatypeTypeTests: XCTestCase {
       XCTAssertEqual(type.sourceRange, getRange(1, 1, 1, 32))
     })
   }
-
-  static let allTests = [
-    ("testWithTypeIdentifier", testWithTypeIdentifier),
-    ("testWithContainerTypes", testWithContainerTypes),
-    ("testWithOptionalTypes", testWithOptionalTypes),
-    ("testEmbedded", testEmbedded),
-    ("testSourceRange", testSourceRange),
-  ]
 }

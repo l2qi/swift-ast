@@ -46,8 +46,4 @@ class ParserDeclarationModifierTests: XCTestCase {
       XCTAssertEqual(modifiers[0], modifier)
     }
   }
-
-  static let allTests = [
-    ("testModifiers", testModifiers),
-  ]
 }

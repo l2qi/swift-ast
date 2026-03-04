@@ -95,19 +95,4 @@ class ParserFunctionTypeTests: XCTestCase {
       XCTAssertEqual(type.sourceRange, getRange(1, 1, 1, 21))
     })
   }
-
-  static let allTests = [
-    ("testFunctionTypes", testFunctionTypes),
-    ("testThrowsException", testThrowsException),
-    ("testRethrowsException", testRethrowsException),
-    ("testReturnsFunctionType", testReturnsFunctionType),
-    ("testArgumentAttributes", testArgumentAttributes),
-    ("testArgumentInout", testArgumentInout),
-    ("testArgumentAttributesAndInout", testArgumentAttributesAndInout),
-    ("testArgumentName", testArgumentName),
-    ("testArgumentVariadic", testArgumentVariadic),
-    ("testAttributedFuncType", testAttributedFuncType),
-    ("testOuterName", testOuterName),
-    ("testSourceRange", testSourceRange),
-  ]
 }

@@ -368,27 +368,4 @@ class ParserSubscriptDeclarationTests: XCTestCase {
       }
     )
   }
-
-  static let allTests = [
-    ("testSubscriptDecl", testSubscriptDecl),
-    // attributes/modifiers
-    ("testAttributes", testAttributes),
-    ("testModifiers", testModifiers),
-    ("testAttributeAndModifiers", testAttributeAndModifiers),
-    // parameter clause and result
-    ("testSingleParameter", testSingleParameter),
-    ("testMultipleParameters", testMultipleParameters),
-    ("testResultAttributes", testResultAttributes),
-    // generic parameter and where clauses
-    ("testGenericParameterClause", testGenericParameterClause),
-    ("testGenericWhereClause", testGenericWhereClause),
-    // code block
-    ("testCodeBlock", testCodeBlock),
-    // getter-setter block
-    ("testGetterSetterBlock", testGetterSetterBlock),
-    // getter-setter-keyword block
-    ("testGetterSetterKeywordBlock", testGetterSetterKeywordBlock),
-    // context
-    ("testSourceRange", testSourceRange),
-  ]
 }

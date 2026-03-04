@@ -160,14 +160,4 @@ class ParserDeclarationStatementTests: XCTestCase {
       XCTFail("Failed in parsing a list of declarations as statements.")
     }
   }
-
-  static let allTests = [
-    ("testStartWithDeclarationKeyword", testStartWithDeclarationKeyword),
-    ("testStartWithAttributes", testStartWithAttributes),
-    ("testStartWithModifiers", testStartWithModifiers),
-    ("testClassDeclaration", testClassDeclaration),
-    ("testOperatorDeclaration", testOperatorDeclaration),
-    ("testPrecedenceGroupDeclaration", testPrecedenceGroupDeclaration),
-    ("testDeclarations", testDeclarations),
-  ]
 }

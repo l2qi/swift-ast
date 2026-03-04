@@ -33,10 +33,4 @@ class ParserSelfTypeTests: XCTestCase {
       XCTAssertEqual(type.sourceRange, getRange(1, 1, 1, 5))
     })
   }
-
-  static let allTests = [
-    ("testSelf", testSelf),
-    ("testMixedWithOtherTypes", testMixedWithOtherTypes),
-    ("testSourceRange", testSourceRange),
-  ]
 }

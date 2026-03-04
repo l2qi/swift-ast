@@ -132,14 +132,4 @@ class ParserAttributeTests: XCTestCase {
     parseAttributesAndTest("@a(h[]t)", "@a(h[]t)")
     parseAttributesAndTest("@a(h{}t)", "@a(h{}t)")
   }
-
-  static let allTests = [
-    ("testAttributeName", testAttributeName),
-    ("testEmptyArgumentClause", testEmptyArgumentClause),
-    ("testArgumentClauseWithSingleToken", testArgumentClauseWithSingleToken),
-    ("testEmbeddedParenthesisToken", testEmbeddedParenthesisToken),
-    ("testEmbeddedSquareToken", testEmbeddedSquareToken),
-    ("testEmbeddedBraceToken", testEmbeddedBraceToken),
-    ("testHeadingAndTrailingStrings", testHeadingAndTrailingStrings),
-  ]
 }

@@ -76,11 +76,4 @@ class ParserIdentifierPatternTests: XCTestCase {
       XCTAssertEqual(pttrn.sourceRange, getRange(1, 1, 1, 14))
     })
   }
-
-  static let allTests = [
-    ("testParseIdentifierPattern", testParseIdentifierPattern),
-    ("testKeywordsUsedAsIdentifier", testKeywordsUsedAsIdentifier),
-    ("testTypeAnnotation", testTypeAnnotation),
-    ("testSourceRange", testSourceRange),
-  ]
 }

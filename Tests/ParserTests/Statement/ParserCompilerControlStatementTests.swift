@@ -141,13 +141,4 @@ class ParserCompilerControlStatementTests: XCTestCase {
       // TODO: we will come back to this once the source location is parsed correctly
     })
   }
-
-  static let allTests = [
-    ("testIf", testIf),
-    ("testElseif", testElseif),
-    ("testElse", testElse),
-    ("testEndif", testEndif),
-    ("testSourceLocation", testSourceLocation),
-    ("testSourceRange", testSourceRange), // ^ interesting coincidence
-  ]
 }

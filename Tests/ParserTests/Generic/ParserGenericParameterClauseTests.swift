@@ -88,11 +88,4 @@ class ParserGenericParameterClauseTests: XCTestCase {
       XCTFail("Failed in getting a generic parameter clause.")
     }
   }
-
-  static let allTests = [
-    ("testSingleParameter", testSingleParameter),
-    ("testMultipleParameters", testMultipleParameters),
-    ("testTypeConformance", testTypeConformance),
-    ("testConformances", testConformances),
-  ]
 }

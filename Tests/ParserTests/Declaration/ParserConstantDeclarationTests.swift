@@ -193,17 +193,4 @@ class ParserConstantDeclarationTests: XCTestCase {
       XCTAssertEqual(decl.sourceRange, getRange(1, 1, 1, 26))
     })
   }
-
-  static let allTests = [
-    ("testDefineConstant", testDefineConstant),
-    ("testDefineConstantWithTypeAnnotation", testDefineConstantWithTypeAnnotation),
-    ("testDefineConstantWithInitializer", testDefineConstantWithInitializer),
-    ("testMultipleDecls", testMultipleDecls),
-    ("testAttributes", testAttributes),
-    ("testModifiers", testModifiers),
-    ("testAttributeAndModifiers", testAttributeAndModifiers),
-    ("testFollowedByTrailingClosure", testFollowedByTrailingClosure),
-    ("testFollowedBySemicolon", testFollowedBySemicolon),
-    ("testSourceRange", testSourceRange),
-  ]
 }

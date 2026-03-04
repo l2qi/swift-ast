@@ -991,37 +991,4 @@ class ParserEnumDeclarationTests: XCTestCase {
       }
     )
   }
-
-  static let allTests = [
-    ("testName", testName),
-    ("testAttributes", testAttributes),
-    ("testModifiers", testModifiers),
-    ("testAttributesAndModifier", testAttributesAndModifier),
-    ("testIndirect", testIndirect),
-    ("testAttributesAndModifierAndIndirect", testAttributesAndModifierAndIndirect),
-    ("testGenericParameterClause", testGenericParameterClause),
-    ("testTypeInheritance", testTypeInheritance),
-    ("testGenericWhereClause", testGenericWhereClause),
-    ("testGenericParameterTypeInheritanceAndGenericWhere", testGenericParameterTypeInheritanceAndGenericWhere),
-    ("testDeclarationMember", testDeclarationMember),
-    ("testNestedEnumDecl", testNestedEnumDecl),
-    ("testCaseName", testCaseName),
-    ("testCaseTuple", testCaseTuple),
-    ("testMultipleUnionStyleCases", testMultipleUnionStyleCases),
-    ("testCaseRawValue", testCaseRawValue),
-    ("testMultipleRawValueStyleCases", testMultipleRawValueStyleCases),
-    ("testIndirectCase", testIndirectCase),
-    ("testAttributedUnionCase", testAttributedUnionCase),
-    ("testAttributedAndIndirectUnionCase", testAttributedAndIndirectUnionCase),
-    ("testAttributedRawValueCase", testAttributedRawValueCase),
-    ("testMultipleUnionStyleMembers", testMultipleUnionStyleMembers),
-    ("testMultipleUnionStyleMembersAndDeclarations", testMultipleUnionStyleMembersAndDeclarations),
-    ("testMultipleRawValueStyleMembers", testMultipleRawValueStyleMembers),
-    ("testMultipleRawValueStyleMembersAndDeclarations", testMultipleRawValueStyleMembersAndDeclarations),
-    ("testVariousTypesOfRawValueLiterals", testVariousTypesOfRawValueLiterals),
-    ("testErrorCases", testErrorCases),
-    ("testMembersWithSemicolons", testMembersWithSemicolons),
-    ("testCompilerControlMember", testCompilerControlMember),
-    ("testSourceRange", testSourceRange),
-  ]
 }

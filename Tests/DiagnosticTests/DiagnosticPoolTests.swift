@@ -127,13 +127,4 @@ class DiagnosticPoolTests : XCTestCase {
   func testRestoreFromCheckpoint() {
     XCTAssertFalse(diagnosticPool.restore(fromCheckpoint: ""))
   }
-
-  static let allTests = [
-    ("testAppendFatal", testAppendFatal),
-    ("testAppendError", testAppendError),
-    ("testAppendTooManyErrors", testAppendTooManyErrors),
-    ("testAppendWarning", testAppendWarning),
-    ("testAppendTooManyWarnings", testAppendTooManyWarnings),
-    ("testRestoreFromCheckpoint", testRestoreFromCheckpoint),
-  ]
 }

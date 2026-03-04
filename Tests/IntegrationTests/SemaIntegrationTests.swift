@@ -39,8 +39,4 @@ class SemaIntegrationTests : XCTestCase {
       return topLevelDecl.ttyDump
     }
   }
-
-  static let allTests = [
-    ("testSequenceExpressionFolding", testSequenceExpressionFolding),
-  ]
 }

@@ -408,22 +408,4 @@ class SequenceExpressionFoldingTests: XCTestCase {
     }
     testFolded(foldedExpr)
   }
-
-  static let allTests = [
-    ("testBitwiseShiftHigherThanMultiplication", testBitwiseShiftHigherThanMultiplication),
-    ("testMultiplicationHigherThanAddition", testMultiplicationHigherThanAddition),
-    ("testAdditionHigherThanRangeFormation", testAdditionHigherThanRangeFormation),
-    ("testRangeFormationHigherThanNilCoalescing", testRangeFormationHigherThanNilCoalescing),
-    ("testRangeFormationHigherThanCasting", testRangeFormationHigherThanCasting),
-    ("testCastingHigherThanNilCoalescing", testCastingHigherThanNilCoalescing),
-    ("testNilCoalescingHigherThanComparison", testNilCoalescingHigherThanComparison),
-    ("testComparisonHigherThanLogicalConjunction", testComparisonHigherThanLogicalConjunction),
-    ("testLogicalConjunctionHigherThanLogicalDisjunction", testLogicalConjunctionHigherThanLogicalDisjunction),
-    ("testLogicalDisjunctionHigherThanAssignment", testLogicalDisjunctionHigherThanAssignment),
-    ("testLogicalDisjunctionHigherThanDefaultHigherThanTernary",
-      testLogicalDisjunctionHigherThanDefaultHigherThanTernary),
-    ("testLogicalDisjunctionHigherThanTernaryHigherThanAssignment",
-      testLogicalDisjunctionHigherThanTernaryHigherThanAssignment),
-    ("testNestedSequenceExpressionFolding", testNestedSequenceExpressionFolding),
-  ]
 }

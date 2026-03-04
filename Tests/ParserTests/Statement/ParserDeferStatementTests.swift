@@ -48,10 +48,4 @@ class ParserDeferStatementTests: XCTestCase {
       XCTAssertEqual(stmt.sourceRange, getRange(1, 1, 1, 9))
     })
   }
-
-  static let allTests = [
-    ("testDefer", testDefer),
-    ("testDeferNothing", testDeferNothing),
-    ("testSourceRange", testSourceRange),
-  ]
 }

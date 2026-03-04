@@ -88,10 +88,4 @@ class ParserCodeBlockTests: XCTestCase {
       XCTFail("Failed in parsing a code block declaration.")
     }
   }
-
-  static let allTests = [
-    ("testSimpleCase", testSimpleCase),
-    ("testSourceRange", testSourceRange),
-    ("testLexicalParent", testLexicalParent),
-  ]
 }

@@ -114,12 +114,4 @@ class ParserTernaryConditionalOperatorExpressionTests: XCTestCase {
       XCTAssertEqual(expr.sourceRange, getRange(1, 1, 1, 25))
     })
   }
-
-  static let allTests = [
-    ("testConditional", testConditional),
-    ("testFunctions", testFunctions),
-    ("testTryOperators", testTryOperators),
-    ("testNested", testNested),
-    ("testSourceRange", testSourceRange),
-  ]
 }

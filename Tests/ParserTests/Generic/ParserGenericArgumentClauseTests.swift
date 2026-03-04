@@ -74,12 +74,4 @@ class ParserGenericArgumentClauseTests: XCTestCase {
     XCTAssertEqual(types[0].textDescription, "ImplicitlyUnwrappedOptional<String>")
     XCTAssertEqual(genericArgumentClause?.textDescription, "<ImplicitlyUnwrappedOptional<String>>")
   }
-
-  static let allTests = [
-    ("testSingleArgument", testSingleArgument),
-    ("testMultipleArguments", testMultipleArguments),
-    ("testEndingRightChveron", testEndingRightChveron),
-    ("testOptionalType", testOptionalType),
-    ("testUnwrappedOptionalType", testUnwrappedOptionalType),
-  ]
 }

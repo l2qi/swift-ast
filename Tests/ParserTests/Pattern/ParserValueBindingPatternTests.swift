@@ -58,11 +58,4 @@ class ParserValueBindingPatternTests: XCTestCase {
       XCTAssertEqual(pttrn.sourceRange, getRange(1, 1, 1, 7))
     })
   }
-
-  static let allTests = [
-    ("testConstant", testConstant),
-    ("testVariable", testVariable),
-    ("testOptional", testOptional),
-    ("testSourceRange", testSourceRange),
-  ]
 }

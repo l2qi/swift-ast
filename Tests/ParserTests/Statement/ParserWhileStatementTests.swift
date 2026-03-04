@@ -37,9 +37,4 @@ class ParserWhileStatementTests: XCTestCase {
       XCTAssertEqual(stmt.sourceRange, getRange(1, 1, 1, 14))
     })
   }
-
-  static let allTests = [
-    ("testInfiniteLoop", testInfiniteLoop),
-    ("testSourceRange", testSourceRange),
-  ]
 }
