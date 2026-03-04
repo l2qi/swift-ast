@@ -24,7 +24,7 @@ func testIntegration(
   decolor: Bool = true,
   convertor convert: (SourceFile) -> String
 ) {
-  let integrationPath = URL(fileURLWithPath: #file).deletingLastPathComponent().path
+  let integrationPath = URL(fileURLWithPath: #filePath).deletingLastPathComponent().path
   let testTarget = "\(resourceName)/\(testName)"
   let testPath = "\(integrationPath)/\(testTarget)"
   let sourcePath = "\(testPath).source"

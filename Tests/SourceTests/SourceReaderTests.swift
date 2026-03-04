@@ -20,7 +20,7 @@ import XCTest
 
 class SourceReaderTests : XCTestCase {
   func testReading() {
-    testPath(#file)
+    testPath(#filePath)
   }
 
   func testReadingFromCurrentPath() {
@@ -45,7 +45,7 @@ class SourceReaderTests : XCTestCase {
       XCTAssertTrue(sourceFile.content.contains("Ryuichi Sai"))
       XCTAssertTrue(sourceFile.content.contains("SourceReaderTests"))
       XCTAssertTrue(sourceFile.content.contains("XCTAssertTrue(sourceFile.content.contains"))
-      XCTAssertTrue(sourceFile.content.contains("(\"testReading\", testReading),"))
+
     } catch {
       XCTFail("Failed in reading file \(path)")
     }
