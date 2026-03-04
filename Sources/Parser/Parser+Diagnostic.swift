@@ -68,6 +68,8 @@ public enum ParserErrorKind : DiagnosticKind {
   case expectedArrowSubscript
   /// extension declaration
   case missingExtensionName
+  /// actor declaration
+  case missingActorName
   /// class declaration
   case missingClassName
   /// struct declaration
@@ -246,6 +248,8 @@ public enum ParserErrorKind : DiagnosticKind {
       return "expected '->' for subscript declaration"
     case .missingExtensionName:
       return "expected type name in extension declaration"
+    case .missingActorName:
+      return "expected an actor name"
     case .missingClassName:
       return "expected a class name"
     case .missingStructName:

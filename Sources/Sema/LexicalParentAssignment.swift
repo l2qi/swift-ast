@@ -50,6 +50,19 @@ private class AssignmentVisitor : ASTVisitor {
     return true
   }
 
+  func visit(_ decl: ActorDeclaration) throws -> Bool {
+    for member in decl.members {
+      switch member {
+      case .declaration(let d):
+        d.setLexicalParent(decl)
+      case .compilerControl(let s):
+        s.setLexicalParent(decl)
+      }
+    }
+
+    return true
+  }
+
   func visit(_ decl: ClassDeclaration) throws -> Bool {
     for member in decl.members {
       switch member {

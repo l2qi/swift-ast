@@ -39,8 +39,15 @@ extension Parser {
 
   func parseExpression(config: ParserExpressionConfig = ParserExpressionConfig()) throws -> ASTExpression {
     let tryKind = parseTryKind()
+    let awaitStartLocation = getStartLocation()
+    let hasAwait = _lexer.match(.await)
     let prefixExpr = try parsePrefixExpression(config: config)
-    let expr = try parseBinaryExpressions(leftExpression: prefixExpr, config: config)
+    var expr = try parseBinaryExpressions(leftExpression: prefixExpr, config: config)
+    if hasAwait {
+      let awaitExpr = AwaitExpression(expression: expr)
+      awaitExpr.setSourceRange(awaitStartLocation, expr.sourceRange.end)
+      expr = awaitExpr
+    }
     return tryKind.wrap(expr: expr)
   }
 
@@ -197,8 +204,16 @@ extension Parser {
         append(biOpExpr)
       case .assignmentOperator:
         let tryKind = parseTryKind()
+        let rhsAwaitStart = getStartLocation()
+        let rhsHasAwait = _lexer.match(.await)
         let prefixExpr = try parsePrefixExpression(config: config)
-        let rhs = tryKind.wrap(expr: prefixExpr)
+        var rhs: ASTExpression = prefixExpr
+        if rhsHasAwait {
+          let awaitExpr = AwaitExpression(expression: rhs)
+          awaitExpr.setSourceRange(rhsAwaitStart, rhs.sourceRange.end)
+          rhs = awaitExpr
+        }
+        rhs = tryKind.wrap(expr: rhs)
         let assignOpExpr = AssignmentOperatorExpression(leftExpression: resultExpr, rightExpression: rhs)
         assignOpExpr.setSourceRange(resultExpr.sourceRange.start, prefixExpr.sourceRange.end)
         append(assignOpExpr)
@@ -208,7 +223,14 @@ extension Parser {
         trueExpr = trueTryKind.wrap(expr: trueExpr)
         try match(.colon, orFatal: .expectedColonAfterTrueExpr)
         let falseTryKind = parseTryKind()
+        let falseAwaitStart = getStartLocation()
+        let falseHasAwait = _lexer.match(.await)
         var falseExpr: ASTExpression = try parsePrefixExpression(config: config)
+        if falseHasAwait {
+          let awaitExpr = AwaitExpression(expression: falseExpr)
+          awaitExpr.setSourceRange(falseAwaitStart, falseExpr.sourceRange.end)
+          falseExpr = awaitExpr
+        }
         falseExpr = falseTryKind.wrap(expr: falseExpr)
         let ternaryOpExpr = TernaryConditionalOperatorExpression(
           conditionExpression: resultExpr,
