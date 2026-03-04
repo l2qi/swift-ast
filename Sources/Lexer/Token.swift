@@ -50,11 +50,12 @@ public struct Token {
     case booleanLiteral(Bool)
     // modifier
     case convenience, dynamic, final, lazy, mutating, nonmutating
+    case nonisolated
     case optional, override, required, `static`, unowned, weak
-    case `internal`, `private`, `public`, `fileprivate`, `open`
+    case `internal`, `private`, `public`, `fileprivate`, `open`, package
     // keywords
     case `Any`, `Self`
-    case `as`, associativity, `break`, `catch`, `case`, `class`, `continue`
+    case `as`, associativity, async, await, `break`, `catch`, `case`, `class`, `continue`
     case `default`, `defer`, `deinit`, didSet, `do`, `enum`
     case `extension`, `else`, `fallthrough`, `for`, `func`, get, `guard`, `if`
     case `import`, `in`, indirect, infix, `init`, `inout`, `is`, `let`
@@ -62,6 +63,7 @@ public struct Token {
     case precedence, `repeat`, `rethrows`, `return`, right, safe, `self`, set
     case `struct`, `subscript`, `super`, `switch`, `throw`, `throws`, `try`
     case `typealias`, unsafe, `var`, `where`, `while`, willSet, `Type`
+    case borrowing, consuming
   }
 
   public let kind: Kind

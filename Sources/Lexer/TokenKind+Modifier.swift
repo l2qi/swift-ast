@@ -18,8 +18,9 @@ public extension Token.Kind /* modifiers */ {
   var isModifier: Bool {
     switch self {
     case .class, .convenience, .dynamic, .final, .infix, .lazy,
+      .nonisolated,
       .optional, .override, .postfix, .prefix, .required, .static, .unowned, .weak,
-      .private, .fileprivate, .internal, .public, .open,
+      .private, .fileprivate, .internal, .public, .open, .package,
       .mutating, .nonmutating:
         return true
       default:
@@ -28,16 +29,20 @@ public extension Token.Kind /* modifiers */ {
   }
 
   static var declarationModifiers: [Token.Kind] {
-    // Note: this doesn't include the access level modifiers and mutation modifiers
-    return [.class, .convenience, .dynamic, .final, .infix, .lazy,
+    // Note: this doesn't include the access level modifiers or mutation modifiers
+    return [.class, .convenience, .dynamic, .final, .infix, .lazy, .nonisolated,
       .optional, .override, .postfix, .prefix, .required, .static, .unowned, .weak]
   }
 
   static var accessLevelModifiers: [Token.Kind] {
-    return [.private, .fileprivate, .internal, .public, .open]
+    return [.private, .fileprivate, .internal, .public, .open, .package]
   }
 
   static var mutationModifiers: [Token.Kind] {
     return [.mutating, .nonmutating]
+  }
+
+  static var actorIsolationModifiers: [Token.Kind] {
+    return [.nonisolated]
   }
 }

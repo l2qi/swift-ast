@@ -28,6 +28,7 @@ class ParserDeclarationModifierTests: XCTestCase {
       "final": .final,
       "infix": .infix,
       "lazy": .lazy,
+      "nonisolated": .nonisolated,
       "optional": .optional,
       "override": .override,
       "postfix": .postfix,
