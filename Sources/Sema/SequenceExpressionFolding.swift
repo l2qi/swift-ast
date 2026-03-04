@@ -75,6 +75,7 @@ private class FoldingVisitor : ASTVisitor {
     let foldedParams = signature.parameterList.map(foldFunctionSignatureParameter)
     return FunctionSignature(
       parameterList: foldedParams,
+      isAsync: signature.isAsync,
       throwsKind: signature.throwsKind,
       result: signature.result)
   }
@@ -135,6 +136,7 @@ private class FoldingVisitor : ASTVisitor {
           kind: initMember.kind,
           genericParameter: initMember.genericParameter,
           parameterList: foldedParams,
+          isAsync: initMember.isAsync,
           throwsKind: initMember.throwsKind,
           genericWhere: initMember.genericWhere)
         decl.replaceMember(at: i, with: .initializer(foldedInitMember))

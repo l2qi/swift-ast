@@ -1306,6 +1306,7 @@ extension Parser {
       guard
         let id = _lexer.look().kind.namedIdentifierOrWildcard?.id,
         id.textDescription != "in",
+        id.textDescription != "async",
         id.textDescription != "throws"
       else {
         return nil
@@ -1344,7 +1345,7 @@ extension Parser {
     }
 
     if let headId = parseParameterName(),
-      [Token.Kind.comma, .throws, .arrow, .in].contains(_lexer.look(ahead: 1).kind)
+      [Token.Kind.comma, .async, .throws, .arrow, .in].contains(_lexer.look(ahead: 1).kind)
     {
       _lexer.advance()
       var ids = [headId]
@@ -1360,11 +1361,13 @@ extension Parser {
 
     if let parameterClause = parameterClause {
       let captureList = signature?.captureList
+      let isAsync = _lexer.match(.async)
       let canThrow = _lexer.match(.throws)
       let funcResult = try parseFunctionResult()
       signature = ClosureExpression.Signature(
         captureList: captureList,
         parameterClause: parameterClause,
+        isAsync: isAsync,
         canThrow: canThrow,
         functionResult: funcResult)
     }

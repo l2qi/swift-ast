@@ -477,6 +477,9 @@ extension ProtocolDeclaration : TTYASTDumpRepresentable {
             if !member.parameterList.isEmpty {
               memberDump += "\n" + dump(member.parameterList).indented
             }
+            if member.isAsync {
+              memberDump += "\n" + "async: `true`".indented
+            }
             if member.throwsKind != .nothrowing {
               memberDump += "\n" + "throws_kind: `\(member.throwsKind.textDescription)`".indented
             }

@@ -418,6 +418,50 @@ class ParserInitializerDeclarationTests: XCTestCase {
     })
   }
 
+  func testAsyncInitializer() {
+    parseDeclarationAndTest(
+      "init() async {}",
+      "init() async {}",
+      testClosure: { decl in
+      guard let initDecl = decl as? InitializerDeclaration else {
+        XCTFail("Failed in getting an initializer declaration.")
+        return
+      }
+
+      XCTAssertTrue(initDecl.isAsync)
+      XCTAssertEqual(initDecl.throwsKind, .nothrowing)
+      XCTAssertEqual(initDecl.body.textDescription, "{}")
+    })
+  }
+
+  func testAsyncThrowsInitializer() {
+    parseDeclarationAndTest(
+      "init(bar: Bar) async throws {}",
+      "init(bar: Bar) async throws {}",
+      testClosure: { decl in
+      guard let initDecl = decl as? InitializerDeclaration else {
+        XCTFail("Failed in getting an initializer declaration.")
+        return
+      }
+
+      XCTAssertTrue(initDecl.isAsync)
+      XCTAssertEqual(initDecl.throwsKind, .throwing)
+      XCTAssertEqual(initDecl.parameterList.count, 1)
+      XCTAssertEqual(initDecl.body.textDescription, "{}")
+    })
+  }
+
+  func testNonAsyncInitializer() {
+    parseDeclarationAndTest("init() {}", "init() {}", testClosure: { decl in
+      guard let initDecl = decl as? InitializerDeclaration else {
+        XCTFail("Failed in getting an initializer declaration.")
+        return
+      }
+
+      XCTAssertFalse(initDecl.isAsync)
+    })
+  }
+
   func testGenericWhereClause() {
     parseDeclarationAndTest(
       "init<A>() where A == Foo {}",

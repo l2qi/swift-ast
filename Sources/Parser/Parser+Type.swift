@@ -316,13 +316,27 @@ extension Parser {
     }
 
     let examined = _lexer.examine([
-      .throws, .rethrows, .arrow, .dot,
+      .async, .throws, .rethrows, .arrow, .dot,
     ])
     guard examined.0 else {
       return try getAtomicType()
     }
     var parsedType: Type
     switch examined.1 {
+    case .async:
+      let innerExamined = _lexer.examine([.throws, .rethrows, .arrow])
+      switch innerExamined.1 {
+      case .throws:
+        try match(.arrow, orFatal: .throwsInWrongPosition("throws"))
+        parsedType = try parseFunctionType(attributes: attrs, type: type, isAsync: true, throwKind: .throwing)
+      case .rethrows:
+        try match(.arrow, orFatal: .throwsInWrongPosition("rethrows"))
+        parsedType = try parseFunctionType(attributes: attrs, type: type, isAsync: true, throwKind: .rethrowing)
+      case .arrow:
+        parsedType = try parseFunctionType(attributes: attrs, type: type, isAsync: true, throwKind: .nothrowing)
+      default:
+        return try getAtomicType()
+      }
     case .throws:
       try match(.arrow, orFatal: .throwsInWrongPosition("throws"))
       parsedType = try parseFunctionType(attributes: attrs, type: type, throwKind: .throwing)
@@ -351,7 +365,7 @@ extension Parser {
     return try parseContainerType(parsedType)
   }
 
-  private func parseFunctionType(attributes attrs: Attributes, type: Type, throwKind: ThrowsKind) throws -> Type {
+  private func parseFunctionType(attributes attrs: Attributes, type: Type, isAsync: Bool = false, throwKind: ThrowsKind) throws -> Type {
     guard let parenthesizedType = type as? ParenthesizedType else {
       throw _raiseFatal(.expectedFunctionTypeArguments)
     }
@@ -368,6 +382,7 @@ extension Parser {
       attributes: attrs,
       arguments: funcArguments,
       returnType: returnType,
+      isAsync: isAsync,
       throwsKind: throwKind)
     funcType.setSourceRange(type.sourceLocation, returnType.sourceRange.end)
     return funcType

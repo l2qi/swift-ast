@@ -87,6 +87,54 @@ class ParserFunctionTypeTests: XCTestCase {
     parseTypeAndTest("(_ i: foo, _ j: bar) -> bar", "(_ i: foo, _ j: bar) -> bar")
   }
 
+  func testAsyncFunctionType() {
+    parseTypeAndTest("(foo) async -> bar", "(foo) async -> bar", testClosure: { type in
+      guard let functionType = type as? FunctionType else {
+        XCTFail("Failed in converting to a function type.")
+        return
+      }
+
+      XCTAssertTrue(functionType.isAsync)
+      XCTAssertEqual(functionType.throwsKind, .nothrowing)
+      XCTAssertEqual(functionType.arguments.count, 1)
+    })
+  }
+
+  func testAsyncThrowsFunctionType() {
+    parseTypeAndTest("(foo) async throws -> bar", "(foo) async throws -> bar", testClosure: { type in
+      guard let functionType = type as? FunctionType else {
+        XCTFail("Failed in converting to a function type.")
+        return
+      }
+
+      XCTAssertTrue(functionType.isAsync)
+      XCTAssertEqual(functionType.throwsKind, .throwing)
+    })
+  }
+
+  func testAsyncRethrowsFunctionType() {
+    parseTypeAndTest("(foo) async rethrows -> bar", "(foo) async rethrows -> bar", testClosure: { type in
+      guard let functionType = type as? FunctionType else {
+        XCTFail("Failed in converting to a function type.")
+        return
+      }
+
+      XCTAssertTrue(functionType.isAsync)
+      XCTAssertEqual(functionType.throwsKind, .rethrowing)
+    })
+  }
+
+  func testNonAsyncFunctionType() {
+    parseTypeAndTest("(foo) -> bar", "(foo) -> bar", testClosure: { type in
+      guard let functionType = type as? FunctionType else {
+        XCTFail("Failed in converting to a function type.")
+        return
+      }
+
+      XCTAssertFalse(functionType.isAsync)
+    })
+  }
+
   func testSourceRange() {
     parseTypeAndTest("(foo) -> bar", "(foo) -> bar", testClosure: { type in
       XCTAssertEqual(type.sourceRange, getRange(1, 1, 1, 13))

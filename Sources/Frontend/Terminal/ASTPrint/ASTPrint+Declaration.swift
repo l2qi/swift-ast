@@ -220,9 +220,10 @@ extension InitializerDeclaration : TTYASTPrintRepresentable {
     let headText = "\(attrsText)\(modifiersText)init\(kind.textDescription)"
     let genericParamText = genericParameterClause?.textDescription ?? ""
     let parameterText = "(\(parameterList.map({ $0.textDescription }).joined(separator: ", ")))"
+    let asyncText = isAsync ? " async" : ""
     let throwsKindText = throwsKind.textDescription.isEmpty ? "" : " \(throwsKind.textDescription)"
     let genericWhereText = genericWhereClause.map({ " \($0.textDescription)" }) ?? ""
-    return "\(headText)\(genericParamText)\(parameterText)\(throwsKindText)\(genericWhereText) \(body.ttyPrint)"
+    return "\(headText)\(genericParamText)\(parameterText)\(asyncText)\(throwsKindText)\(genericWhereText) \(body.ttyPrint)"
   }
 }
 

@@ -43,17 +43,20 @@ public class FunctionType : TypeBase {
   public let attributes: Attributes
   public let arguments: [Argument]
   public let returnType: Type
+  public let isAsync: Bool
   public let throwsKind: ThrowsKind
 
   public init(
     attributes: Attributes = [],
     arguments: [Argument],
     returnType: Type,
+    isAsync: Bool = false,
     throwsKind: ThrowsKind
   ) {
     self.attributes = attributes
     self.arguments = arguments
     self.returnType = returnType
+    self.isAsync = isAsync
     self.throwsKind = throwsKind
   }
 
@@ -62,8 +65,9 @@ public class FunctionType : TypeBase {
   override public var textDescription: String {
     let attrsText = attributes.isEmpty ? "" : "\(attributes.textDescription) "
     let argsText = "(\(arguments.map({ $0.textDescription }).joined(separator: ", ")))"
+    let asyncText = isAsync ? " async" : ""
     let throwsText = throwsKind.textDescription.isEmpty ? "" : " \(throwsKind.textDescription)"
-    return "\(attrsText)\(argsText)\(throwsText) -> \(returnType.textDescription)"
+    return "\(attrsText)\(argsText)\(asyncText)\(throwsText) -> \(returnType.textDescription)"
   }
 }
 
