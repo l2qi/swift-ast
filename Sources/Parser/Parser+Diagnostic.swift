@@ -36,6 +36,9 @@ public enum ParserErrorKind : DiagnosticKind {
   case leftBraceExpected(String)
   case rightBraceExpected(String)
 
+  /// typed throws
+  case expectedCloseParenThrowsType
+
   // attributes
   case missingAttributeName
 
@@ -145,6 +148,7 @@ public enum ParserErrorKind : DiagnosticKind {
   // generics
   case expectedRightChevron(String)
   case expectedGenericsParameterName
+  case expectedGenericValueParameterType
   case expectedGenericTypeRestriction(String)
   case expectedGenericRequirementName
   case requiresDoubleEqualForSameTypeRequirement
@@ -202,6 +206,8 @@ public enum ParserErrorKind : DiagnosticKind {
       return "expected '{' for \(node)"
     case .rightBraceExpected(let node):
       return "expected '}' for \(node)"
+    case .expectedCloseParenThrowsType:
+      return "expected ')' after thrown error type"
     case .badDeclaration:
       return "expected declaration"
     case .missingPropertyMemberName:
@@ -378,6 +384,8 @@ public enum ParserErrorKind : DiagnosticKind {
       return "expected '>' to complete \(node)"
     case .expectedGenericsParameterName:
       return "expected an identifier to name generic parameter"
+    case .expectedGenericValueParameterType:
+      return "expected ':' and type for value generic parameter"
     case .expectedGenericTypeRestriction(let restricting):
       return "expected a class type or protocol-constrained type restricting '\(restricting)'"
     case .expectedGenericRequirementName:

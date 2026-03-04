@@ -88,4 +88,50 @@ class ParserGenericParameterClauseTests: XCTestCase {
       XCTFail("Failed in getting a generic parameter clause.")
     }
   }
+
+  func testValueParameter() {
+    let genericParser = getParser("<let N: Int>")
+    do {
+      let genericParameterClause = try genericParser.parseGenericParameterClause()
+      if let types = genericParameterClause?.parameterList, types.count == 1 {
+        XCTAssertEqual(types[0].textDescription, "let N: Int")
+        XCTAssertEqual(genericParameterClause?.textDescription, "<let N: Int>")
+      } else {
+        XCTFail("Failed in getting right size of parameter clause.")
+      }
+    } catch {
+      XCTFail("Failed in getting a generic parameter clause.")
+    }
+  }
+
+  func testValueParameterWithOtherParams() {
+    let genericParser = getParser("<T, let N: Int>")
+    do {
+      let genericParameterClause = try genericParser.parseGenericParameterClause()
+      if let types = genericParameterClause?.parameterList, types.count == 2 {
+        XCTAssertEqual(types[0].textDescription, "T")
+        XCTAssertEqual(types[1].textDescription, "let N: Int")
+        XCTAssertEqual(genericParameterClause?.textDescription, "<T, let N: Int>")
+      } else {
+        XCTFail("Failed in getting right size of parameter clause.")
+      }
+    } catch {
+      XCTFail("Failed in getting a generic parameter clause.")
+    }
+  }
+
+  func testSuppressedConformance() {
+    let genericParser = getParser("<T: ~Copyable>")
+    do {
+      let genericParameterClause = try genericParser.parseGenericParameterClause()
+      if let types = genericParameterClause?.parameterList, types.count == 1 {
+        XCTAssertEqual(types[0].textDescription, "T: ~Copyable")
+        XCTAssertEqual(genericParameterClause?.textDescription, "<T: ~Copyable>")
+      } else {
+        XCTFail("Failed in getting right size of parameter clause.")
+      }
+    } catch {
+      XCTFail("Failed in getting a generic parameter clause.")
+    }
+  }
 }

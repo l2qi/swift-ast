@@ -26,16 +26,23 @@ extension Parser {
     }
 
     var isInOutParameter = false
+    var ownershipModifier: TypeAnnotation.OwnershipModifier?
 
     let attrs = try parseAttributes()
 
     if _lexer.look().kind == .inout {
       _lexer.advance()
       isInOutParameter = true
+    } else if _lexer.look().kind == .borrowing {
+      _lexer.advance()
+      ownershipModifier = .borrowing
+    } else if _lexer.look().kind == .consuming {
+      _lexer.advance()
+      ownershipModifier = .consuming
     }
 
     let type = try parseType()
-    let typeAnnotation = TypeAnnotation(type: type, attributes: attrs, isInOutParameter: isInOutParameter)
+    let typeAnnotation = TypeAnnotation(type: type, attributes: attrs, isInOutParameter: isInOutParameter, ownershipModifier: ownershipModifier)
     typeAnnotation.setSourceRange(startLocation, type.sourceRange.end)
     return typeAnnotation
   }
@@ -44,14 +51,30 @@ extension Parser {
     let attrs = try parseAttributes()
 
     let isOpaqueType = isOpaqueTypeHead()
+    let isBoxedProtocolType = !isOpaqueType && isBoxedProtocolTypeHead()
     let atomicType = try parseAtomicType()
     let containerType = try parseContainerType(atomicType, attributes: attrs)
 
-    return isOpaqueType ? OpaqueType(wrappedType: containerType) : containerType
+    if isOpaqueType {
+      return OpaqueType(wrappedType: containerType)
+    } else if isBoxedProtocolType {
+      let boxedType = BoxedProtocolType(wrappedType: containerType)
+      boxedType.setSourceRange(containerType.sourceRange)
+      return boxedType
+    } else {
+      return containerType
+    }
   }
 
   func isOpaqueTypeHead() -> Bool {
     guard case .name("some")? = _lexer.look().kind.namedIdentifier else { return false }
+
+    _lexer.advance()
+    return true
+  }
+
+  func isBoxedProtocolTypeHead() -> Bool {
+    guard case .name("any")? = _lexer.look().kind.namedIdentifier else { return false }
 
     _lexer.advance()
     return true
@@ -327,8 +350,9 @@ extension Parser {
       let innerExamined = _lexer.examine([.throws, .rethrows, .arrow])
       switch innerExamined.1 {
       case .throws:
+        let throwKind = try parseTypedThrowsOrPlain()
         try match(.arrow, orFatal: .throwsInWrongPosition("throws"))
-        parsedType = try parseFunctionType(attributes: attrs, type: type, isAsync: true, throwKind: .throwing)
+        parsedType = try parseFunctionType(attributes: attrs, type: type, isAsync: true, throwKind: throwKind)
       case .rethrows:
         try match(.arrow, orFatal: .throwsInWrongPosition("rethrows"))
         parsedType = try parseFunctionType(attributes: attrs, type: type, isAsync: true, throwKind: .rethrowing)
@@ -338,8 +362,9 @@ extension Parser {
         return try getAtomicType()
       }
     case .throws:
+      let throwKind = try parseTypedThrowsOrPlain()
       try match(.arrow, orFatal: .throwsInWrongPosition("throws"))
-      parsedType = try parseFunctionType(attributes: attrs, type: type, throwKind: .throwing)
+      parsedType = try parseFunctionType(attributes: attrs, type: type, throwKind: throwKind)
     case .rethrows:
       try match(.arrow, orFatal: .throwsInWrongPosition("rethrows"))
       parsedType = try parseFunctionType(attributes: attrs, type: type, throwKind: .rethrowing)
@@ -388,6 +413,15 @@ extension Parser {
     return funcType
   }
 
+  private func parseTypedThrowsOrPlain() throws -> ThrowsKind {
+    if _lexer.match(.leftParen) {
+      let type = try parseType()
+      try match(.rightParen, orFatal: .expectedCloseParenThrowsType)
+      return .typedThrowing(type)
+    }
+    return .throwing
+  }
+
   func parseTypeInheritanceClause() throws -> TypeInheritanceClause? {
     guard _lexer.match(.colon) else {
       return nil
@@ -399,14 +433,15 @@ extension Parser {
         return TypeInheritanceClause(classRequirement: classRequirement)
       }
     }
-    var types = [TypeIdentifier]()
+    var types = [TypeInheritanceClause.InheritedType]()
     repeat {
+      let isSuppressed = _lexer.match(.prefixOperator("~"))
       let typeSourceRange = getLookedRange()
       if _lexer.match(.class) {
         throw _raiseFatal(.lateClassRequirement)
       } else if let idHead = readNamedIdentifier() {
         let type = try parseIdentifierType(idHead, typeSourceRange)
-        types.append(type)
+        types.append(TypeInheritanceClause.InheritedType(type: type, isSuppressed: isSuppressed))
       } else {
         throw _raiseFatal(.expectedTypeRestriction)
       }

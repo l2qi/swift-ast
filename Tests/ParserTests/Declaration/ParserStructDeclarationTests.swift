@@ -357,4 +357,18 @@ class ParserStructDeclarationTests: XCTestCase {
       }
     )
   }
+
+  func testSuppressedConformance() {
+    parseDeclarationAndTest("struct Foo: ~Copyable {}", "struct Foo: ~Copyable {}", testClosure: { decl in
+      guard let structDecl = decl as? StructDeclaration else {
+        XCTFail("Failed in getting a struct declaration.")
+        return
+      }
+
+      XCTAssertEqual(structDecl.name.textDescription, "Foo")
+      XCTAssertEqual(structDecl.typeInheritanceClause?.textDescription, ": ~Copyable")
+      XCTAssertEqual(structDecl.typeInheritanceClause?.typeInheritanceList.count, 1)
+      XCTAssertTrue(structDecl.typeInheritanceClause?.typeInheritanceList[0].isSuppressed ?? false)
+    })
+  }
 }

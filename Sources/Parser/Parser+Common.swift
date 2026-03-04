@@ -27,10 +27,16 @@ extension Parser {
     return FunctionResult(attributes: attrs, type: type)
   }
 
-  func parseThrowsKind() -> (ThrowsKind, SourceLocation?) {
+  func parseThrowsKind() throws -> (ThrowsKind, SourceLocation?) {
     let endLocation = getEndLocation()
     switch _lexer.read([.throws, .rethrows]) {
     case .throws:
+      if _lexer.match(.leftParen) {
+        let type = try parseType()
+        let parenEndLocation = getEndLocation()
+        try match(.rightParen, orFatal: .expectedCloseParenThrowsType)
+        return (.typedThrowing(type), parenEndLocation)
+      }
       return (.throwing, endLocation)
     case .rethrows:
       return (.rethrowing, endLocation)

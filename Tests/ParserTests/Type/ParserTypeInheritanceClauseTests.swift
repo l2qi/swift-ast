@@ -72,6 +72,28 @@ class ParserTypeInheritanceClauseTests: XCTestCase {
       // Expected: class requirement must be first
     }
   }
+
+  func testSuppressedConformance() {
+    parseTypeInheritanceClauseAndTest(": ~Copyable") {
+      XCTAssertFalse($0.classRequirement)
+      XCTAssertEqual($0.typeInheritanceList.count, 1)
+      XCTAssertTrue($0.typeInheritanceList[0].isSuppressed)
+      XCTAssertEqual($0.typeInheritanceList[0].type.textDescription, "Copyable")
+      XCTAssertEqual($0.textDescription, ": ~Copyable")
+    }
+  }
+
+  func testMixedSuppressedAndNormal() {
+    parseTypeInheritanceClauseAndTest(": Equatable, ~Copyable") {
+      XCTAssertFalse($0.classRequirement)
+      XCTAssertEqual($0.typeInheritanceList.count, 2)
+      XCTAssertFalse($0.typeInheritanceList[0].isSuppressed)
+      XCTAssertEqual($0.typeInheritanceList[0].type.textDescription, "Equatable")
+      XCTAssertTrue($0.typeInheritanceList[1].isSuppressed)
+      XCTAssertEqual($0.typeInheritanceList[1].type.textDescription, "Copyable")
+      XCTAssertEqual($0.textDescription, ": Equatable, ~Copyable")
+    }
+  }
 }
 
 fileprivate func parseTypeInheritanceClauseAndTest(_ content: String,

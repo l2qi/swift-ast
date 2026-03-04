@@ -19,6 +19,8 @@ public struct GenericParameterClause {
     case identifier(Identifier)
     case typeConformance(Identifier, TypeIdentifier)
     case protocolConformance(Identifier, ProtocolCompositionType)
+    case valueParameter(Identifier, Type)
+    case suppressedConformance(Identifier, TypeIdentifier)
   }
 
   public let parameterList: [GenericParameter]
@@ -37,6 +39,10 @@ extension GenericParameterClause.GenericParameter : ASTTextRepresentable {
       return "\(t): \(typeIdentifier.textDescription)"
     case let .protocolConformance(t, protocolCompositionType):
       return "\(t): \(protocolCompositionType.textDescription)"
+    case let .valueParameter(name, type):
+      return "let \(name): \(type.textDescription)"
+    case let .suppressedConformance(t, typeIdentifier):
+      return "\(t): ~\(typeIdentifier.textDescription)"
     }
   }
 }

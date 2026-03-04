@@ -19,6 +19,7 @@ public struct GenericWhereClause {
     case typeConformance(TypeIdentifier, TypeIdentifier)
     case protocolConformance(TypeIdentifier, ProtocolCompositionType)
     case sameType(TypeIdentifier, Type)
+    case suppressedConformance(TypeIdentifier, TypeIdentifier)
   }
 
   public let requirementList: [Requirement]
@@ -37,6 +38,8 @@ extension GenericWhereClause.Requirement : ASTTextRepresentable {
       return "\(t.textDescription): \(typeIdentifier.textDescription)"
     case let .protocolConformance(t, protocolCompositionType):
       return "\(t.textDescription): \(protocolCompositionType.textDescription)"
+    case let .suppressedConformance(t, typeIdentifier):
+      return "\(t.textDescription): ~\(typeIdentifier.textDescription)"
     }
   }
 }
