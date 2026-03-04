@@ -102,7 +102,7 @@ class ParserExpressionPatternTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testNotInMatchingPattern", testNotInMatchingPattern),
     ("testRawValues", testRawValues),
     ("testRawValuesInTuples", testRawValuesInTuples),

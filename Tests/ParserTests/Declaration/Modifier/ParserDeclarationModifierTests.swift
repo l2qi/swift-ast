@@ -47,7 +47,7 @@ class ParserDeclarationModifierTests: XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testModifiers", testModifiers),
   ]
 }

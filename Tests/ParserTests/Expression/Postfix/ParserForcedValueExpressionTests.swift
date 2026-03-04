@@ -71,7 +71,7 @@ class ParserForcedValueExpressionTests: XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testForced", testForced),
     ("testTwoForced", testTwoForced),
     ("testForcedOptional", testForcedOptional),

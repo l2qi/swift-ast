@@ -109,7 +109,7 @@ class ParserIfStatementTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testIf", testIf),
     ("testElse", testElse),
     ("testElseIf", testElseIf),

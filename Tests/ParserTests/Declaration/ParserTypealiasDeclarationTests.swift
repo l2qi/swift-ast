@@ -143,7 +143,7 @@ class ParserTypealiasDeclarationTests: XCTestCase {
     )
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testTypealias", testTypealias),
     ("testAttributes", testAttributes),
     ("testModifiers", testModifiers),

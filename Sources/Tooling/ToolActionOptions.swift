@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-public struct ToolActionOptions : OptionSet {
+public struct ToolActionOptions : OptionSet, Sendable {
   public let rawValue: Int
 
   public init(rawValue: Int) {

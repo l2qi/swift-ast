@@ -32,7 +32,7 @@ class ParserFallthroughStatementTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testFallthrough", testFallthrough),
     ("testSourceRange", testSourceRange),
   ]

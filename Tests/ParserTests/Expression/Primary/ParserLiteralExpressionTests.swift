@@ -828,7 +828,7 @@ class ParserLiteralExpressionTests: XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testNilLiteral", testNilLiteral),
     ("testTrueBooleanLiteral", testTrueBooleanLiteral),
     ("testFalseBooleanLiteral", testFalseBooleanLiteral),

@@ -64,7 +64,7 @@ class ParserSubscriptExpressionTests: XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testSingleExpr", testSingleExpr),
     ("testMultipleExprs", testMultipleExprs),
     ("testVariables", testVariables),

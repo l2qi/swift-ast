@@ -901,7 +901,7 @@ class LexicalParentAssignmentTests: XCTestCase {
     testAssigned(topLevelDecl)
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testTopLevelDeclaration", testTopLevelDeclaration),
     ("testClassDeclaration", testClassDeclaration),
     ("testConstantDeclaration", testConstantDeclaration),

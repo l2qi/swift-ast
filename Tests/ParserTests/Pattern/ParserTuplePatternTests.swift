@@ -102,14 +102,14 @@ class ParserTuplePatternTests: XCTestCase {
     parsePatternAndTest("(x?, y?)", "(x?, y?)")
   }
 
-  func testFromForInOrVarDecl() {
+  func testFromForInOrVarDecl() async {
     parsePatternAndTest("(let a, let b)", "(let a, let b)")
     let expct = expectation(description:
       "Expect an error because var decl is not allowed in a tuple pattern that is already in a var decl.")
     parsePatternAndTest("(let a, let b)", "", fromForInOrVarDecl: true, errorClosure: { _ in
       expct.fulfill()
     })
-    waitForExpectations(timeout: 3)
+    await waitForExpectations(timeout: 3)
 
     parsePatternAndTest("(): Void", "(): Void")
     parsePatternAndTest("(): Void", "(): Void", fromForInOrVarDecl: true)
@@ -141,7 +141,7 @@ class ParserTuplePatternTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testEmptyTuple", testEmptyTuple),
     ("testMultipleElements", testMultipleElements),
     ("testIdentifiers", testIdentifiers),

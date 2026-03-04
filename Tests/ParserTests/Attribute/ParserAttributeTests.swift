@@ -133,7 +133,7 @@ class ParserAttributeTests: XCTestCase {
     parseAttributesAndTest("@a(h{}t)", "@a(h{}t)")
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testAttributeName", testAttributeName),
     ("testEmptyArgumentClause", testEmptyArgumentClause),
     ("testArgumentClauseWithSingleToken", testArgumentClauseWithSingleToken),

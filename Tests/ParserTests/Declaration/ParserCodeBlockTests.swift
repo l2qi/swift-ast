@@ -89,7 +89,7 @@ class ParserCodeBlockTests: XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testSimpleCase", testSimpleCase),
     ("testSourceRange", testSourceRange),
     ("testLexicalParent", testLexicalParent),

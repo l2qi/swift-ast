@@ -1567,7 +1567,7 @@ class ParserVariableDeclarationTests: XCTestCase {
     )
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testVariableName", testVariableName),
     ("testTypeAnnotation", testTypeAnnotation),
     ("testSingleInitializer", testSingleInitializer),

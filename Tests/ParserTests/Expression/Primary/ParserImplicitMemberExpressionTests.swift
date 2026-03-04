@@ -45,7 +45,7 @@ class ParserImplicitMemberExpressionTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testImplicitMember", testImplicitMember),
     ("testSpacesBetweenDotAndIdentifier", testSpacesBetweenDotAndIdentifier),
     ("testSourceRange", testSourceRange),

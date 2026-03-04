@@ -58,7 +58,7 @@ class ParserEnumCasePatternTests: XCTestCase {
     })
   }
 
-  func testTuplesWithValueBinding() {
+  func testTuplesWithValueBinding() async {
     parsePatternAndTest("let .foo(a, b)", "let .foo(a, b)")
     parsePatternAndTest(".foo(let a, let b)", ".foo(let a, let b)")
     parsePatternAndTest("let .foo(_, b)", "let .foo(_, b)")
@@ -70,7 +70,7 @@ class ParserEnumCasePatternTests: XCTestCase {
     parsePatternAndTest(".foo(let a)", "", fromForInOrVarDecl: true, errorClosure: { _ in
       expct.fulfill()
     })
-    waitForExpectations(timeout: 3)
+    await fulfillment(of: [expct], timeout: 3.0)
   }
 
   func testBasicTypeIdentifier() {
@@ -129,7 +129,7 @@ class ParserEnumCasePatternTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testEnumCaseName", testEnumCaseName),
     ("testEmptyTuple", testEmptyTuple),
     ("testTuple", testTuple),

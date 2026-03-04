@@ -14,7 +14,7 @@
    limitations under the License.
 */
 
-public struct Version {
+public struct Version: Sendable {
   public let library: String
   public let swift: String
 

@@ -174,7 +174,7 @@ class LexerNumericLiteralTests: XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testBinaryLiterals", testBinaryLiterals),
     ("testOctalLiterals", testOctalLiterals),
     ("testDecimalLiterals", testDecimalLiterals),

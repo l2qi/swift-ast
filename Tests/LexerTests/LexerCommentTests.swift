@@ -140,7 +140,7 @@ class LexerCommentTests: XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testSingleLineComment", testSingleLineComment),
     ("testMultipleSingleLineComments", testMultipleSingleLineComments),
     ("testSingleLineMultipleLineComment", testSingleLineMultipleLineComment),

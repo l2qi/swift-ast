@@ -51,7 +51,7 @@ class ParserExpressionStatementTests: XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testAssignmentOpExprStmt", testAssignmentOpExprStmt),
     ("testExpressions", testExpressions),
   ]

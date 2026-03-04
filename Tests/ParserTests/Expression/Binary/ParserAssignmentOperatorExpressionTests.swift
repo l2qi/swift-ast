@@ -61,7 +61,7 @@ class ParserAssignmentOperatorExpressionTests: XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testAssignment", testAssignment),
     ("testRhsIsTryOperator", testRhsIsTryOperator),
     ("testTupleAssignment", testTupleAssignment),

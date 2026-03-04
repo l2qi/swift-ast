@@ -142,7 +142,7 @@ class ASTVisitorTopLevelDeclTraversalTests : XCTestCase {
     XCTAssertEqual(visitor.carryover, "01initstop")
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testDefaultTraversal", testDefaultTraversal),
     ("testStopAtTopLevelDecl", testStopAtTopLevelDecl),
     ("testStopAtImportDecl", testStopAtImportDecl),

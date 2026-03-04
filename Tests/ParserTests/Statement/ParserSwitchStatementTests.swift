@@ -197,7 +197,7 @@ class ParserSwitchStatementTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testEmptySwitch", testEmptySwitch),
     ("testDefault", testDefault),
     ("testSimpleCase", testSimpleCase),

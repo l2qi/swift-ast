@@ -39,7 +39,7 @@ class ParserArrayTypeTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testOneDimension", testOneDimension),
     ("testTwoDimensions", testTwoDimensions),
     ("testThreeDimensions", testThreeDimensions),

@@ -161,7 +161,7 @@ class ParserDeclarationStatementTests: XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testStartWithDeclarationKeyword", testStartWithDeclarationKeyword),
     ("testStartWithAttributes", testStartWithAttributes),
     ("testStartWithModifiers", testStartWithModifiers),

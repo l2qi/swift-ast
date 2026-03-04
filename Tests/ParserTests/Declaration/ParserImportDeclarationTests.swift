@@ -109,7 +109,7 @@ class ParserImportDeclarationTests: XCTestCase {
     )
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testImportModule", testImportModule),
     ("testImportOperator", testImportOperator),
     ("testNestedPath", testNestedPath),

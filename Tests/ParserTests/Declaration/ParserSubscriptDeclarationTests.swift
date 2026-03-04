@@ -369,7 +369,7 @@ class ParserSubscriptDeclarationTests: XCTestCase {
     )
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testSubscriptDecl", testSubscriptDecl),
     // attributes/modifiers
     ("testAttributes", testAttributes),

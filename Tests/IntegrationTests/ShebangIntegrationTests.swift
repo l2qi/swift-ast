@@ -16,13 +16,16 @@
 
 import XCTest
 
+@testable import Diagnostic
 @testable import Frontend
 @testable import Parser
 
 class ShebangIntegrationTests : XCTestCase {
+  let diagnosticPool = DiagnosticPool()
+
   func testShebangPrint() {
     testIntegration("ShebangResources", "ShebangPrint") { source -> String in
-      let parser = Parser(source: source)
+      let parser = Parser(source: source, diagnosticPool: diagnosticPool)
       guard let topLevelDecl = try? parser.parse() else {
         return "error: failed in parsing the source \(source.identifier)."
       }
@@ -32,7 +35,7 @@ class ShebangIntegrationTests : XCTestCase {
 
   func testShebangDump() {
     testIntegration("ShebangResources", "ShebangDump") { source -> String in
-      let parser = Parser(source: source)
+      let parser = Parser(source: source, diagnosticPool: diagnosticPool)
       guard let topLevelDecl = try? parser.parse() else {
         return "error: failed in parsing the source \(source.identifier)."
       }
@@ -40,7 +43,7 @@ class ShebangIntegrationTests : XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testShebangPrint", testShebangPrint),
     ("testShebangDump", testShebangDump),
   ]

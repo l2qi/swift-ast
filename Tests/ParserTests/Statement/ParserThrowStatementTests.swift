@@ -38,7 +38,7 @@ class ParserThrowStatementTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testThrow", testThrow),
     ("testSourceRange", testSourceRange),
   ]

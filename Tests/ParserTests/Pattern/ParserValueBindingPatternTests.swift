@@ -59,7 +59,7 @@ class ParserValueBindingPatternTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testConstant", testConstant),
     ("testVariable", testVariable),
     ("testOptional", testOptional),

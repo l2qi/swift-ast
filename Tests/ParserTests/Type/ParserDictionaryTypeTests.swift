@@ -39,7 +39,7 @@ class ParserDictinoaryTypeTests: XCTestCase {
     )
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testDictionaryType", testDictionaryType),
     ("testDictionaryTypeAsKeyTypeAndValueType", testDictionaryTypeAsKeyTypeAndValueType),
     ("testArrayTypeAsKeyTypeAndValueType", testArrayTypeAsKeyTypeAndValueType),

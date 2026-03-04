@@ -966,7 +966,7 @@ class DefaultTraverseImplementationTests : XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testVisitTopLevelDeclaration", testVisitTopLevelDeclaration),
     ("testVisitCodeBlock", testVisitCodeBlock),
     ("testVisitClassDeclaration", testVisitClassDeclaration),

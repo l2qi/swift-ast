@@ -47,7 +47,7 @@ class ParserTypeIdentifierTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testOneName", testOneName),
     ("testMultipleNames", testMultipleNames),
     ("testGenericArgumentClause", testGenericArgumentClause),

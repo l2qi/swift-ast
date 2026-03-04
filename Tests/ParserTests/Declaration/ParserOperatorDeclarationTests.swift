@@ -99,7 +99,7 @@ class ParserOperatorDeclarationTests: XCTestCase {
     )
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testPrefixOperator", testPrefixOperator),
     ("testInfixOperator", testInfixOperator),
     ("testInfixOperatorWithPrecedenceGroupName", testInfixOperatorWithPrecedenceGroupName),

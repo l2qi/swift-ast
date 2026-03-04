@@ -59,7 +59,7 @@ class ParserContinueStatementTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testContinue", testContinue),
     ("testContinueWithLabelName", testContinueWithLabelName),
     ("testLabelNameNotImmediateFollow", testLabelNameNotImmediateFollow),

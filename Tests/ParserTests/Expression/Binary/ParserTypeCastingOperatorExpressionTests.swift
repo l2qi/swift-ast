@@ -67,7 +67,7 @@ class ParserTypeCastingOperatorExpressionTests: XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testCheck", testCheck),
     ("testCast", testCast),
     ("testForcedCast", testForcedCast),

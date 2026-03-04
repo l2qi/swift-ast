@@ -38,7 +38,7 @@ class ParserGuardStatementTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testGuardStmt", testGuardStmt),
     ("testSourceRange", testSourceRange),
   ]

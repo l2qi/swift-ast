@@ -128,7 +128,7 @@ class ParserTupleExpressionTests: XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testEmptyTuple", testEmptyTuple),
     ("testMultipleElements", testMultipleElements),
     ("testOneElementWithIdentifier", testOneElementWithIdentifier),

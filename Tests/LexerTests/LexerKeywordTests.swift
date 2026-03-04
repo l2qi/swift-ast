@@ -110,7 +110,7 @@ class LexerKeywordTests: XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testKeywords", testKeywords),
   ]
 }

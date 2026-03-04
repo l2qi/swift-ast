@@ -59,7 +59,7 @@ class ParserBreakStatementTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testBreak", testBreak),
     ("testBreakWithLabelName", testBreakWithLabelName),
     ("testLabelNameNotImmediateFollow", testLabelNameNotImmediateFollow),

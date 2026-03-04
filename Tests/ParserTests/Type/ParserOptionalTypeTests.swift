@@ -45,7 +45,7 @@ class ParserOptionalTypeTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testOptionalType", testOptionalType),
     ("testTwoOptionalTypes", testTwoOptionalTypes),
     ("testWrappingAnImplicitlyUnwrappedOptionalType", testWrappingAnImplicitlyUnwrappedOptionalType),

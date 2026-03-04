@@ -409,7 +409,7 @@ class SequenceExpressionFoldingTests: XCTestCase {
     testFolded(foldedExpr)
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testBitwiseShiftHigherThanMultiplication", testBitwiseShiftHigherThanMultiplication),
     ("testMultiplicationHigherThanAddition", testMultiplicationHigherThanAddition),
     ("testAdditionHigherThanRangeFormation", testAdditionHigherThanRangeFormation),

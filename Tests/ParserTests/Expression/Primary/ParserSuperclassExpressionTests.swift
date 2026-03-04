@@ -130,7 +130,7 @@ class ParserSuperclassExpressionTests: XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testSuperclassMethodExpression", testSuperclassMethodExpression),
     ("testSuperclassSubscriptExpression", testSuperclassSubscriptExpression),
     ("testSuperclassSubscriptExprWithExprList", testSuperclassSubscriptExprWithExprList),

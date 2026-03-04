@@ -45,7 +45,7 @@ class ParserPostfixSelfExpressionTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testPostfixSelfExpression", testPostfixSelfExpression),
     ("testTwoSelf", testTwoSelf),
     ("testSourceRange", testSourceRange),

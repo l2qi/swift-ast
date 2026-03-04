@@ -90,7 +90,7 @@ class ParserReturnStatementTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testReturn", testReturn),
     ("testReturnWithExpression", testReturnWithExpression),
     ("testReturnWithExprInNewLine", testReturnWithExprInNewLine),

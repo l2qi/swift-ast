@@ -33,7 +33,7 @@ class ParserMutationModifierTests: XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testModifiers", testModifiers),
   ]
 }

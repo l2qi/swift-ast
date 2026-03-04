@@ -565,7 +565,7 @@ class LexerStringLiteralTests: XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testEmptyStringLiteral", testEmptyStringLiteral),
     ("testSingleCharacter", testSingleCharacter),
     ("testContainsEmptyCharacters", testContainsEmptyCharacters),

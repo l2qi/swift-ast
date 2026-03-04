@@ -142,7 +142,7 @@ class ASTVisitorCodeBlockTraversalTests : XCTestCase {
     XCTAssertEqual(visitor.carryover, "01init0stop")
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testDefaultTraversal", testDefaultTraversal),
     ("testStopAtCodeBlock", testStopAtCodeBlock),
     ("testStopAtOperatorDecl", testStopAtOperatorDecl),

@@ -366,7 +366,7 @@ class ParserErrorKindTests : XCTestCase {
     parseProblematic("protocol Foo : class, _)", .fatal, .expectedTypeRestriction)
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testAttributes", testAttributes),
     ("testCodeBlock", testCodeBlock),
     ("testDeclarations", testDeclarations),

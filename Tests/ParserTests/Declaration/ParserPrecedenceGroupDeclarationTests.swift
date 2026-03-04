@@ -300,7 +300,7 @@ class ParserPrecedenceGroupDeclarationTests: XCTestCase {
     )
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testName", testName),
     ("testHigherThanSingle", testHigherThanSingle),
     ("testHigherThanMultiple", testHigherThanMultiple),

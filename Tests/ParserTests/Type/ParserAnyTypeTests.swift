@@ -34,7 +34,7 @@ class ParserAnyTypeTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testAny", testAny),
     ("testMixedWithOtherTypes", testMixedWithOtherTypes),
     ("testSourceRange", testSourceRange),

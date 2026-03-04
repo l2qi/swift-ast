@@ -107,7 +107,7 @@ class ParserLabeledStatementTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testLabeledFor", testLabeledFor),
     ("testLabeledWhile", testLabeledWhile),
     ("testLabeledRepeat", testLabeledRepeat),

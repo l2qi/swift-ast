@@ -75,7 +75,7 @@ class ParserTryOperatorExpressionTests: XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testTry", testTry),
     ("testForcedTry", testForcedTry),
     ("testOptionalTry", testOptionalTry),

@@ -49,7 +49,7 @@ class LocatableNodeTests : XCTestCase {
     XCTAssertEqual(node.textDescription, "<<invalid>>")
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testNodeWithoutSettingRange", testNodeWithoutSettingRange),
     ("testSettingRange", testSettingRange),
     ("testSettingLocations", testSettingLocations),

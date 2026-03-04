@@ -171,7 +171,7 @@ class KeywordUsedAsIdentifierTests: XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testKeywordUsedInTupleType", testKeywordUsedInTupleType),
     ("testKeywordUsedInFunctionType", testKeywordUsedInFunctionType),
     ("testKeywordUsedInSelfExpression", testKeywordUsedInSelfExpression),

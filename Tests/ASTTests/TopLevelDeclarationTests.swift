@@ -27,7 +27,7 @@ class TopLevelDeclarationTests : XCTestCase {
     XCTAssertEqual(topLevelDecl.sourceRange, .EMPTY)
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testEmptyContent", testEmptyContent),
   ]
 }

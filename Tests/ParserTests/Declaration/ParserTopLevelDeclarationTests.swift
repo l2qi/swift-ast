@@ -138,7 +138,7 @@ class ParserTopLevelDeclarationTests: XCTestCase {
     }
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testSimpleCase", testSimpleCase),
     ("testComments", testComments),
     ("testShebang", testShebang),

@@ -45,7 +45,7 @@ class ParserKeyPathStringExpressionTests: XCTestCase {
     })
   }
 
-  static var allTests = [
+  static let allTests = [
     ("testKeyPathStringExpression", testKeyPathStringExpression),
     ("testContainsSelfExpression", testContainsSelfExpression),
     ("testSourceRange", testSourceRange),

@@ -16,7 +16,7 @@
 
 import Diagnostic
 
-public enum TokenInvalidReason : DiagnosticKind {
+public enum TokenInvalidReason : DiagnosticKind, Sendable {
   case reserved
   case badChar
   case badNumber
