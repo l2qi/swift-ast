@@ -65,6 +65,9 @@ extension TTYASTDumpRepresentable {
     if !funcSign.parameterList.isEmpty {
       dumps.append(dump(funcSign.parameterList))
     }
+    if funcSign.isAsync {
+      dumps.append("async: `true`")
+    }
     if funcSign.throwsKind != .nothrowing {
       dumps.append("throws_kind: `\(funcSign.throwsKind.textDescription)`")
     }

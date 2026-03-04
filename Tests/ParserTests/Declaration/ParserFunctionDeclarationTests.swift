@@ -558,6 +558,85 @@ class ParserFunctionDeclarationTests: XCTestCase {
     })
   }
 
+  func testAsyncFunction() {
+    parseDeclarationAndTest(
+      "func foo() async",
+      "func foo() async",
+      testClosure: { decl in
+      guard let funcDecl = decl as? FunctionDeclaration else {
+        XCTFail("Failed in getting a function declaration.")
+        return
+      }
+
+      XCTAssertTrue(funcDecl.signature.isAsync)
+      XCTAssertEqual(funcDecl.signature.throwsKind, .nothrowing)
+      XCTAssertNil(funcDecl.signature.result)
+      XCTAssertEqual(funcDecl.signature.textDescription, "() async")
+    })
+  }
+
+  func testAsyncThrowsFunction() {
+    parseDeclarationAndTest(
+      "func foo(bar: Bar) async throws",
+      "func foo(bar: Bar) async throws",
+      testClosure: { decl in
+      guard let funcDecl = decl as? FunctionDeclaration else {
+        XCTFail("Failed in getting a function declaration.")
+        return
+      }
+
+      XCTAssertTrue(funcDecl.signature.isAsync)
+      XCTAssertEqual(funcDecl.signature.throwsKind, .throwing)
+      XCTAssertNil(funcDecl.signature.result)
+      XCTAssertEqual(funcDecl.signature.textDescription, "(bar: Bar) async throws")
+    })
+  }
+
+  func testAsyncThrowsWithResult() {
+    parseDeclarationAndTest(
+      "func foo() async throws -> Foo",
+      "func foo() async throws -> Foo",
+      testClosure: { decl in
+      guard let funcDecl = decl as? FunctionDeclaration else {
+        XCTFail("Failed in getting a function declaration.")
+        return
+      }
+
+      XCTAssertTrue(funcDecl.signature.isAsync)
+      XCTAssertEqual(funcDecl.signature.throwsKind, .throwing)
+      XCTAssertEqual(funcDecl.signature.result?.textDescription, "-> Foo")
+      XCTAssertEqual(funcDecl.signature.textDescription, "() async throws -> Foo")
+    })
+  }
+
+  func testAsyncWithResult() {
+    parseDeclarationAndTest(
+      "func fetch() async -> Data",
+      "func fetch() async -> Data",
+      testClosure: { decl in
+      guard let funcDecl = decl as? FunctionDeclaration else {
+        XCTFail("Failed in getting a function declaration.")
+        return
+      }
+
+      XCTAssertTrue(funcDecl.signature.isAsync)
+      XCTAssertEqual(funcDecl.signature.throwsKind, .nothrowing)
+      XCTAssertEqual(funcDecl.signature.result?.textDescription, "-> Data")
+      XCTAssertEqual(funcDecl.signature.textDescription, "() async -> Data")
+    })
+  }
+
+  func testNonAsyncFunction() {
+    parseDeclarationAndTest("func foo()", "func foo()", testClosure: { decl in
+      guard let funcDecl = decl as? FunctionDeclaration else {
+        XCTFail("Failed in getting a function declaration.")
+        return
+      }
+
+      XCTAssertFalse(funcDecl.signature.isAsync)
+    })
+  }
+
   func testGenericWhereClause() {
     parseDeclarationAndTest(
       "func foo<A>() where A == Foo",

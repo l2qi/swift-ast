@@ -56,12 +56,14 @@ public class ClosureExpression : ASTNode, PrimaryExpression {
 
     public let captureList: [CaptureItem]?
     public let parameterClause: ParameterClause?
+    public let isAsync: Bool
     public let canThrow: Bool
     public let functionResult: FunctionResult?
 
     public init(captureList: [CaptureItem]) {
       self.captureList = captureList
       self.parameterClause = nil
+      self.isAsync = false
       self.canThrow = false
       self.functionResult = nil
     }
@@ -69,11 +71,13 @@ public class ClosureExpression : ASTNode, PrimaryExpression {
     public init(
       captureList: [CaptureItem]? = nil,
       parameterClause: ParameterClause,
+      isAsync: Bool = false,
       canThrow: Bool = false,
       functionResult: FunctionResult? = nil
     ) {
       self.captureList = captureList
       self.parameterClause = parameterClause
+      self.isAsync = isAsync
       self.canThrow = canThrow
       self.functionResult = functionResult
     }
@@ -167,6 +171,9 @@ extension ClosureExpression.Signature : ASTTextRepresentable {
     }
     if let parameterClause = parameterClause {
       signatureText.append(parameterClause.textDescription)
+    }
+    if isAsync {
+      signatureText.append("async")
     }
     if canThrow {
       signatureText.append("throws")

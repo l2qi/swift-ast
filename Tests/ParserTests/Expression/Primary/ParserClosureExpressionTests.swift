@@ -644,6 +644,130 @@ class ParserClosureExpressionTests: XCTestCase {
     parseExpressionAndTest("{ ($0, .region) }", "{ ($0, .region) }")
   }
 
+  func testAsync() {
+    parseExpressionAndTest("{ () async in }", "{ () async in }", testClosure: { expr in
+      guard let closureExpr = expr as? ClosureExpression else {
+        XCTFail("Failed in getting a closure expression.")
+        return
+      }
+
+      guard let signature = closureExpr.signature,
+        let clause = signature.parameterClause,
+        case .parameterList(let params) = clause else {
+        XCTFail("Failed in getting a closure signature.")
+        return
+      }
+      XCTAssertTrue(params.isEmpty)
+
+      XCTAssertNil(signature.captureList)
+      XCTAssertTrue(signature.isAsync)
+      XCTAssertFalse(signature.canThrow)
+      XCTAssertNil(signature.functionResult)
+
+      XCTAssertNil(closureExpr.statements)
+    })
+  }
+
+  func testAsyncThrows() {
+    parseExpressionAndTest("{ () async throws in }", "{ () async throws in }", testClosure: { expr in
+      guard let closureExpr = expr as? ClosureExpression else {
+        XCTFail("Failed in getting a closure expression.")
+        return
+      }
+
+      guard let signature = closureExpr.signature,
+        let clause = signature.parameterClause,
+        case .parameterList(let params) = clause else {
+        XCTFail("Failed in getting a closure signature.")
+        return
+      }
+      XCTAssertTrue(params.isEmpty)
+
+      XCTAssertNil(signature.captureList)
+      XCTAssertTrue(signature.isAsync)
+      XCTAssertTrue(signature.canThrow)
+      XCTAssertNil(signature.functionResult)
+
+      XCTAssertNil(closureExpr.statements)
+    })
+  }
+
+  func testAsyncWithResult() {
+    parseExpressionAndTest(
+      "{ () async -> Foo in }",
+      "{ () async -> Foo in }",
+      testClosure: { expr in
+      guard let closureExpr = expr as? ClosureExpression else {
+        XCTFail("Failed in getting a closure expression.")
+        return
+      }
+
+      guard let signature = closureExpr.signature else {
+        XCTFail("Failed in getting a closure signature.")
+        return
+      }
+
+      XCTAssertTrue(signature.isAsync)
+      XCTAssertFalse(signature.canThrow)
+      XCTAssertNotNil(signature.functionResult)
+    })
+  }
+
+  func testAsyncThrowsWithResult() {
+    parseExpressionAndTest(
+      "{ () async throws -> Foo in }",
+      "{ () async throws -> Foo in }",
+      testClosure: { expr in
+      guard let closureExpr = expr as? ClosureExpression else {
+        XCTFail("Failed in getting a closure expression.")
+        return
+      }
+
+      guard let signature = closureExpr.signature else {
+        XCTFail("Failed in getting a closure signature.")
+        return
+      }
+
+      XCTAssertTrue(signature.isAsync)
+      XCTAssertTrue(signature.canThrow)
+      XCTAssertNotNil(signature.functionResult)
+    })
+  }
+
+  func testAsyncIdentifierList() {
+    parseExpressionAndTest("{ a, b async in }", "{ a, b async in }", testClosure: { expr in
+      guard let closureExpr = expr as? ClosureExpression else {
+        XCTFail("Failed in getting a closure expression.")
+        return
+      }
+
+      guard let signature = closureExpr.signature else {
+        XCTFail("Failed in getting a closure signature.")
+        return
+      }
+
+      XCTAssertTrue(signature.isAsync)
+      XCTAssertFalse(signature.canThrow)
+    })
+  }
+
+  func testAsyncThrowsIdentifierList() {
+    parseExpressionAndTest("{ a, b async throws in }", "{ a, b async throws in }", testClosure: { expr in
+      guard let closureExpr = expr as? ClosureExpression else {
+        XCTFail("Failed in getting a closure expression.")
+        return
+      }
+
+      guard let signature = closureExpr.signature else {
+        XCTFail("Failed in getting a closure signature.")
+        return
+      }
+
+      XCTAssertTrue(signature.isAsync)
+      XCTAssertTrue(signature.canThrow)
+    })
+  }
+
   func testSourceRange() {
     let testExprs: [(testString: String, expectedEndColumn: Int)] = [
       ("{}", 3),

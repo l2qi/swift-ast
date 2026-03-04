@@ -49,6 +49,10 @@ extension ClosureExpression : TTYASTDumpRepresentable {
         body += "\n"
         body += "parameters: `\(parameterClause.textDescription)`".indented
       }
+      if signature.isAsync {
+        body += "\n"
+        body += "async: `true`".indented
+      }
       if signature.canThrow {
         body += "\n"
         body += "throwable: `true`".indented
