@@ -14,12 +14,19 @@
    limitations under the License.
 */
 
-public enum AccessLevelModifier : String {
-  case `private`, privateSet = "private(set)"
-  case `fileprivate`, fileprivateSet = "fileprivate(set)"
-  case `internal`, internalSet = "internal(set)"
-  case `public`, publicSet = "public(set)"
-  case `open`, openSet = "open(set)"
+public enum AccessLevelModifier : String, CaseIterable {
+  case `private` = "private"
+  case privateSet = "private(set)"
+  case `fileprivate` = "fileprivate"
+  case fileprivateSet = "fileprivate(set)"
+  case `internal` = "internal"
+  case internalSet = "internal(set)"
+  case `public` = "public"
+  case publicSet = "public(set)"
+  case `open` = "open"
+  case openSet = "open(set)"
+  case packageLevel = "package"
+  case packageLevelSet = "package(set)"
 }
 
 extension AccessLevelModifier : ASTTextRepresentable {

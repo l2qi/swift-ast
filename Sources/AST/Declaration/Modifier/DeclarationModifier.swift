@@ -16,6 +16,7 @@
 
 public enum DeclarationModifier: Equatable {
   case `class`, convenience, dynamic, final, infix, lazy
+  case nonisolated
   case optional, override, postfix, prefix, required, `static`
   case unowned, unownedSafe, unownedUnsafe, weak
   case accessLevel(AccessLevelModifier)
@@ -37,6 +38,8 @@ extension DeclarationModifier : ASTTextRepresentable {
       return "infix"
     case .lazy:
       return "lazy"
+    case .nonisolated:
+      return "nonisolated"
     case .optional:
       return "optional"
     case .override:

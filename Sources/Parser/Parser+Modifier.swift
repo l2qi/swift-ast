@@ -49,6 +49,8 @@ extension Parser {
       return .infix
     case .lazy:
       return .lazy
+    case .nonisolated:
+      return DeclarationModifier.nonisolated
     case .optional:
       return .optional
     case .override:
@@ -114,6 +116,8 @@ extension Parser {
       return isSetKeyword() ? .publicSet : .public
     case .open:
       return isSetKeyword() ? .openSet : .open
+    case .package:
+      return isSetKeyword() ? .packageLevelSet : .packageLevel
     default:
       return nil
     }

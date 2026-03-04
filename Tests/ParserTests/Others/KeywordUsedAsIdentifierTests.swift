@@ -65,10 +65,14 @@ class KeywordUsedAsIdentifierTests: XCTestCase {
       switch foo {
       case .as: break
       case .associativity: break
+      case .async: break
+      case .await: break
+      case .borrowing: break
       case .break: break
       case .catch: break
       case .case: break
       case .class: break
+      case .consuming: break
       case .continue: break
       case .convenience: break
       case .default: break
@@ -103,11 +107,13 @@ class KeywordUsedAsIdentifierTests: XCTestCase {
       case .mutating: break
       case .nil: break
       case .none: break
+      case .nonisolated: break
       case .nonmutating: break
       case .open: break
       case .operator: break
       case .optional: break
       case .override: break
+      case .package: break
       case .postfix: break
       case .prefix: break
       case .private: break
@@ -164,7 +170,8 @@ class KeywordUsedAsIdentifierTests: XCTestCase {
   }
 
   func testKeywordUsedInConstantDecl() {
-    let keywords = ["set", "get", "left", "right", "open"]
+    let keywords = ["set", "get", "left", "right", "open",
+                    "async", "await", "borrowing", "consuming", "nonisolated", "package"]
     for keyword in keywords {
       let result = parse("let \(keyword)")
       XCTAssertEqual(result.statements[0].textDescription, "let \(keyword)")

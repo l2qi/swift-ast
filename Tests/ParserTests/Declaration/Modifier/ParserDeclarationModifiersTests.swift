@@ -28,6 +28,7 @@ class ParserDeclarationModifiersTests: XCTestCase {
       "final",
       "infix",
       "lazy",
+      "nonisolated",
       "optional",
       "override",
       "postfix",
@@ -50,6 +51,8 @@ class ParserDeclarationModifiersTests: XCTestCase {
       "public(set)",
       "open",
       "open(set)",
+      "package",
+      "package(set)",
     ]
     let declModifiers: [DeclarationModifier] = [
       .class,
@@ -58,6 +61,7 @@ class ParserDeclarationModifiersTests: XCTestCase {
       .final,
       .infix,
       .lazy,
+      .nonisolated,
       .optional,
       .override,
       .postfix,
@@ -80,6 +84,8 @@ class ParserDeclarationModifiersTests: XCTestCase {
       .accessLevel(.publicSet),
       .accessLevel(.open),
       .accessLevel(.openSet),
+      .accessLevel(.packageLevel),
+      .accessLevel(.packageLevelSet),
     ]
     let testStr = declModifierStrs.joined(separator: " ")
     let declParser = getParser(testStr)
