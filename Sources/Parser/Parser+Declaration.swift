@@ -604,7 +604,7 @@ extension Parser {
     let genericParameterClause = try parseGenericParameterClause()
     let (params, _) = try parseParameterClause()
     let isAsync = _lexer.match(.async)
-    let (throwsKind, _) = parseThrowsKind()
+    let (throwsKind, _) = try parseThrowsKind()
     let genericWhereClause = try parseGenericWhereClause()
     let body = forProtocolMember ? CodeBlock() : try parseCodeBlock()
 
@@ -1066,7 +1066,7 @@ extension Parser {
       let (params, paramsSrcRange) = try parseParameterClause()
       let isAsync = _lexer.match(.async)
       let asyncEndLocation = isAsync ? getEndLocation() : nil
-      let (throwsKind, throwsEndLocation) = parseThrowsKind()
+      let (throwsKind, throwsEndLocation) = try parseThrowsKind()
       let result = try parseFunctionResult()
 
       let funcSign = FunctionSignature(parameterList: params, isAsync: isAsync, throwsKind: throwsKind, result: result)
@@ -1098,6 +1098,8 @@ extension Parser {
       case .protocolConformance(_, let type):
         endLocation = type.sourceRange.end
       case .sameType(_, let type):
+        endLocation = type.sourceRange.end
+      case .suppressedConformance(_, let type):
         endLocation = type.sourceRange.end
       }
     }

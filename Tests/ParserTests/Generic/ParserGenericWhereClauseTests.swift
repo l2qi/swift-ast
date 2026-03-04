@@ -111,4 +111,35 @@ class ParserGenericWhereClauseTests: XCTestCase {
       XCTFail("Failed in getting a generic where clause.")
     }
   }
+
+  func testSuppressedConformanceRequirement() {
+    let genericParser = getParser("where T: ~Copyable")
+    do {
+      let genericWhereClause = try genericParser.parseGenericWhereClause()
+      if let requirements = genericWhereClause?.requirementList, requirements.count == 1 {
+        XCTAssertEqual(requirements[0].textDescription, "T: ~Copyable")
+        XCTAssertEqual(genericWhereClause?.textDescription, "where T: ~Copyable")
+      } else {
+        XCTFail("Failed in getting right size of requirement list.")
+      }
+    } catch {
+      XCTFail("Failed in getting a generic where clause.")
+    }
+  }
+
+  func testMixedWithSuppressedConformance() {
+    let genericParser = getParser("where T: Equatable, T: ~Copyable")
+    do {
+      let genericWhereClause = try genericParser.parseGenericWhereClause()
+      if let requirements = genericWhereClause?.requirementList, requirements.count == 2 {
+        XCTAssertEqual(requirements[0].textDescription, "T: Equatable")
+        XCTAssertEqual(requirements[1].textDescription, "T: ~Copyable")
+        XCTAssertEqual(genericWhereClause?.textDescription, "where T: Equatable, T: ~Copyable")
+      } else {
+        XCTFail("Failed in getting right size of requirement list.")
+      }
+    } catch {
+      XCTFail("Failed in getting a generic where clause.")
+    }
+  }
 }

@@ -15,14 +15,31 @@
 */
 
 public struct TypeInheritanceClause {
+  public struct InheritedType {
+    public let type: TypeIdentifier
+    public let isSuppressed: Bool
+
+    public init(type: TypeIdentifier, isSuppressed: Bool = false) {
+      self.type = type
+      self.isSuppressed = isSuppressed
+    }
+  }
+
   public let classRequirement: Bool
-  public let typeInheritanceList: [TypeIdentifier]
+  public let typeInheritanceList: [InheritedType]
 
   public init(
-    classRequirement: Bool = false, typeInheritanceList: [TypeIdentifier] = []
+    classRequirement: Bool = false, typeInheritanceList: [InheritedType] = []
   ) {
     self.classRequirement = classRequirement
     self.typeInheritanceList = typeInheritanceList
+  }
+}
+
+extension TypeInheritanceClause.InheritedType : ASTTextRepresentable {
+  public var textDescription: String {
+    let prefix = isSuppressed ? "~" : ""
+    return "\(prefix)\(type.textDescription)"
   }
 }
 

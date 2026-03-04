@@ -135,6 +135,30 @@ class ParserFunctionTypeTests: XCTestCase {
     })
   }
 
+  func testTypedThrowsFunctionType() {
+    parseTypeAndTest("(foo) throws(MyError) -> bar", "(foo) throws(MyError) -> bar", testClosure: { type in
+      guard let functionType = type as? FunctionType else {
+        XCTFail("Failed in converting to a function type.")
+        return
+      }
+
+      XCTAssertFalse(functionType.isAsync)
+      XCTAssertEqual(functionType.throwsKind, .typedThrowing(TypeIdentifier(names: [TypeIdentifier.TypeName(name: .name("MyError"))])))
+    })
+  }
+
+  func testAsyncTypedThrowsFunctionType() {
+    parseTypeAndTest("(foo) async throws(NetworkError) -> bar", "(foo) async throws(NetworkError) -> bar", testClosure: { type in
+      guard let functionType = type as? FunctionType else {
+        XCTFail("Failed in converting to a function type.")
+        return
+      }
+
+      XCTAssertTrue(functionType.isAsync)
+      XCTAssertEqual(functionType.throwsKind.textDescription, "throws(NetworkError)")
+    })
+  }
+
   func testSourceRange() {
     parseTypeAndTest("(foo) -> bar", "(foo) -> bar", testClosure: { type in
       XCTAssertEqual(type.sourceRange, getRange(1, 1, 1, 13))

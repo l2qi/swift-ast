@@ -845,4 +845,65 @@ class ParserFunctionDeclarationTests: XCTestCase {
       }
     )
   }
+
+  func testTypedThrows() {
+    parseDeclarationAndTest(
+      "func foo(bar: Bar) throws(MyError) -> Foo",
+      "func foo(bar: Bar) throws(MyError) -> Foo",
+      testClosure: { decl in
+      guard let funcDecl = decl as? FunctionDeclaration else {
+        XCTFail("Failed in getting a function declaration.")
+        return
+      }
+
+      XCTAssertEqual(funcDecl.signature.throwsKind.textDescription, "throws(MyError)")
+      XCTAssertEqual(funcDecl.signature.result?.textDescription, "-> Foo")
+    })
+  }
+
+  func testAsyncTypedThrows() {
+    parseDeclarationAndTest(
+      "func fetch() async throws(NetworkError) -> Data",
+      "func fetch() async throws(NetworkError) -> Data",
+      testClosure: { decl in
+      guard let funcDecl = decl as? FunctionDeclaration else {
+        XCTFail("Failed in getting a function declaration.")
+        return
+      }
+
+      XCTAssertTrue(funcDecl.signature.isAsync)
+      XCTAssertEqual(funcDecl.signature.throwsKind.textDescription, "throws(NetworkError)")
+      XCTAssertEqual(funcDecl.signature.result?.textDescription, "-> Data")
+    })
+  }
+
+  func testBorrowingParameter() {
+    parseDeclarationAndTest(
+      "func foo(x: borrowing Int)",
+      "func foo(x: borrowing Int)",
+      testClosure: { decl in
+      guard let funcDecl = decl as? FunctionDeclaration else {
+        XCTFail("Failed in getting a function declaration.")
+        return
+      }
+
+      XCTAssertEqual(funcDecl.signature.parameterList.count, 1)
+      XCTAssertEqual(funcDecl.signature.parameterList[0].textDescription, "x: borrowing Int")
+    })
+  }
+
+  func testConsumingParameter() {
+    parseDeclarationAndTest(
+      "func foo(x: consuming String)",
+      "func foo(x: consuming String)",
+      testClosure: { decl in
+      guard let funcDecl = decl as? FunctionDeclaration else {
+        XCTFail("Failed in getting a function declaration.")
+        return
+      }
+
+      XCTAssertEqual(funcDecl.signature.parameterList.count, 1)
+      XCTAssertEqual(funcDecl.signature.parameterList[0].textDescription, "x: consuming String")
+    })
+  }
 }

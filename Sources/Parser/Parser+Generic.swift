@@ -33,11 +33,29 @@ extension Parser {
   }
 
   private func parseGenericParameter() throws -> GenericParameterClause.GenericParameter {
+    // value generic parameter: `let name: Type`
+    if _lexer.match(.let) {
+      guard let name = readNamedIdentifier() else {
+        throw _raiseFatal(.expectedGenericsParameterName)
+      }
+      try match(.colon, orFatal: .expectedGenericValueParameterType)
+      let type = try parseType()
+      return .valueParameter(name, type)
+    }
+
     guard let name = readNamedIdentifier() else {
       throw _raiseFatal(.expectedGenericsParameterName)
     }
     guard _lexer.match(.colon) else {
       return .identifier(name)
+    }
+    if _lexer.match(.prefixOperator("~")) {
+      let suppressedRange = getLookedRange()
+      guard let suppressedName = readNamedIdentifier() else {
+        throw _raiseFatal(.expectedGenericTypeRestriction(name.textDescription))
+      }
+      let suppressedType = try parseIdentifierType(suppressedName, suppressedRange)
+      return .suppressedConformance(name, suppressedType)
     }
     let typeTokenRange = getLookedRange()
     switch _lexer.read([.dummyIdentifier, .protocol, .Any]) {
@@ -91,7 +109,14 @@ extension Parser {
     switch _lexer.read([.colon, .dummyBinaryOperator]) {
     case .colon:
       let typeStartLocation = getStartLocation()
-      if let name = readNamedIdentifier() {
+      if _lexer.match(.prefixOperator("~")) {
+        let suppressedRange = getLookedRange()
+        guard let suppressedName = readNamedIdentifier() else {
+          throw _raiseFatal(.expectedGenericTypeRestriction(idType.textDescription))
+        }
+        let suppressedType = try parseIdentifierType(suppressedName, suppressedRange)
+        return .suppressedConformance(idType, suppressedType)
+      } else if let name = readNamedIdentifier() {
         let firstType = try parseIdentifierType(name, idTypeRange)
         if testAmp() {
           let type = try parseProtocolCompositionType(firstType)
