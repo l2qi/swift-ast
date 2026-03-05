@@ -319,6 +319,35 @@ extension FunctionDeclaration : TTYASTDumpRepresentable {
   }
 }
 
+extension MacroDeclaration : TTYASTDumpRepresentable {
+  var ttyDump: String {
+    let head = dump("macro_decl", sourceRange)
+    var neck = "\n" + "name: \(name)".indented
+    if !attributes.isEmpty {
+      neck += "\n"
+      neck += "attributes: `\(attributes.textDescription)`".indented
+    }
+    if let accessLevel = accessLevelModifier {
+      neck += "\n"
+      neck += "access_level: \(accessLevel)".indented
+    }
+    if let genericParam = genericParameterClause {
+      neck += "\n"
+      neck += "generic_param: `\(genericParam.textDescription)`".indented
+    }
+    if let genericWhere = genericWhereClause {
+      neck += "\n"
+      neck += "generic_where: `\(genericWhere.textDescription)`".indented
+    }
+    let signatureDump = dump(signature)
+    if !signatureDump.isEmpty {
+      neck += "\n" + signatureDump.indented
+    }
+    let defDump = definition?.ttyDump ?? "<no_definition>"
+    return "\(head)\(neck)\n\(defDump.indented)"
+  }
+}
+
 extension ImportDeclaration : TTYASTDumpRepresentable {
   var ttyDump: String {
     let head = dump("import_decl", sourceRange)

@@ -138,6 +138,17 @@ extension Parser {
           startLocation: startLocation)
       }
 
+      // try parsing macro declaration
+      if case .identifier(let keyword, false) = _lexer.look().kind,
+        keyword == "macro"
+      {
+        _lexer.advance()
+        return try parseMacroDeclaration(
+          withAttributes: attrs,
+          modifiers: modifiers,
+          startLocation: startLocation)
+      }
+
       // try parsing precedence group declaration
       if attrs.isEmpty,
         modifiers.isEmpty,
@@ -728,6 +739,73 @@ extension Parser {
       members: members)
     actorDecl.setSourceRange(startLocation, endLocation)
     return actorDecl
+  }
+
+  private func parseMacroDeclaration(
+    withAttributes attrs: Attributes,
+    modifiers: DeclarationModifiers,
+    startLocation: SourceLocation
+  ) throws -> MacroDeclaration {
+    var accessLevelModifier: AccessLevelModifier?
+    if modifiers.count == 1, case .accessLevel(let modifier) = modifiers[0] {
+      accessLevelModifier = modifier
+    }
+
+    guard let name = readNamedIdentifier() else {
+      throw _raiseFatal(.missingMacroName)
+    }
+
+    let genericParameterClause = try parseGenericParameterClause()
+    let (params, paramsSrcRange) = try parseParameterClause()
+    let isAsync = _lexer.match(.async)
+    let asyncEndLocation = isAsync ? getEndLocation() : nil
+    let (throwsKind, throwsEndLocation) = try parseThrowsKind()
+    let result = try parseFunctionResult()
+
+    let signature = FunctionSignature(
+      parameterList: params, isAsync: isAsync, throwsKind: throwsKind, result: result)
+
+    let genericWhereClause = try parseGenericWhereClause()
+
+    var definition: ASTExpression?
+    if _lexer.match(.assignmentOperator) {
+      definition = try parseExpression()
+    }
+
+    var endLocation: SourceLocation
+    if let defExpr = definition {
+      endLocation = defExpr.sourceRange.end
+    } else if let lastGenericReq = genericWhereClause?.requirementList.last {
+      switch lastGenericReq {
+      case .typeConformance(_, let type):
+        endLocation = type.sourceRange.end
+      case .protocolConformance(_, let type):
+        endLocation = type.sourceRange.end
+      case .sameType(_, let type):
+        endLocation = type.sourceRange.end
+      case .suppressedConformance(_, let type):
+        endLocation = type.sourceRange.end
+      }
+    } else if let resultEndLocation = result?.type.sourceRange.end {
+      endLocation = resultEndLocation
+    } else if let throwsEndLocation = throwsEndLocation {
+      endLocation = throwsEndLocation
+    } else if let asyncEndLocation = asyncEndLocation {
+      endLocation = asyncEndLocation
+    } else {
+      endLocation = paramsSrcRange.end
+    }
+
+    let macroDecl = MacroDeclaration(
+      attributes: attrs,
+      accessLevelModifier: accessLevelModifier,
+      name: name,
+      genericParameterClause: genericParameterClause,
+      signature: signature,
+      genericWhereClause: genericWhereClause,
+      definition: definition)
+    macroDecl.setSourceRange(startLocation, endLocation)
+    return macroDecl
   }
 
   private func parseStructDeclaration(

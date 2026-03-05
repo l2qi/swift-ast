@@ -86,6 +86,8 @@ public enum ParserErrorKind : DiagnosticKind {
   case expectedCaseName
   case missingEnumName
   case enumExpectedAfterIndirect
+  /// macro declaration
+  case missingMacroName
   /// function declaration
   case unnamedParameter
   case expectedParameterType
@@ -163,6 +165,9 @@ public enum ParserErrorKind : DiagnosticKind {
   // statements
   case statementSameLineWithoutSemicolon
   case expectedOpenParenSourceLocation
+  case expectedOpenParenDiagnosticDirective
+  case expectedStringLiteralDiagnosticDirective
+  case expectedCloseParenDiagnosticDirective
   case expectedValidCompilerCtrlKeyword
   case invalidLabelOnStatement
   case expectedCaseColon
@@ -276,6 +281,8 @@ public enum ParserErrorKind : DiagnosticKind {
       return "expect a case name for enum declaration"
     case .missingEnumName:
       return "expected an enum name"
+    case .missingMacroName:
+      return "expected a macro name"
     case .unnamedParameter:
       return "expected parameter name followed by ':'"
     case .expectedParameterType:
@@ -406,6 +413,12 @@ public enum ParserErrorKind : DiagnosticKind {
       return "consecutive statements on a line must be separated by ';'"
     case .expectedOpenParenSourceLocation:
       return "expected '(' following '#sourceLocation'"
+    case .expectedOpenParenDiagnosticDirective:
+      return "expected '(' in diagnostic directive"
+    case .expectedStringLiteralDiagnosticDirective:
+      return "expected string literal in diagnostic directive"
+    case .expectedCloseParenDiagnosticDirective:
+      return "expected ')' in diagnostic directive"
     case .expectedValidCompilerCtrlKeyword:
       return "expected a valid keyword after '#' in compiler-control statement"
     case .invalidLabelOnStatement:

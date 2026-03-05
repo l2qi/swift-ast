@@ -29,6 +29,7 @@ public protocol ASTVisitor {
   func visit(_: FunctionDeclaration) throws -> Bool
   func visit(_: ImportDeclaration) throws -> Bool
   func visit(_: InitializerDeclaration) throws -> Bool
+  func visit(_: MacroDeclaration) throws -> Bool
   func visit(_: OperatorDeclaration) throws -> Bool
   func visit(_: PrecedenceGroupDeclaration) throws -> Bool
   func visit(_: ProtocolDeclaration) throws -> Bool
@@ -70,6 +71,7 @@ public protocol ASTVisitor {
   func visit(_: InitializerExpression) throws -> Bool
   func visit(_: KeyPathStringExpression) throws -> Bool
   func visit(_: LiteralExpression) throws -> Bool
+  func visit(_: MacroExpansionExpression) throws -> Bool
   func visit(_: OptionalChainingExpression) throws -> Bool
   func visit(_: ParenthesizedExpression) throws -> Bool
   func visit(_: PostfixOperatorExpression) throws -> Bool
@@ -131,6 +133,10 @@ extension ASTVisitor {
   }
 
   public func visit(_: InitializerDeclaration) throws -> Bool {
+    return true
+  }
+
+  public func visit(_: MacroDeclaration) throws -> Bool {
     return true
   }
 
@@ -275,6 +281,10 @@ extension ASTVisitor {
   }
 
   public func visit(_: LiteralExpression) throws -> Bool {
+    return true
+  }
+
+  public func visit(_: MacroExpansionExpression) throws -> Bool {
     return true
   }
 

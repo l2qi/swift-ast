@@ -229,6 +229,47 @@ extension KeyPathStringExpression : TTYASTDumpRepresentable {
   }
 }
 
+extension MacroExpansionExpression : TTYASTDumpRepresentable {
+  var ttyDump: String {
+    let head = dump("macro_expansion_expr", sourceRange)
+    var body = "macro_name: `\(macroName)`".indented
+    if let genericArgumentClause = genericArgumentClause {
+      body += "\n" + "generic_argument: `\(genericArgumentClause.textDescription)`".indented
+    }
+    if let argumentClause = argumentClause {
+      body += "\n" + "arguments:".indented
+      if argumentClause.isEmpty {
+        body += " <empty>"
+      }
+      for (index, arg) in argumentClause.enumerated() {
+        body += "\n" + "\(index): ".indented
+        switch arg {
+        case .expression(let expr):
+          body += "kind: `expression`\n"
+          body += expr.ttyDump.indented.indented
+        case let .namedExpression(identifier, expr):
+          body += "kind: `named_expression`, name: `\(identifier)`\n"
+          body += expr.ttyDump.indented.indented
+        case .memoryReference(let expr):
+          body += "kind: `memory_reference`\n"
+          body += expr.ttyDump.indented.indented
+        case let .namedMemoryReference(name, expr):
+          body += "kind: `named_memory_reference`, name: `\(name)\n"
+          body += expr.ttyDump.indented.indented
+        case .operator(let op):
+          body += "kind: `operator`, operator: `\(op)`"
+        case let .namedOperator(identifier, op):
+          body += "kind: `named_operator`, name: `\(identifier)`, operator: `\(op)`"
+        }
+      }
+    }
+    if let trailingClosure = trailingClosure {
+      body += "\n" + "trailing_\(trailingClosure.ttyDump)".indented
+    }
+    return "\(head)\n\(body)"
+  }
+}
+
 extension LiteralExpression : TTYASTDumpRepresentable {
   var ttyDump: String {
     let head = dump("literal_expr", sourceRange)

@@ -161,7 +161,6 @@ class ParserErrorKindTests : XCTestCase {
     parseProblematic("_ = \\foo.", .fatal, .expectedKeyPathComponentIdentifierOrPostfix)
     parseProblematic("_ = \\foo.bar.", .fatal, .expectedKeyPathComponentIdentifierOrPostfix)
     parseProblematic("_ = #func", .fatal, .expectedObjectLiteralIdentifier)
-    parseProblematic("_ = #abc", .fatal, .expectedObjectLiteralIdentifier)
     parseProblematic("_ = #keyPath", .fatal, .expectedOpenParenKeyPathStringExpr)
     parseProblematic("_ = #keyPath(a", .fatal, .expectedCloseParenKeyPathStringExpr)
     parseProblematic("_ = #selector", .fatal, .expectedOpenParenSelectorExpr)
