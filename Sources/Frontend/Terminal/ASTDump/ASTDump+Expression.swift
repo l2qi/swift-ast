@@ -45,6 +45,10 @@ extension ClosureExpression : TTYASTDumpRepresentable {
         body += "\n"
         body += "capture_list: `\(captureList.map({ $0.textDescription }).joined(separator: ", "))`".indented
       }
+      if !signature.attributes.isEmpty {
+        body += "\n"
+        body += "attributes: `\(signature.attributes.textDescription)`".indented
+      }
       if let parameterClause = signature.parameterClause {
         body += "\n"
         body += "parameters: `\(parameterClause.textDescription)`".indented

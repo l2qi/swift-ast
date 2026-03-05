@@ -1531,6 +1531,18 @@ extension Parser {
       }
     }
 
+    var closureAttributes: Attributes = []
+    if _lexer.look().kind == .at {
+      let attrCp = _lexer.checkPoint()
+      let attrDiagnosticCp = _diagnosticPool.checkPoint()
+      do {
+        closureAttributes = try parseAttributes()
+      } catch {
+        _lexer.restore(fromCheckpoint: attrCp)
+        _diagnosticPool.restore(fromCheckpoint: attrDiagnosticCp)
+      }
+    }
+
     var parameterClause: ClosureExpression.Signature.ParameterClause?
     if _lexer.match(.leftParen) {
       if let params = parseParameterList() {
@@ -1563,10 +1575,16 @@ extension Parser {
       let funcResult = try parseFunctionResult()
       signature = ClosureExpression.Signature(
         captureList: captureList,
+        attributes: closureAttributes,
         parameterClause: parameterClause,
         isAsync: isAsync,
         canThrow: canThrow,
         functionResult: funcResult)
+    } else if !closureAttributes.isEmpty {
+      let captureList = signature?.captureList
+      signature = ClosureExpression.Signature(
+        captureList: captureList,
+        attributes: closureAttributes)
     }
 
     if signature != nil, !_lexer.match(.in) {

@@ -768,6 +768,129 @@ class ParserClosureExpressionTests: XCTestCase {
     })
   }
 
+  func testAttributeOnly() {
+    parseExpressionAndTest("{ @Sendable in }", "{ @Sendable in }", testClosure: { expr in
+      guard let closureExpr = expr as? ClosureExpression else {
+        XCTFail("Failed in getting a closure expression.")
+        return
+      }
+
+      guard let signature = closureExpr.signature else {
+        XCTFail("Failed in getting a closure signature.")
+        return
+      }
+      XCTAssertEqual(signature.attributes.count, 1)
+      XCTAssertEqual(signature.attributes.textDescription, "@Sendable")
+      XCTAssertNil(signature.captureList)
+      XCTAssertNil(signature.parameterClause)
+      XCTAssertFalse(signature.isAsync)
+      XCTAssertFalse(signature.canThrow)
+      XCTAssertNil(signature.functionResult)
+
+      XCTAssertNil(closureExpr.statements)
+    })
+  }
+
+  func testAttributeWithParameters() {
+    parseExpressionAndTest(
+      "{ @Sendable (x: Int) -> Void in }",
+      "{ @Sendable (x: Int) -> Void in }",
+      testClosure: { expr in
+      guard let closureExpr = expr as? ClosureExpression else {
+        XCTFail("Failed in getting a closure expression.")
+        return
+      }
+
+      guard let signature = closureExpr.signature,
+        let clause = signature.parameterClause,
+        case .parameterList(let params) = clause else {
+        XCTFail("Failed in getting a closure signature.")
+        return
+      }
+      XCTAssertEqual(signature.attributes.count, 1)
+      XCTAssertEqual(signature.attributes.textDescription, "@Sendable")
+      XCTAssertEqual(params.count, 1)
+      XCTAssertEqual(params[0].name.textDescription, "x")
+      XCTAssertEqual(params[0].typeAnnotation?.textDescription, ": Int")
+      XCTAssertNotNil(signature.functionResult)
+      XCTAssertEqual(signature.functionResult?.type.textDescription, "Void")
+
+      XCTAssertNil(closureExpr.statements)
+    })
+  }
+
+  func testAttributeWithCaptureList() {
+    parseExpressionAndTest(
+      "{ [weak self] @Sendable in }",
+      "{ [weak self] @Sendable in }",
+      testClosure: { expr in
+      guard let closureExpr = expr as? ClosureExpression else {
+        XCTFail("Failed in getting a closure expression.")
+        return
+      }
+
+      guard let signature = closureExpr.signature,
+        let captureList = signature.captureList else {
+        XCTFail("Failed in getting a closure signature.")
+        return
+      }
+      XCTAssertEqual(captureList.count, 1)
+      XCTAssertEqual(captureList[0].specifier, .weak)
+      XCTAssertEqual(signature.attributes.count, 1)
+      XCTAssertEqual(signature.attributes.textDescription, "@Sendable")
+      XCTAssertNil(signature.parameterClause)
+
+      XCTAssertNil(closureExpr.statements)
+    })
+  }
+
+  func testAttributeWithIdentifierList() {
+    parseExpressionAndTest(
+      "{ @Sendable x, y in }",
+      "{ @Sendable x, y in }",
+      testClosure: { expr in
+      guard let closureExpr = expr as? ClosureExpression else {
+        XCTFail("Failed in getting a closure expression.")
+        return
+      }
+
+      guard let signature = closureExpr.signature,
+        let clause = signature.parameterClause,
+        case .identifierList(let ids) = clause else {
+        XCTFail("Failed in getting a closure signature.")
+        return
+      }
+      XCTAssertEqual(signature.attributes.count, 1)
+      XCTAssertEqual(signature.attributes.textDescription, "@Sendable")
+      ASTTextEqual(ids, ["x", "y"])
+
+      XCTAssertNil(closureExpr.statements)
+    })
+  }
+
+  func testMultipleClosureAttributes() {
+    parseExpressionAndTest(
+      "{ @Sendable @escaping in }",
+      "{ @Sendable @escaping in }",
+      testClosure: { expr in
+      guard let closureExpr = expr as? ClosureExpression else {
+        XCTFail("Failed in getting a closure expression.")
+        return
+      }
+
+      guard let signature = closureExpr.signature else {
+        XCTFail("Failed in getting a closure signature.")
+        return
+      }
+      XCTAssertEqual(signature.attributes.count, 2)
+      XCTAssertEqual(signature.attributes[0].name.textDescription, "Sendable")
+      XCTAssertEqual(signature.attributes[1].name.textDescription, "escaping")
+      XCTAssertNil(signature.parameterClause)
+
+      XCTAssertNil(closureExpr.statements)
+    })
+  }
+
   func testSourceRange() {
     let testExprs: [(testString: String, expectedEndColumn: Int)] = [
       ("{}", 3),
