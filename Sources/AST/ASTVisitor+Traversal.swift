@@ -531,6 +531,8 @@ extension ASTVisitor {
       return try traverse(expr)
     case let expr as ClosureExpression:
       return try traverse(expr)
+    case let expr as ConditionalCompilationExpression:
+      return try traverse(expr)
     case let expr as ExplicitMemberExpression:
       return try traverse(expr)
     case let expr as ForcedValueExpression:
@@ -917,5 +919,14 @@ extension ASTVisitor {
 
   public func traverse(_ expr: WildcardExpression) throws -> Bool {
     return try visit(expr)
+  }
+
+  public func traverse(_ expr: ConditionalCompilationExpression) throws -> Bool {
+    guard try visit(expr) else { return false }
+    for clause in expr.clauses {
+      guard try traverse(clause.condition) else { return false }
+      guard try traverse(clause.expression) else { return false }
+    }
+    return try traverse(expr.endifStatement)
   }
 }

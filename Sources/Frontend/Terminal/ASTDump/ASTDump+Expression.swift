@@ -79,6 +79,19 @@ extension ClosureExpression : TTYASTDumpRepresentable {
   }
 }
 
+extension ConditionalCompilationExpression : TTYASTDumpRepresentable {
+  var ttyDump: String {
+    let head = dump("conditional_compilation_expr", sourceRange)
+    var body = "base: \(base.ttyDump)".indented
+    for (index, clause) in clauses.enumerated() {
+      body += "\n" + "\(index): ".indented + clause.condition.ttyDump
+      body += "\n" + clause.expression.ttyDump.indented.indented
+    }
+    body += "\n" + endifStatement.ttyDump.indented
+    return "\(head)\n\(body)"
+  }
+}
+
 extension ExplicitMemberExpression : TTYASTDumpRepresentable {
   var ttyDump: String {
     let head = dump("explicit_member_expr", sourceRange)
