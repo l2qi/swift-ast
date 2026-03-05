@@ -102,6 +102,13 @@ private class FoldingVisitor : ASTVisitor {
     return true
   }
 
+  func visit(_ decl: MacroDeclaration) throws -> Bool {
+    let foldedSignature = foldFunctionSignature(decl.signature)
+    decl.replaceSignature(with: foldedSignature)
+
+    return true
+  }
+
   func visit(_ decl: InitializerDeclaration) throws -> Bool {
     for i in decl.parameterList.indices {
       let p = decl.parameterList[i]
@@ -388,6 +395,26 @@ private class FoldingVisitor : ASTVisitor {
         case .namedMemoryReference(_, let argExpr):
           continue
         */
+        default:
+          continue
+        }
+      }
+    }
+
+    return true
+  }
+
+  func visit(_ expr: MacroExpansionExpression) throws -> Bool {
+    if let argumentList = expr.argumentClause {
+      for i in argumentList.indices {
+        let argument = argumentList[i]
+        switch argument {
+        case .expression(let argExpr):
+          let foldedExpr = foldExpression(argExpr)
+          expr.replaceArgument(at: i, with: .expression(foldedExpr))
+        case let .namedExpression(name, argExpr):
+          let foldedExpr = foldExpression(argExpr)
+          expr.replaceArgument(at: i, with: .namedExpression(name, foldedExpr))
         default:
           continue
         }

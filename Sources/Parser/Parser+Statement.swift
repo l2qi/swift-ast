@@ -208,6 +208,14 @@ extension Parser {
         }
       case "endif":
         kind = .endif
+      case "warning", "error":
+        try match(.leftParen, orFatal: .expectedOpenParenDiagnosticDirective)
+        guard case let .staticStringLiteral(message, _) = _lexer.read(.dummyStaticStringLiteral) else {
+          throw _raiseFatal(.expectedStringLiteralDiagnosticDirective)
+        }
+        endLocation = getEndLocation()
+        try match(.rightParen, orFatal: .expectedCloseParenDiagnosticDirective)
+        kind = id == "warning" ? .warning(message) : .error(message)
       case "sourceLocation":
         try match(.leftParen, orFatal: .expectedOpenParenSourceLocation)
         if _lexer.match(.rightParen) {

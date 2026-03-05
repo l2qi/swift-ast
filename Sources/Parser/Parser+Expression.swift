@@ -942,8 +942,74 @@ extension Parser {
     case "colorLiteral", "fileLiteral", "imageLiteral":
       return try parsePlaygroundLiteral(magicWord, startLocation)
     default:
-      throw _raiseFatal(.expectedObjectLiteralIdentifier)
+      return try parseMacroExpansionExpression(macroName: magicWord, startLocation: startLocation)
     }
+  }
+
+  private func parseMacroExpansionExpression(
+    macroName: String, startLocation: SourceLocation
+  ) throws -> MacroExpansionExpression {
+    let genericArgumentClause = parseGenericArgumentClause()
+
+    var argumentClause: [FunctionCallExpression.Argument]?
+    var endLocation = getEndLocation()
+
+    if _lexer.match(.leftParen) {
+      endLocation = getEndLocation()
+      if _lexer.match(.rightParen) {
+        argumentClause = []
+      } else {
+        argumentClause = try parseMacroArgumentList()
+        endLocation = getEndLocation()
+        try match(.rightParen, orFatal: .expectedCloseParenFuncCall)
+      }
+    }
+
+    var trailingClosure: ClosureExpression?
+    if _lexer.look().kind == .leftBrace && isPotentialTrailingClosure() {
+      let closureStartLocation = getStartLocation()
+      _lexer.advance()
+      trailingClosure = try parseClosureExpression(startLocation: closureStartLocation)
+      endLocation = trailingClosure!.sourceRange.end
+    }
+
+    let macroExpr = MacroExpansionExpression(
+      macroName: macroName,
+      genericArgumentClause: genericArgumentClause,
+      argumentClause: argumentClause,
+      trailingClosure: trailingClosure)
+    macroExpr.setSourceRange(startLocation, endLocation)
+    return macroExpr
+  }
+
+  private func parseMacroArgumentList() throws -> [FunctionCallExpression.Argument] {
+    var arguments: [FunctionCallExpression.Argument] = []
+    repeat {
+      if _lexer.look(ahead: 1).kind == .colon && _lexer.look().kind != .leftSquare {
+        guard let id = readNamedIdentifier() else {
+          throw _raiseFatal(.expectedParameterNameFuncCall)
+        }
+        _lexer.advance()
+        switch _lexer.read(.prefixAmp) {
+        case .prefixAmp:
+          let argExpr = try parseExpression()
+          arguments.append(.namedMemoryReference(id, argExpr))
+        default:
+          let argExpr = try parseExpression()
+          arguments.append(.namedExpression(id, argExpr))
+        }
+      } else {
+        switch _lexer.read(.prefixAmp) {
+        case .prefixAmp:
+          let argExpr = try parseExpression()
+          arguments.append(.memoryReference(argExpr))
+        default:
+          let argExpr = try parseExpression()
+          arguments.append(.expression(argExpr))
+        }
+      }
+    } while _lexer.match(.comma)
+    return arguments
   }
 
   private func parseKeyPathStringExpression(startLocation: SourceLocation) throws -> KeyPathStringExpression {

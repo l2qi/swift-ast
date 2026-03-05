@@ -58,6 +58,10 @@ extension CompilerControlStatement : TTYASTDumpRepresentable {
       if let fileName = fileName, let lineNumber = lineNumber {
         body += ", file_name: `\(fileName)`, line_number: `\(lineNumber)`"
       }
+    case .warning(let message):
+      body += "kind: `warning`, message: `\(message)`"
+    case .error(let message):
+      body += "kind: `error`, message: `\(message)`"
     }
     return "\(head)\n\(body)"
   }

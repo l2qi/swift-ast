@@ -139,6 +139,12 @@ extension InitializerExpression : TTYASTPrintRepresentable {
   }
 }
 
+extension MacroExpansionExpression : TTYASTPrintRepresentable {
+  var ttyPrint: String {
+    return textDescription
+  }
+}
+
 extension LiteralExpression : TTYASTPrintRepresentable {
   var ttyPrint: String {
     switch kind {

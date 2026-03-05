@@ -28,6 +28,10 @@ public class CompilerControlStatement : ASTNode, Statement {
 
     // line control
     case sourceLocation(String?, Int?)
+
+    // diagnostic directives
+    case warning(String)
+    case error(String)
   }
 
   public let kind: Kind
@@ -53,6 +57,10 @@ public class CompilerControlStatement : ASTNode, Statement {
         return "#sourceLocation(file: \"\(fileName)\", line: \(lineNumber))"
       }
       return "#sourceLocation()"
+    case .warning(let message):
+      return "#warning(\"\(message)\")"
+    case .error(let message):
+      return "#error(\"\(message)\")"
     }
   }
 }

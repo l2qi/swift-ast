@@ -126,6 +126,15 @@ private class AssignmentVisitor : ASTVisitor {
     return true
   }
 
+  func visit(_ decl: MacroDeclaration) throws -> Bool {
+    for param in decl.signature.parameterList {
+      param.defaultArgumentClause?.setLexicalParent(decl)
+    }
+    decl.definition?.setLexicalParent(decl)
+
+    return true
+  }
+
   func visit(_ decl: InitializerDeclaration) throws -> Bool {
     decl.body.setLexicalParent(decl)
     for param in decl.parameterList {
@@ -376,6 +385,26 @@ private class AssignmentVisitor : ASTVisitor {
 
   func visit(_ expr: InitializerExpression) throws -> Bool {
     expr.postfixExpression.setLexicalParent(expr)
+    return true
+  }
+
+  func visit(_ expr: MacroExpansionExpression) throws -> Bool {
+    for arg in expr.argumentClause ?? [] {
+      switch arg {
+      case .expression(let e):
+        e.setLexicalParent(expr)
+      case .namedExpression(_, let e):
+        e.setLexicalParent(expr)
+      case .memoryReference(let e):
+        e.setLexicalParent(expr)
+      case .namedMemoryReference(_, let e):
+        e.setLexicalParent(expr)
+      default:
+        continue
+      }
+    }
+    expr.trailingClosure?.setLexicalParent(expr)
+
     return true
   }
 

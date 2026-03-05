@@ -142,6 +142,42 @@ class ParserCompilerControlStatementTests: XCTestCase {
     })
   }
 
+  // MARK: - Diagnostic Directives
+
+  func testWarning() {
+    parseStatementAndTest(
+      "#warning(\"message\")\nreturn",
+      "#warning(\"message\")",
+      testClosure: { stmt in
+      guard let compCtrlStmt = stmt as? CompilerControlStatement else {
+        XCTFail("Failed in parsing a compiler control statement.")
+        return
+      }
+      guard case .warning(let message) = compCtrlStmt.kind else {
+        XCTFail("Failed in getting a warning directive.")
+        return
+      }
+      XCTAssertEqual(message, "message")
+    })
+  }
+
+  func testError() {
+    parseStatementAndTest(
+      "#error(\"something went wrong\")\nreturn",
+      "#error(\"something went wrong\")",
+      testClosure: { stmt in
+      guard let compCtrlStmt = stmt as? CompilerControlStatement else {
+        XCTFail("Failed in parsing a compiler control statement.")
+        return
+      }
+      guard case .error(let message) = compCtrlStmt.kind else {
+        XCTFail("Failed in getting an error directive.")
+        return
+      }
+      XCTAssertEqual(message, "something went wrong")
+    })
+  }
+
   // MARK: - Phase 6: New Compilation Conditions
 
   func testCompilerCondition() {

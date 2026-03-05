@@ -52,6 +52,8 @@ extension ASTVisitor {
       return try traverse(decl)
     case let decl as InitializerDeclaration:
       return try traverse(decl)
+    case let decl as MacroDeclaration:
+      return try traverse(decl)
     case let decl as OperatorDeclaration:
       return try traverse(decl)
     case let decl as PrecedenceGroupDeclaration:
@@ -181,6 +183,22 @@ extension ASTVisitor {
     }
 
     return try traverse(decl.body)
+  }
+
+  public func traverse(_ decl: MacroDeclaration) throws -> Bool {
+    guard try visit(decl) else { return false }
+
+    for param in decl.signature.parameterList {
+      if let defaultArg = param.defaultArgumentClause {
+        guard try traverse(defaultArg) else { return false }
+      }
+    }
+
+    if let definition = decl.definition {
+      guard try traverse(definition) else { return false }
+    }
+
+    return true
   }
 
   public func traverse(_ decl: OperatorDeclaration) throws -> Bool {
@@ -529,6 +547,8 @@ extension ASTVisitor {
       return try traverse(expr)
     case let expr as LiteralExpression:
       return try traverse(expr)
+    case let expr as MacroExpansionExpression:
+      return try traverse(expr)
     case let expr as OptionalChainingExpression:
       return try traverse(expr)
     case let expr as ParenthesizedExpression:
@@ -689,6 +709,32 @@ extension ASTVisitor {
     default:
       return true
     }
+  }
+
+  public func traverse(_ expr: MacroExpansionExpression) throws -> Bool {
+    guard try visit(expr) else { return false }
+
+    if let argumentList = expr.argumentClause {
+      for argument in argumentList {
+        switch argument {
+        case .expression(let argExpr):
+          guard try traverse(argExpr) else { return false }
+        case .namedExpression(_, let argExpr):
+          guard try traverse(argExpr) else { return false }
+        case .memoryReference(let argExpr):
+          guard try traverse(argExpr) else { return false }
+        case .namedMemoryReference(_, let argExpr):
+          guard try traverse(argExpr) else { return false }
+        default:
+          continue
+        }
+      }
+    }
+    if let closureExpr = expr.trailingClosure {
+      guard try traverse(closureExpr) else { return false }
+    }
+
+    return true
   }
 
   public func traverse(_ expr: OptionalChainingExpression) throws -> Bool {

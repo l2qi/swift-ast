@@ -239,6 +239,12 @@ extension FunctionDeclaration : TTYASTPrintRepresentable {
   }
 }
 
+extension MacroDeclaration : TTYASTPrintRepresentable {
+  var ttyPrint: String {
+    return textDescription
+  }
+}
+
 extension InitializerDeclaration : TTYASTPrintRepresentable {
   var ttyPrint: String {
     let attrsText = attributes.isEmpty ? "" : "\(attributes.textDescription) "
