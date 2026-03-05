@@ -177,6 +177,24 @@ extension IdentifierExpression : TTYASTDumpRepresentable {
   }
 }
 
+extension IfExpression : TTYASTDumpRepresentable {
+  var ttyDump: String {
+    let head = dump("if_expr", sourceRange)
+    let conditions = dump(conditionList).indented
+    let body = codeBlock.ttyDump.indented
+    let neck = "\(head)\n\(conditions)\n\(body)"
+
+    switch elseClause {
+    case .else(let codeBlock):
+      return "\(neck)\n" +
+        "else:\n\(codeBlock.ttyDump)".indented
+    case .elseif(let ifExpr):
+      return "\(neck)\n" +
+        "elseif:\n\(ifExpr.ttyDump)".indented
+    }
+  }
+}
+
 extension ImplicitMemberExpression : TTYASTDumpRepresentable {
   var ttyDump: String {
     let head = dump("implicit_member_expr", sourceRange)
@@ -455,6 +473,46 @@ extension SuperclassExpression : TTYASTDumpRepresentable {
       body += dump(args).indented
     case .initializer:
       body += "kind: `initializer`"
+    }
+    return "\(head)\n\(body)"
+  }
+}
+
+extension SwitchExpression : TTYASTDumpRepresentable {
+  var ttyDump: String {
+    let head = dump("switch_expr", sourceRange)
+    var body = expression.ttyDump.indented
+    body += "\n"
+    body += "cases:".indented
+    if cases.isEmpty {
+      body += " <empty>"
+    }
+    for (index, eachCase) in cases.enumerated() {
+      body += "\n"
+      body += "\(index): ".indented
+      switch eachCase {
+      case let .case(items, stmts):
+        body += "kind: `case`"
+        body += "\n"
+        body += "items:".indented.indented
+        if items.isEmpty {
+          body += " <empty>"
+        }
+        for (itemIndex, item) in items.enumerated() {
+          body += "\n"
+          body += "\(itemIndex): pattern: `\(item.pattern)`".indented.indented
+          if let whereExpr = item.whereExpression {
+            body += "\n"
+            body += "where: \(whereExpr.ttyDump)".indented.indented.indented
+          }
+        }
+        body += "\n"
+        body += stmts.map({ $0.ttyDump }).joined(separator: "\n").indented.indented
+      case .default(let stmts):
+        body += "kind: `default`"
+        body += "\n"
+        body += stmts.map({ $0.ttyDump }).joined(separator: "\n").indented.indented
+      }
     }
     return "\(head)\n\(body)"
   }

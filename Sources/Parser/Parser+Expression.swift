@@ -638,6 +638,7 @@ extension Parser {
       .nil, .leftSquare, .hash, .backslash,
       .self, .super, .leftBrace,
       .leftParen, .dot, .underscore,
+      .if, .switch,
     ])
     switch matched {
     ////// literal expression, selector expression, and key path string expression
@@ -708,6 +709,11 @@ extension Parser {
       let idExpr = IdentifierExpression(kind: .bindingReference(refVar))
       idExpr.setSourceRange(lookedRange)
       return idExpr
+    ////// if expression and switch expression
+    case .if:
+      return try parseIfExpression(startLocation: lookedRange.start)
+    case .switch:
+      return try parseSwitchExpression(startLocation: lookedRange.start)
     default:
       // keyword used as identifier
       if let id = matched.namedIdentifier?.id {
@@ -1010,6 +1016,78 @@ extension Parser {
       }
     } while _lexer.match(.comma)
     return arguments
+  }
+
+  private func parseIfExpression(
+    startLocation: SourceLocation
+  ) throws -> IfExpression {
+    let conditionList = try parseConditionList()
+    let codeBlock = try parseCodeBlock()
+
+    guard _lexer.match(.else) else {
+      throw _raiseFatal(.expectedElseForIfExpr)
+    }
+
+    let nestedStartLocation = getStartLocation()
+    if _lexer.match(.if) {
+      let elseIfExpr = try parseIfExpression(startLocation: nestedStartLocation)
+      let ifExpr = IfExpression(
+        conditionList: conditionList,
+        codeBlock: codeBlock,
+        elseClause: .elseif(elseIfExpr))
+      ifExpr.setSourceRange(startLocation, elseIfExpr.sourceRange.end)
+      return ifExpr
+    }
+
+    let elseCodeBlock = try parseCodeBlock()
+    let ifExpr = IfExpression(
+      conditionList: conditionList,
+      codeBlock: codeBlock,
+      elseClause: .else(elseCodeBlock))
+    ifExpr.setSourceRange(startLocation, elseCodeBlock.sourceRange.end)
+    return ifExpr
+  }
+
+  private func parseSwitchExpression(
+    startLocation: SourceLocation
+  ) throws -> SwitchExpression {
+    let noTrailing = ParserExpressionConfig(parseTrailingClosure: false)
+    let expr = try parseExpression(config: noTrailing)
+    try match(.leftBrace, orFatal: .leftBraceExpected("switch expression"))
+    var cases: [SwitchStatement.Case] = []
+    var examined = _lexer.examine([.case, .default])
+    while examined.0 {
+      switch examined.1 {
+      case .case:
+        var itemList: [SwitchStatement.Case.Item] = []
+        repeat {
+          let pattern = try parsePattern(config: ParserPatternConfig(forPatternMatching: true))
+          var whereExpr: ASTExpression?
+          if _lexer.match(.where) {
+            whereExpr = try parseExpression(config: noTrailing)
+          }
+          let item = SwitchStatement.Case.Item(pattern: pattern, whereExpression: whereExpr)
+          itemList.append(item)
+        } while _lexer.match(.comma)
+        try match(.colon, orFatal: .expectedCaseColon)
+        let stmts = try parseStatements()
+        try assert(!stmts.isEmpty, orFatal: .caseStmtWithoutBody("case"))
+        cases.append(.case(itemList, stmts))
+      case .default:
+        try match(.colon, orFatal: .expectedDefaultColon)
+        let stmts = try parseStatements()
+        try assert(!stmts.isEmpty, orFatal: .caseStmtWithoutBody("default"))
+        cases.append(.default(stmts))
+      default:
+        break
+      }
+      examined = _lexer.examine([.case, .default])
+    }
+    let endLocation = getEndLocation()
+    try match(.rightBrace, orFatal: .rightBraceExpected("switch expression"))
+    let switchExpr = SwitchExpression(expression: expr, cases: cases)
+    switchExpr.setSourceRange(startLocation, endLocation)
+    return switchExpr
   }
 
   private func parseKeyPathStringExpression(startLocation: SourceLocation) throws -> KeyPathStringExpression {

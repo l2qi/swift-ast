@@ -145,6 +145,18 @@ extension MacroExpansionExpression : TTYASTPrintRepresentable {
   }
 }
 
+extension IfExpression : TTYASTPrintRepresentable {
+  var ttyPrint: String {
+    return textDescription
+  }
+}
+
+extension SwitchExpression : TTYASTPrintRepresentable {
+  var ttyPrint: String {
+    return textDescription
+  }
+}
+
 extension LiteralExpression : TTYASTPrintRepresentable {
   var ttyPrint: String {
     switch kind {
