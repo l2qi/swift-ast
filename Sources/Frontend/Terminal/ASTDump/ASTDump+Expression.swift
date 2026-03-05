@@ -151,6 +151,10 @@ extension FunctionCallExpression : TTYASTDumpRepresentable {
     if let trailingClosure = trailingClosure {
       body += "\n" + "trailing_\(trailingClosure.ttyDump)".indented
     }
+    for (label, closure) in additionalTrailingClosures {
+      body += "\n" + "additional_trailing_label: `\(label)`".indented
+      body += "\n" + closure.ttyDump.indented
+    }
     return "\(head)\n\(body)"
   }
 }
@@ -283,6 +287,10 @@ extension MacroExpansionExpression : TTYASTDumpRepresentable {
     }
     if let trailingClosure = trailingClosure {
       body += "\n" + "trailing_\(trailingClosure.ttyDump)".indented
+    }
+    for (label, closure) in additionalTrailingClosures {
+      body += "\n" + "additional_trailing_label: `\(label)`".indented
+      body += "\n" + closure.ttyDump.indented
     }
     return "\(head)\n\(body)"
   }

@@ -368,8 +368,13 @@ extension Parser {
         resultExpr = optExpr
       case .leftBrace:
         let trailingClosure = try parseClosureExpression(startLocation: tokenRange.start)
-        let funcCallExpr = FunctionCallExpression(postfixExpression: resultExpr, trailingClosure: trailingClosure)
-        funcCallExpr.setSourceRange(resultExpr.sourceRange.start, trailingClosure.sourceRange.end)
+        let additionalClosures = try parseAdditionalTrailingClosures()
+        let endLoc = additionalClosures.last?.1.sourceRange.end ?? trailingClosure.sourceRange.end
+        let funcCallExpr = FunctionCallExpression(
+          postfixExpression: resultExpr,
+          trailingClosure: trailingClosure,
+          additionalTrailingClosures: additionalClosures)
+        funcCallExpr.setSourceRange(resultExpr.sourceRange.start, endLoc)
         resultExpr = funcCallExpr
       default:
         break
@@ -457,11 +462,13 @@ extension Parser {
         let closureStartLocation = getStartLocation()
         _lexer.advance()
         let trailingClosure = try parseClosureExpression(startLocation: closureStartLocation)
-        endLocation = trailingClosure.sourceRange.end
+        let additionalClosures = try parseAdditionalTrailingClosures()
+        endLocation = additionalClosures.last?.1.sourceRange.end ?? trailingClosure.sourceRange.end
         funcCallExpr = FunctionCallExpression(
           postfixExpression: expr,
           argumentClause: [],
-          trailingClosure: trailingClosure)
+          trailingClosure: trailingClosure,
+          additionalTrailingClosures: additionalClosures)
       } else {
         funcCallExpr = FunctionCallExpression(postfixExpression: expr, argumentClause: [])
       }
@@ -479,11 +486,13 @@ extension Parser {
       let closureStartLocation = getStartLocation()
       _lexer.advance()
       let trailingClosure = try parseClosureExpression(startLocation: closureStartLocation)
-      endLocation = trailingClosure.sourceRange.end
+      let additionalClosures = try parseAdditionalTrailingClosures()
+      endLocation = additionalClosures.last?.1.sourceRange.end ?? trailingClosure.sourceRange.end
       funcCallExpr = FunctionCallExpression(
         postfixExpression: expr,
         argumentClause: argumentList,
-        trailingClosure: trailingClosure)
+        trailingClosure: trailingClosure,
+        additionalTrailingClosures: additionalClosures)
     } else {
       funcCallExpr = FunctionCallExpression(postfixExpression: expr, argumentClause: argumentList)
     }
@@ -972,18 +981,24 @@ extension Parser {
     }
 
     var trailingClosure: ClosureExpression?
+    var additionalClosures: [(Identifier, ClosureExpression)] = []
     if _lexer.look().kind == .leftBrace && isPotentialTrailingClosure() {
       let closureStartLocation = getStartLocation()
       _lexer.advance()
       trailingClosure = try parseClosureExpression(startLocation: closureStartLocation)
       endLocation = trailingClosure!.sourceRange.end
+      additionalClosures = try parseAdditionalTrailingClosures()
+      if let last = additionalClosures.last {
+        endLocation = last.1.sourceRange.end
+      }
     }
 
     let macroExpr = MacroExpansionExpression(
       macroName: macroName,
       genericArgumentClause: genericArgumentClause,
       argumentClause: argumentClause,
-      trailingClosure: trailingClosure)
+      trailingClosure: trailingClosure,
+      additionalTrailingClosures: additionalClosures)
     macroExpr.setSourceRange(startLocation, endLocation)
     return macroExpr
   }
@@ -1016,6 +1031,22 @@ extension Parser {
       }
     } while _lexer.match(.comma)
     return arguments
+  }
+
+  private func parseAdditionalTrailingClosures() throws -> [(Identifier, ClosureExpression)] {
+    var additional: [(Identifier, ClosureExpression)] = []
+    while _lexer.look().kind.namedIdentifier != nil
+      && _lexer.look(ahead: 1).kind == .colon
+      && _lexer.look(ahead: 2).kind == .leftBrace
+    {
+      guard let label = readNamedIdentifier() else { break }
+      _lexer.advance() // consume colon
+      let closureStartLocation = getStartLocation()
+      _lexer.advance() // consume left brace
+      let closure = try parseClosureExpression(startLocation: closureStartLocation)
+      additional.append((label, closure))
+    }
+    return additional
   }
 
   private func parseIfExpression(

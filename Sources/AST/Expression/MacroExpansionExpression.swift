@@ -19,17 +19,20 @@ public class MacroExpansionExpression : ASTNode, PrimaryExpression {
   public let genericArgumentClause: GenericArgumentClause?
   public private(set) var argumentClause: [FunctionCallExpression.Argument]?
   public let trailingClosure: ClosureExpression?
+  public let additionalTrailingClosures: [(Identifier, ClosureExpression)]
 
   public init(
     macroName: String,
     genericArgumentClause: GenericArgumentClause? = nil,
     argumentClause: [FunctionCallExpression.Argument]? = nil,
-    trailingClosure: ClosureExpression? = nil
+    trailingClosure: ClosureExpression? = nil,
+    additionalTrailingClosures: [(Identifier, ClosureExpression)] = []
   ) {
     self.macroName = macroName
     self.genericArgumentClause = genericArgumentClause
     self.argumentClause = argumentClause
     self.trailingClosure = trailingClosure
+    self.additionalTrailingClosures = additionalTrailingClosures
   }
 
   // MARK: - Node Mutations
@@ -52,6 +55,9 @@ public class MacroExpansionExpression : ASTNode, PrimaryExpression {
     }
     if let trailingClosure = trailingClosure {
       result += " \(trailingClosure.textDescription)"
+    }
+    for (label, closure) in additionalTrailingClosures {
+      result += " \(label): \(closure.textDescription)"
     }
     return result
   }

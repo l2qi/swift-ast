@@ -670,6 +670,9 @@ extension ASTVisitor {
     if let closureExpr = expr.trailingClosure {
       guard try traverse(closureExpr) else { return false }
     }
+    for (_, closure) in expr.additionalTrailingClosures {
+      guard try traverse(closure) else { return false }
+    }
 
     return true
   }
@@ -749,6 +752,9 @@ extension ASTVisitor {
     }
     if let closureExpr = expr.trailingClosure {
       guard try traverse(closureExpr) else { return false }
+    }
+    for (_, closure) in expr.additionalTrailingClosures {
+      guard try traverse(closure) else { return false }
     }
 
     return true

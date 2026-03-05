@@ -29,23 +29,29 @@ public class FunctionCallExpression : ASTNode, PostfixExpression {
   public let postfixExpression: PostfixExpression
   public private(set) var argumentClause: ArgumentList?
   public let trailingClosure: ClosureExpression?
+  public let additionalTrailingClosures: [(Identifier, ClosureExpression)]
 
   public init(
-    postfixExpression: PostfixExpression, argumentClause: ArgumentList
+    postfixExpression: PostfixExpression,
+    argumentClause: ArgumentList,
+    additionalTrailingClosures: [(Identifier, ClosureExpression)] = []
   ) {
     self.postfixExpression = postfixExpression
     self.argumentClause = argumentClause
     self.trailingClosure = nil
+    self.additionalTrailingClosures = additionalTrailingClosures
   }
 
   public init(
     postfixExpression: PostfixExpression,
     argumentClause: ArgumentList? = nil,
-    trailingClosure: ClosureExpression
+    trailingClosure: ClosureExpression,
+    additionalTrailingClosures: [(Identifier, ClosureExpression)] = []
   ) {
     self.postfixExpression = postfixExpression
     self.argumentClause = argumentClause
     self.trailingClosure = trailingClosure
+    self.additionalTrailingClosures = additionalTrailingClosures
   }
 
   // MARK: - Node Mutations
@@ -67,7 +73,10 @@ public class FunctionCallExpression : ASTNode, PostfixExpression {
     if let trailingClosure = trailingClosure {
       trailingText = " \(trailingClosure.textDescription)"
     }
-    return "\(postfixExpression.textDescription)\(parameterText)\(trailingText)"
+    let additionalText = additionalTrailingClosures.map({
+      " \($0.0): \($0.1.textDescription)"
+    }).joined()
+    return "\(postfixExpression.textDescription)\(parameterText)\(trailingText)\(additionalText)"
   }
 }
 
