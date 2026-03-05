@@ -279,6 +279,7 @@ extension Parser {
   }
 
   private func parseDoStatement(startLocation: SourceLocation) throws -> DoStatement {
+    let (throwsKind, _) = try parseThrowsKind()
     let codeBlock = try parseCodeBlock()
     var endLocation = codeBlock.sourceRange.end
 
@@ -305,7 +306,7 @@ extension Parser {
       catchClauses.append(catchClause)
     }
 
-    let doStmt = DoStatement(codeBlock: codeBlock, catchClauses: catchClauses)
+    let doStmt = DoStatement(throwsKind: throwsKind, codeBlock: codeBlock, catchClauses: catchClauses)
     doStmt.setSourceRange(startLocation, endLocation)
     return doStmt
   }
