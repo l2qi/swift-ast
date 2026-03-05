@@ -537,6 +537,8 @@ extension ASTVisitor {
       return try traverse(expr)
     case let expr as IdentifierExpression:
       return try traverse(expr)
+    case let expr as IfExpression:
+      return try traverse(expr)
     case let expr as ImplicitMemberExpression:
       return try traverse(expr)
     case let expr as InOutExpression:
@@ -568,6 +570,8 @@ extension ASTVisitor {
     case let expr as SubscriptExpression:
       return try traverse(expr)
     case let expr as SuperclassExpression:
+      return try traverse(expr)
+    case let expr as SwitchExpression:
       return try traverse(expr)
     case let expr as TernaryConditionalOperatorExpression:
       return try traverse(expr)
@@ -672,6 +676,19 @@ extension ASTVisitor {
 
   public func traverse(_ expr: IdentifierExpression) throws -> Bool {
     return try visit(expr)
+  }
+
+  public func traverse(_ expr: IfExpression) throws -> Bool {
+    guard try visit(expr) else { return false }
+
+    guard try traverse(expr.conditionList) else { return false }
+    guard try traverse(expr.codeBlock) else { return false }
+    switch expr.elseClause {
+    case .else(let codeBlock):
+      return try traverse(codeBlock)
+    case .elseif(let ifExpr):
+      return try traverse(ifExpr)
+    }
   }
 
   public func traverse(_ expr: ImplicitMemberExpression) throws -> Bool {
@@ -820,6 +837,26 @@ extension ASTVisitor {
     if case .subscript(let arguments) = expr.kind {
       let exprs = arguments.map({ $0.expression })
       return try traverse(exprs)
+    }
+
+    return true
+  }
+
+  public func traverse(_ expr: SwitchExpression) throws -> Bool {
+    guard try visit(expr) else { return false }
+
+    for eachCase in expr.cases {
+      switch eachCase {
+      case let .case(items, statements):
+        for item in items {
+          if let whereExpr = item.whereExpression {
+            guard try traverse(whereExpr) else { return false }
+          }
+        }
+        guard try traverse(statements) else { return false }
+      case .default(let statements):
+        guard try traverse(statements) else { return false }
+      }
     }
 
     return true

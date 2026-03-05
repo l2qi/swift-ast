@@ -424,6 +424,16 @@ private class FoldingVisitor : ASTVisitor {
     return true
   }
 
+  func visit(_ expr: IfExpression) throws -> Bool {
+    for i in expr.conditionList.indices {
+      let condition = expr.conditionList[i]
+      let foldedCondition = foldCondition(condition)
+      expr.replaceCondition(at: i, with: foldedCondition)
+    }
+
+    return true
+  }
+
   func visit(_ expr: LiteralExpression) throws -> Bool {
     switch expr.kind {
     case let .interpolatedString(exprs, str):
@@ -472,6 +482,42 @@ private class FoldingVisitor : ASTVisitor {
         return SubscriptArgument(identifier: a.identifier, expression: foldedExpr)
       }
       expr.reset(with: .subscript(foldedArguments))
+    }
+
+    return true
+  }
+
+  func visit(_ expr: SwitchExpression) throws -> Bool {
+    if let seqExpr = expr.expression as? SequenceExpression {
+      let foldedExpr = foldSequenceExpression(seqExpr)
+      expr.replaceExpression(with: foldedExpr)
+    }
+
+    for i in expr.cases.indices {
+      let eachCase = expr.cases[i]
+      switch eachCase {
+      case let .case(items, statements):
+        let foldedItems = items.map { i -> SwitchStatement.Case.Item in
+          var foldedWhereExpression: ASTExpression? = i.whereExpression
+          if let whereSeqExpr = i.whereExpression as? SequenceExpression {
+            foldedWhereExpression = foldSequenceExpression(whereSeqExpr)
+          }
+          var foldedPattern = i.pattern
+          if let exprPattern = i.pattern as? ExpressionPattern,
+            let pttrnSeqExpr = exprPattern.expression as? SequenceExpression
+          {
+            let foldedPttrnSeqExpr = foldSequenceExpression(pttrnSeqExpr)
+            foldedPattern = ExpressionPattern(expression: foldedPttrnSeqExpr)
+          }
+          return SwitchStatement.Case.Item(
+            pattern: foldedPattern, whereExpression: foldedWhereExpression)
+        }
+        let foldedStmts = foldStatements(statements)
+        expr.replaceCase(at: i, with: .case(foldedItems, foldedStmts))
+      case .default(let statements):
+        let foldedStmts = foldStatements(statements)
+        expr.replaceCase(at: i, with: .default(foldedStmts))
+      }
     }
 
     return true

@@ -183,6 +183,7 @@ public enum ParserErrorKind : DiagnosticKind {
   case expectedCloseParenAvailabilityCondition
   case expectedForEachIn
   case expectedElseAfterGuard
+  case expectedElseForIfExpr
 
   // types
   case expectedType
@@ -449,6 +450,8 @@ public enum ParserErrorKind : DiagnosticKind {
       return "expected 'in' after for-each pattern"
     case .expectedElseAfterGuard:
       return "expected 'else' after 'guard' condition"
+    case .expectedElseForIfExpr:
+      return "expected 'else' in if expression"
     case .expectedType:
       return "expected type"
     case .expectedCloseSquareArrayType:

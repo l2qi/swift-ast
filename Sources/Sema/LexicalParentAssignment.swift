@@ -383,6 +383,34 @@ private class AssignmentVisitor : ASTVisitor {
     return true
   }
 
+  func visit(_ expr: IfExpression) throws -> Bool {
+    expr.codeBlock.setLexicalParent(expr)
+
+    for condition in expr.conditionList {
+      switch condition {
+      case .expression(let e):
+        e.setLexicalParent(expr)
+      case .case(_, let e):
+        e.setLexicalParent(expr)
+      case .let(_, let e):
+        e.setLexicalParent(expr)
+      case .var(_, let e):
+        e.setLexicalParent(expr)
+      default:
+        continue
+      }
+    }
+
+    switch expr.elseClause {
+    case .else(let codeBlock):
+      codeBlock.setLexicalParent(expr)
+    case .elseif(let elseIfExpr):
+      elseIfExpr.setLexicalParent(expr)
+    }
+
+    return true
+  }
+
   func visit(_ expr: InitializerExpression) throws -> Bool {
     expr.postfixExpression.setLexicalParent(expr)
     return true
@@ -516,6 +544,26 @@ private class AssignmentVisitor : ASTVisitor {
       }
     }
 
+    return true
+  }
+
+  func visit(_ expr: SwitchExpression) throws -> Bool {
+    expr.expression.setLexicalParent(expr)
+    for c in expr.cases {
+      switch c {
+      case let .case(items, stmts):
+        for i in items {
+          i.whereExpression?.setLexicalParent(expr)
+        }
+        for s in stmts {
+          s.setLexicalParent(expr)
+        }
+      case .default(let stmts):
+        for s in stmts {
+          s.setLexicalParent(expr)
+        }
+      }
+    }
     return true
   }
 

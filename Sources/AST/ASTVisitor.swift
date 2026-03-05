@@ -66,6 +66,7 @@ public protocol ASTVisitor {
   func visit(_: ForcedValueExpression) throws -> Bool
   func visit(_: FunctionCallExpression) throws -> Bool
   func visit(_: IdentifierExpression) throws -> Bool
+  func visit(_: IfExpression) throws -> Bool
   func visit(_: ImplicitMemberExpression) throws -> Bool
   func visit(_: InOutExpression) throws -> Bool
   func visit(_: InitializerExpression) throws -> Bool
@@ -82,6 +83,7 @@ public protocol ASTVisitor {
   func visit(_: SequenceExpression) throws -> Bool
   func visit(_: SubscriptExpression) throws -> Bool
   func visit(_: SuperclassExpression) throws -> Bool
+  func visit(_: SwitchExpression) throws -> Bool
   func visit(_: TernaryConditionalOperatorExpression) throws -> Bool
   func visit(_: TryOperatorExpression) throws -> Bool
   func visit(_: TupleExpression) throws -> Bool
@@ -264,6 +266,10 @@ extension ASTVisitor {
     return true
   }
 
+  public func visit(_: IfExpression) throws -> Bool {
+    return true
+  }
+
   public func visit(_: ImplicitMemberExpression) throws -> Bool {
     return true
   }
@@ -325,6 +331,10 @@ extension ASTVisitor {
   }
 
   public func visit(_: SuperclassExpression) throws -> Bool {
+    return true
+  }
+
+  public func visit(_: SwitchExpression) throws -> Bool {
     return true
   }
 
