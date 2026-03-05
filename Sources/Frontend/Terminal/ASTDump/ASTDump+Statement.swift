@@ -86,6 +86,10 @@ extension DeferStatement : TTYASTDumpRepresentable {
 extension DoStatement : TTYASTDumpRepresentable {
   var ttyDump: String {
     let head = dump("do_stmt", sourceRange)
+    var throwsText = ""
+    if throwsKind != .nothrowing {
+      throwsText = "\n" + "throws: `\(throwsKind.textDescription)`".indented
+    }
     let body = codeBlock.ttyDump.indented
     var catches = "catches:".indented
     if catchClauses.isEmpty {
@@ -107,7 +111,7 @@ extension DoStatement : TTYASTDumpRepresentable {
       catches += "\n"
       catches += catchClause.codeBlock.ttyDump.indented.indented
     }
-    return "\(head)\n\(body)\n\(catches)"
+    return "\(head)\(throwsText)\n\(body)\n\(catches)"
   }
 }
 

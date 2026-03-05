@@ -31,6 +31,39 @@ class ParserDoStatementTests: XCTestCase {
       XCTAssertTrue(stmts[0] is TryOperatorExpression)
       XCTAssertEqual(stmts[0].textDescription, "try foo()")
       XCTAssertTrue(doStmt.catchClauses.isEmpty)
+      XCTAssertEqual(doStmt.throwsKind, .nothrowing)
+    })
+  }
+
+  func testThrowsClause() {
+    parseStatementAndTest("do throws { try foo() } catch { }",
+      "do throws {\ntry foo()\n} catch {}",
+      testClosure: { stmt in
+      guard let doStmt = stmt as? DoStatement else {
+        XCTFail("Failed in parsing a do statement.")
+        return
+      }
+      XCTAssertEqual(doStmt.throwsKind, .throwing)
+      XCTAssertEqual(doStmt.codeBlock.statements.count, 1)
+      XCTAssertEqual(doStmt.catchClauses.count, 1)
+    })
+  }
+
+  func testTypedThrowsClause() {
+    parseStatementAndTest("do throws(MyError) { try foo() } catch { }",
+      "do throws(MyError) {\ntry foo()\n} catch {}",
+      testClosure: { stmt in
+      guard let doStmt = stmt as? DoStatement else {
+        XCTFail("Failed in parsing a do statement.")
+        return
+      }
+      guard case .typedThrowing(let type) = doStmt.throwsKind else {
+        XCTFail("Expected typed throwing, got \(doStmt.throwsKind)")
+        return
+      }
+      XCTAssertEqual(type.textDescription, "MyError")
+      XCTAssertEqual(doStmt.codeBlock.statements.count, 1)
+      XCTAssertEqual(doStmt.catchClauses.count, 1)
     })
   }
 
