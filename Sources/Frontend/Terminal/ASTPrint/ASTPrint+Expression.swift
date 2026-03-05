@@ -64,6 +64,12 @@ extension ClosureExpression : TTYASTPrintRepresentable {
   }
 }
 
+extension ConditionalCompilationExpression : TTYASTPrintRepresentable {
+  var ttyPrint: String {
+    return textDescription
+  }
+}
+
 extension ExplicitMemberExpression : TTYASTPrintRepresentable {
   var ttyPrint: String {
     switch kind {

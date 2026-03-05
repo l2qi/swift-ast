@@ -62,6 +62,7 @@ public protocol ASTVisitor {
   func visit(_: AwaitExpression) throws -> Bool
   func visit(_: BinaryOperatorExpression) throws -> Bool
   func visit(_: ClosureExpression) throws -> Bool
+  func visit(_: ConditionalCompilationExpression) throws -> Bool
   func visit(_: ExplicitMemberExpression) throws -> Bool
   func visit(_: ForcedValueExpression) throws -> Bool
   func visit(_: FunctionCallExpression) throws -> Bool
@@ -247,6 +248,10 @@ extension ASTVisitor {
   }
 
   public func visit(_: ClosureExpression) throws -> Bool {
+    return true
+  }
+
+  public func visit(_: ConditionalCompilationExpression) throws -> Bool {
     return true
   }
 

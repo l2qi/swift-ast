@@ -338,45 +338,98 @@ extension Parser {
       return self._lexer.examine(tokens)
     }
 
+    var condCompBase: PostfixExpression?
+    var condCompClauses: [(CompilerControlStatement, PostfixExpression?)] = []
+
     var tokenRange = getLookedRange()
     var examined = examine()
-    while examined.0 {
-      switch examined.1 {
-      case .postfixOperator(let op):
-        let postfixOpExpr = PostfixOperatorExpression(postfixOperator: op, postfixExpression: resultExpr)
-        postfixOpExpr.setSourceRange(resultExpr.sourceRange.start, tokenRange.end)
-        resultExpr = postfixOpExpr
-      case .leftParen:
-        resultExpr = try parseFunctionCallExpression(postfixExpression: resultExpr, config: config)
-      case .dot:
-        resultExpr = try parsePostfixMemberExpression(postfixExpression: resultExpr)
-      case .leftSquare:
-        let subscriptArguments = try parseSubscriptArguments()
-        let endLocation = getEndLocation()
-        try match(.rightSquare, orFatal: .expectedCloseSquareExprList)
-        let subscriptExpr = SubscriptExpression(
-        postfixExpression: resultExpr, arguments: subscriptArguments)
-        subscriptExpr.setSourceRange(resultExpr.sourceRange.start, endLocation)
-        resultExpr = subscriptExpr
-      case .postfixExclaim:
-        let vlExpr = ForcedValueExpression(postfixExpression: resultExpr)
-        vlExpr.setSourceRange(resultExpr.sourceRange.start, tokenRange.end)
-        resultExpr = vlExpr
-      case .postfixQuestion:
-        let optExpr = OptionalChainingExpression(postfixExpression: resultExpr)
-        optExpr.setSourceRange(resultExpr.sourceRange.start, tokenRange.end)
-        resultExpr = optExpr
-      case .leftBrace:
-        let trailingClosure = try parseClosureExpression(startLocation: tokenRange.start)
-        let additionalClosures = try parseAdditionalTrailingClosures()
-        let endLoc = additionalClosures.last?.1.sourceRange.end ?? trailingClosure.sourceRange.end
-        let funcCallExpr = FunctionCallExpression(
-          postfixExpression: resultExpr,
-          trailingClosure: trailingClosure,
-          additionalTrailingClosures: additionalClosures)
-        funcCallExpr.setSourceRange(resultExpr.sourceRange.start, endLoc)
-        resultExpr = funcCallExpr
-      default:
+    while true {
+      if examined.0 {
+        switch examined.1 {
+        case .postfixOperator(let op):
+          let postfixOpExpr = PostfixOperatorExpression(postfixOperator: op, postfixExpression: resultExpr)
+          postfixOpExpr.setSourceRange(resultExpr.sourceRange.start, tokenRange.end)
+          resultExpr = postfixOpExpr
+        case .leftParen:
+          resultExpr = try parseFunctionCallExpression(postfixExpression: resultExpr, config: config)
+        case .dot:
+          resultExpr = try parsePostfixMemberExpression(postfixExpression: resultExpr)
+        case .leftSquare:
+          let subscriptArguments = try parseSubscriptArguments()
+          let endLocation = getEndLocation()
+          try match(.rightSquare, orFatal: .expectedCloseSquareExprList)
+          let subscriptExpr = SubscriptExpression(
+          postfixExpression: resultExpr, arguments: subscriptArguments)
+          subscriptExpr.setSourceRange(resultExpr.sourceRange.start, endLocation)
+          resultExpr = subscriptExpr
+        case .postfixExclaim:
+          let vlExpr = ForcedValueExpression(postfixExpression: resultExpr)
+          vlExpr.setSourceRange(resultExpr.sourceRange.start, tokenRange.end)
+          resultExpr = vlExpr
+        case .postfixQuestion:
+          let optExpr = OptionalChainingExpression(postfixExpression: resultExpr)
+          optExpr.setSourceRange(resultExpr.sourceRange.start, tokenRange.end)
+          resultExpr = optExpr
+        case .leftBrace:
+          let trailingClosure = try parseClosureExpression(startLocation: tokenRange.start)
+          let additionalClosures = try parseAdditionalTrailingClosures()
+          let endLoc = additionalClosures.last?.1.sourceRange.end ?? trailingClosure.sourceRange.end
+          let funcCallExpr = FunctionCallExpression(
+            postfixExpression: resultExpr,
+            trailingClosure: trailingClosure,
+            additionalTrailingClosures: additionalClosures)
+          funcCallExpr.setSourceRange(resultExpr.sourceRange.start, endLoc)
+          resultExpr = funcCallExpr
+        default:
+          break
+        }
+      } else if _lexer.look().kind == .hash {
+        if _lexer.look(ahead: 1).kind == .if && condCompBase == nil {
+          // Speculatively parse #if to check if it's postfix conditional compilation
+          // (next token after condition must be `.` for a member expression)
+          let lexerCp = _lexer.checkPoint()
+          let diagCp = _diagnosticPool.checkPoint()
+          let hashStart = getStartLocation()
+          _ = _lexer.match(.hash)
+          let ctrl = try parseCompilerControlStatement(startLocation: hashStart)
+          if _lexer.look().kind != .dot {
+            _lexer.restore(fromCheckpoint: lexerCp)
+            _diagnosticPool.restore(fromCheckpoint: diagCp)
+            break
+          }
+          condCompBase = resultExpr
+          condCompClauses.append((ctrl, nil))
+        } else if condCompBase != nil {
+          if let lastIdx = condCompClauses.indices.last,
+            condCompClauses[lastIdx].1 == nil
+          {
+            condCompClauses[lastIdx].1 = resultExpr
+          }
+          let hashStart = getStartLocation()
+          _ = _lexer.match(.hash)
+          let ctrl = try parseCompilerControlStatement(startLocation: hashStart)
+          switch ctrl.kind {
+          case .else, .elseif:
+            condCompClauses.append((ctrl, nil))
+            resultExpr = condCompBase!
+          case .endif:
+            let clauses = condCompClauses.map {
+              ConditionalCompilationExpression.Clause(
+                condition: $0.0, expression: $0.1 ?? condCompBase!)
+            }
+            let condCompExpr = ConditionalCompilationExpression(
+              base: condCompBase!, clauses: clauses, endifStatement: ctrl)
+            condCompExpr.setSourceRange(condCompBase!.sourceRange.start, ctrl.sourceRange.end)
+            resultExpr = condCompExpr
+            condCompBase = nil
+            condCompClauses = []
+          default:
+            break
+          }
+        } else {
+          break
+        }
+      } else {
         break
       }
 

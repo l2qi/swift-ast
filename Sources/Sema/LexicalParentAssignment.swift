@@ -343,6 +343,14 @@ private class AssignmentVisitor : ASTVisitor {
     return true
   }
 
+  func visit(_ expr: ConditionalCompilationExpression) throws -> Bool {
+    expr.base.setLexicalParent(expr)
+    for clause in expr.clauses {
+      clause.expression.setLexicalParent(expr)
+    }
+    return true
+  }
+
   func visit(_ expr: ExplicitMemberExpression) throws -> Bool {
     switch expr.kind {
     case .tuple(let e, _):
