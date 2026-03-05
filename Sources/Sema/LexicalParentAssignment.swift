@@ -289,6 +289,8 @@ private class AssignmentVisitor : ASTVisitor {
         for s in stmts {
           s.setLexicalParent(stmt)
         }
+      case .compilerControl:
+        break
       }
     }
     return true
@@ -568,6 +570,8 @@ private class AssignmentVisitor : ASTVisitor {
         for s in stmts {
           s.setLexicalParent(expr)
         }
+      case .compilerControl:
+        break
       }
     }
     return true

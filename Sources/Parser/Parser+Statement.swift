@@ -317,8 +317,16 @@ extension Parser {
     let expr = try parseExpression(config: noTrailingConfig)
     try match(.leftBrace, orFatal: .leftBraceExpected("switch statement"))
     var cases: [SwitchStatement.Case] = []
-    var examined = _lexer.examine([.case, .default])
-    while examined.0 {
+    while true {
+      if _lexer.look().kind == .hash {
+        let hashStartLocation = getStartLocation()
+        _ = _lexer.match(.hash)
+        let compCtrlStmt = try parseCompilerControlStatement(startLocation: hashStartLocation)
+        cases.append(.compilerControl(compCtrlStmt))
+        continue
+      }
+      let examined = _lexer.examine([.case, .default])
+      guard examined.0 else { break }
       switch examined.1 {
       case .case:
         var itemList: [SwitchStatement.Case.Item] = []
@@ -332,18 +340,37 @@ extension Parser {
           itemList.append(item)
         } while _lexer.match(.comma)
         try match(.colon, orFatal: .expectedCaseColon)
-        let stmts = try parseStatements()
+        var stmts: Statements = []
+        while true {
+          switch _lexer.look().kind {
+          case .eof, .rightBrace, .default, .case, .hash:
+            break
+          default:
+            stmts.append(try parseStatement())
+            continue
+          }
+          break
+        }
         try assert(!stmts.isEmpty, orFatal: .caseStmtWithoutBody("case"))
         cases.append(.case(itemList, stmts))
       case .default:
         try match(.colon, orFatal: .expectedDefaultColon)
-        let stmts = try parseStatements()
+        var stmts: Statements = []
+        while true {
+          switch _lexer.look().kind {
+          case .eof, .rightBrace, .default, .case, .hash:
+            break
+          default:
+            stmts.append(try parseStatement())
+            continue
+          }
+          break
+        }
         try assert(!stmts.isEmpty, orFatal: .caseStmtWithoutBody("default"))
         cases.append(.default(stmts))
       default:
         break
       }
-      examined = _lexer.examine([.case, .default])
     }
     let endLocation = getEndLocation()
     try match(.rightBrace, orFatal: .rightBraceExpected("switch statement"))

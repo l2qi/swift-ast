@@ -497,6 +497,8 @@ extension ASTVisitor {
         guard try traverse(statements) else { return false }
       case .default(let statements):
         guard try traverse(statements) else { return false }
+      case .compilerControl(let stmt):
+        guard try traverse(stmt) else { return false }
       }
     }
 
@@ -862,6 +864,8 @@ extension ASTVisitor {
         guard try traverse(statements) else { return false }
       case .default(let statements):
         guard try traverse(statements) else { return false }
+      case .compilerControl(let stmt):
+        guard try traverse(stmt) else { return false }
       }
     }
 

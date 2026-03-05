@@ -524,6 +524,9 @@ extension SwitchExpression : TTYASTDumpRepresentable {
         body += "kind: `default`"
         body += "\n"
         body += stmts.map({ $0.ttyDump }).joined(separator: "\n").indented.indented
+      case .compilerControl(let stmt):
+        body += "kind: `compiler_control`\n"
+        body += stmt.ttyDump.indented.indented
       }
     }
     return "\(head)\n\(body)"

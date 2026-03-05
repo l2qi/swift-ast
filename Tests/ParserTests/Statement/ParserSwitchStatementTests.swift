@@ -191,6 +191,118 @@ class ParserSwitchStatementTests: XCTestCase {
     """)
   }
 
+  func testConditionalCompilationCase() {
+    parseStatementAndTest(
+    """
+    switch foo {
+    #if DEBUG
+    case .debug:
+        debugAction()
+    #else
+    case .release:
+        releaseAction()
+    #endif
+    }
+    """,
+    """
+    switch foo {
+    #if DEBUG
+    case .debug:
+    debugAction()
+    #else
+    case .release:
+    releaseAction()
+    #endif
+    }
+    """,
+    testClosure: { stmt in
+      guard let switchStmt = stmt as? SwitchStatement else {
+        XCTFail("Failed in parsing a switch statement.")
+        return
+      }
+      XCTAssertEqual(switchStmt.cases.count, 5)
+      guard case .compilerControl(let ifStmt) = switchStmt.cases[0] else {
+        XCTFail("Expected compiler control statement.")
+        return
+      }
+      XCTAssertEqual(ifStmt.textDescription, "#if DEBUG")
+      guard case .case = switchStmt.cases[1] else {
+        XCTFail("Expected case.")
+        return
+      }
+      guard case .compilerControl(let elseStmt) = switchStmt.cases[2] else {
+        XCTFail("Expected compiler control statement.")
+        return
+      }
+      XCTAssertEqual(elseStmt.textDescription, "#else")
+      guard case .case = switchStmt.cases[3] else {
+        XCTFail("Expected case.")
+        return
+      }
+      guard case .compilerControl(let endifStmt) = switchStmt.cases[4] else {
+        XCTFail("Expected compiler control statement.")
+        return
+      }
+      XCTAssertEqual(endifStmt.textDescription, "#endif")
+    })
+  }
+
+  func testConditionalCompilationWithRegularCases() {
+    parseStatementAndTest(
+    """
+    switch value {
+    case .a:
+        handleA()
+    #if os(iOS)
+    case .b:
+        handleB()
+    #endif
+    default:
+        handleDefault()
+    }
+    """,
+    """
+    switch value {
+    case .a:
+    handleA()
+    #if os(iOS)
+    case .b:
+    handleB()
+    #endif
+    default:
+    handleDefault()
+    }
+    """,
+    testClosure: { stmt in
+      guard let switchStmt = stmt as? SwitchStatement else {
+        XCTFail("Failed in parsing a switch statement.")
+        return
+      }
+      // .case(.a), #if, .case(.b), #endif, .default
+      XCTAssertEqual(switchStmt.cases.count, 5)
+      guard case .case = switchStmt.cases[0] else {
+        XCTFail("Expected case.")
+        return
+      }
+      guard case .compilerControl = switchStmt.cases[1] else {
+        XCTFail("Expected compiler control statement.")
+        return
+      }
+      guard case .case = switchStmt.cases[2] else {
+        XCTFail("Expected case.")
+        return
+      }
+      guard case .compilerControl = switchStmt.cases[3] else {
+        XCTFail("Expected compiler control statement.")
+        return
+      }
+      guard case .default = switchStmt.cases[4] else {
+        XCTFail("Expected default.")
+        return
+      }
+    })
+  }
+
   func testSourceRange() {
     parseStatementAndTest("switch foo {}", "switch foo {}", testClosure: { stmt in
       XCTAssertEqual(stmt.sourceRange, getRange(1, 1, 1, 14))
