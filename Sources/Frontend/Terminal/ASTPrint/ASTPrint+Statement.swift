@@ -159,6 +159,8 @@ extension SwitchStatement.Case {
       return "case \(itemListText):\n\(stmts.ttyPrint.indented)"
     case .default(let stmts):
       return "default:\n\(stmts.ttyPrint.indented)"
+    case .compilerControl(let stmt):
+      return stmt.ttyPrint
     }
   }
 }

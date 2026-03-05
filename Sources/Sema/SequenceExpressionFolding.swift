@@ -329,6 +329,8 @@ private class FoldingVisitor : ASTVisitor {
       case .default(let statements):
         let foldedStmts = foldStatements(statements)
         stmt.replaceCase(at: i, with: .default(foldedStmts))
+      case .compilerControl:
+        break
       }
     }
 
@@ -517,6 +519,8 @@ private class FoldingVisitor : ASTVisitor {
       case .default(let statements):
         let foldedStmts = foldStatements(statements)
         expr.replaceCase(at: i, with: .default(foldedStmts))
+      case .compilerControl:
+        break
       }
     }
 

@@ -29,6 +29,7 @@ public class SwitchStatement : ASTNode, Statement {
 
     case `case`([Item], Statements)
     case `default`(Statements)
+    case compilerControl(CompilerControlStatement)
   }
   public private(set) var expression: ASTExpression
   public private(set) var cases: [Case]
@@ -79,6 +80,8 @@ extension SwitchStatement.Case : ASTTextRepresentable {
       return "case \(itemListText):\n\(stmts.textDescription)"
     case .default(let stmts):
       return "default:\n\(stmts.textDescription)"
+    case .compilerControl(let stmt):
+      return stmt.textDescription
     }
   }
 }
