@@ -379,6 +379,9 @@ private class AssignmentVisitor : ASTVisitor {
       }
     }
     expr.trailingClosure?.setLexicalParent(expr)
+    for (_, closure) in expr.additionalTrailingClosures {
+      closure.setLexicalParent(expr)
+    }
 
     return true
   }
@@ -432,6 +435,9 @@ private class AssignmentVisitor : ASTVisitor {
       }
     }
     expr.trailingClosure?.setLexicalParent(expr)
+    for (_, closure) in expr.additionalTrailingClosures {
+      closure.setLexicalParent(expr)
+    }
 
     return true
   }
