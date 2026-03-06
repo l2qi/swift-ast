@@ -799,11 +799,22 @@ class ParserLiteralExpressionTests: XCTestCase {
 
   func testRegexLiteral() {
     let tests: [(testString: String, expectedPattern: String)] = [
+      // Single-hash
       ("#/abc/#", "abc"),
       ("#/\\d+/#", "\\d+"),
       ("#/foo/bar/#", "foo/bar"),
       ("#/hello world/#", "hello world"),
       ("#/[a-z]+\\.\\d{2,}/#", "[a-z]+\\.\\d{2,}"),
+      // Multi-hash
+      ("##/abc/##", "abc"),
+      ("##/foo/#bar/##", "foo/#bar"),
+      ("###/a]b/##c/###", "a]b/##c"),
+      // Multiline (single-hash)
+      ("#/\nabc\n/#", "abc"),
+      ("#/\nfoo\nbar\n/#", "foo\nbar"),
+      ("#/\n  indented\n/#", "  indented"),
+      // Multiline (multi-hash)
+      ("##/\nfoo/#bar\n/##", "foo/#bar"),
     ]
     for t in tests {
       parseExpressionAndTest(t.testString, t.testString, testClosure: { expr in

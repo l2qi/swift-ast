@@ -15,19 +15,77 @@
 */
 
 extension Lexer /* regex literal */ {
-  func lexRegexLiteral() -> Token.Kind {
+  func lexRegexLiteral(hashCount: Int) -> Token.Kind {
+    let delimiter = String(repeating: "#", count: hashCount)
     var pattern = ""
-    var rawRepresentation = "#/"
+    var rawRepresentation = delimiter + "/"
+
+    // Detect multiline: opening / immediately followed by newline
+    let isMultiline: Bool
+    if char.unicodeScalar == "\n" {
+      isMultiline = true
+      rawRepresentation += "\n"
+      _consume(char.role)
+    } else if char.unicodeScalar == "\r" {
+      isMultiline = true
+      rawRepresentation += "\r"
+      _consume(char.role)
+      if char.unicodeScalar == "\n" {  // \r\n
+        rawRepresentation += "\n"
+        _consume(char.role)
+      }
+    } else {
+      isMultiline = false
+    }
+
+    // Track content on current line (for multiline closing detection)
+    var currentLineContent = ""
 
     while char != .eof {
-      if char.unicodeScalar == "/" && _scanner.peek() == "#" {
-        rawRepresentation += "/#"
-        _consume(nil, andAdvanceScannerBy: 2)  // consume /#
-        return .regexLiteral(pattern, rawRepresentation: rawRepresentation)
+      // Check for closing delimiter: / followed by hashCount #s
+      if char.unicodeScalar == "/" {
+        var matched = true
+        for i in 0..<hashCount {
+          if _scanner.peek(ahead: i) != "#" {
+            matched = false
+            break
+          }
+        }
+        if matched {
+          if !isMultiline {
+            // Single-line: always close
+            rawRepresentation += "/" + delimiter
+            _consume(nil, andAdvanceScannerBy: 1 + hashCount)
+            return .regexLiteral(pattern, rawRepresentation: rawRepresentation)
+          } else if currentLineContent.allSatisfy({ $0 == " " || $0 == "\t" }) {
+            // Multiline: close only if / is preceded only by whitespace on this line
+            let whitespaceLen = currentLineContent.count
+            if whitespaceLen > 0 {
+              pattern.removeLast(whitespaceLen)
+            }
+            // Strip trailing newline from pattern
+            if pattern.hasSuffix("\r\n") {
+              pattern.removeLast(2)
+            } else if pattern.hasSuffix("\n") || pattern.hasSuffix("\r") {
+              pattern.removeLast()
+            }
+            rawRepresentation += "/" + delimiter
+            _consume(nil, andAdvanceScannerBy: 1 + hashCount)
+            return .regexLiteral(pattern, rawRepresentation: rawRepresentation)
+          }
+        }
       }
+
+      // Newline handling
       if char.unicodeScalar == "\n" || char.unicodeScalar == "\r" {
-        return .invalid(.unterminatedRegexLiteral)
+        if !isMultiline {
+          return .invalid(.unterminatedRegexLiteral)
+        }
+        currentLineContent = ""
+      } else {
+        currentLineContent += char.string
       }
+
       rawRepresentation += char.string
       pattern += char.string
       _consume(char.role)
