@@ -322,11 +322,21 @@ public class Lexer {
       return produce(.eof)
     /////////////////////////////////////////////////////////////
     case .hash:
-      if _scanner.peek() == "/" {
-        _consume(.hash)  // consume #
-        _consume()       // consume /
-        return produce(lexRegexLiteral())
+      // Count consecutive #s via lookahead
+      var hashCount = 1
+      while _scanner.peek(ahead: hashCount - 1) == "#" {
+        hashCount += 1
       }
+      // Check if character after all hashes is /
+      if _scanner.peek(ahead: hashCount - 1) == "/" {
+        // Consume all # and the /
+        for _ in 0..<hashCount {
+          _consume(.hash)
+        }
+        _consume()  // consume /
+        return produce(lexRegexLiteral(hashCount: hashCount))
+      }
+      // Not a regex — produce a single .hash token
       return consumeAndProduce(.hash)
     default:
       if let kind = roleTokenKindMapping[head] {
