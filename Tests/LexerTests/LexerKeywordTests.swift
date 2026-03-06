@@ -1,5 +1,5 @@
 /*
-   Copyright 2015-2016, 2019 Ryuichi Intellectual Property
+   Copyright 2015-2016, 2019, 2026 Ryuichi Intellectual Property
                              and the Yanagiba project contributors
 
    Licensed under the Apache License, Version 2.0 (the "License");
