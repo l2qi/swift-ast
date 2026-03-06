@@ -44,6 +44,7 @@ public struct Token {
     case integerLiteral(Int, rawRepresentation: String)
     case floatingPointLiteral(Double, rawRepresentation: String)
     case staticStringLiteral(String, rawRepresentation: String)
+    case regexLiteral(String, rawRepresentation: String)
     case interpolatedStringLiteralHead(String, rawRepresentation: String) // NOTE: this stops at the opening \(,
                                                                           // and we will let parser figure out when to
                                                                           // close this string literal

@@ -695,6 +695,7 @@ extension Parser {
       .dummyIntegerLiteral,
       .dummyFloatingPointLiteral,
       .dummyStaticStringLiteral,
+      .dummyRegexLiteral,
       .dummyInterpolatedStringLiteralHead,
       .dummyBooleanLiteral,
       .nil, .leftSquare, .hash, .backslash,
@@ -724,6 +725,10 @@ extension Parser {
       let strExpr = LiteralExpression(kind: .staticString(s, r))
       strExpr.setSourceRange(lookedRange)
       return strExpr
+    case let .regexLiteral(s, r):
+      let regexExpr = LiteralExpression(kind: .regex(s, r))
+      regexExpr.setSourceRange(lookedRange)
+      return regexExpr
     case let .interpolatedStringLiteralHead(s, r):
       return try parseInterpolatedStringLiteral(head: s, raw: r, startLocation: lookedRange.start)
     case .leftSquare:

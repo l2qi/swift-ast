@@ -797,6 +797,27 @@ class ParserLiteralExpressionTests: XCTestCase {
     )
   }
 
+  func testRegexLiteral() {
+    let tests: [(testString: String, expectedPattern: String)] = [
+      ("#/abc/#", "abc"),
+      ("#/\\d+/#", "\\d+"),
+      ("#/foo/bar/#", "foo/bar"),
+      ("#/hello world/#", "hello world"),
+      ("#/[a-z]+\\.\\d{2,}/#", "[a-z]+\\.\\d{2,}"),
+    ]
+    for t in tests {
+      parseExpressionAndTest(t.testString, t.testString, testClosure: { expr in
+        guard let regexExpr = expr as? LiteralExpression,
+          case let .regex(pattern, raw) = regexExpr.kind else {
+          XCTFail("Failed in getting a regex literal for `\(t.testString)`")
+          return
+        }
+        XCTAssertEqual(pattern, t.expectedPattern)
+        XCTAssertEqual(raw, t.testString)
+      })
+    }
+  }
+
   func testSourceRange() {
     let testExprs: [(testString: String, expectedEndColumn: Int)] = [
       ("nil", 4),

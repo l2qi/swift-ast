@@ -32,6 +32,7 @@ public enum TokenInvalidReason : DiagnosticKind, Sendable {
   case invalidEscapeSequenceInStringLiteral
   case newlineEscapesNotAllowedOnLastLine
   case newlineEscapesNotSupportedInStringLiteral
+  case unterminatedRegexLiteral
 
   public var diagnosticMessage: String {
     switch self {
@@ -65,6 +66,8 @@ public enum TokenInvalidReason : DiagnosticKind, Sendable {
       return "newline escape is not allowed on the line immediately following the close \"\"\""
     case .newlineEscapesNotSupportedInStringLiteral:
       return "newline escape is not supported in single-line string literal"
+    case .unterminatedRegexLiteral:
+      return "unterminated regex literal"
     }
   }
 }

@@ -64,6 +64,7 @@ public class LiteralExpression : ASTNode, PrimaryExpression {
     case array([ASTExpression])
     case dictionary([DictionaryEntry])
     case playground(PlaygroundLiteral)
+    case regex(String, String)
   }
 
   public private(set) var kind: Kind
@@ -104,6 +105,8 @@ public class LiteralExpression : ASTNode, PrimaryExpression {
       return "[\(dictText)]"
     case .playground(let playgroundLiteral):
       return playgroundLiteral.textDescription
+    case let .regex(_, rawText):
+      return rawText
     }
   }
 }
