@@ -354,6 +354,8 @@ extension LiteralExpression : TTYASTDumpRepresentable {
       }
     case .playground(let playgroundLiteral):
       body += "kind: `playground`, literal: `\(playgroundLiteral.textDescription)`"
+    case let .regex(_, rawText):
+      body += "kind: `regex`, raw_text: `\(rawText)`"
     }
     return "\(head)\n\(body)"
   }

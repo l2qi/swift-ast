@@ -24,6 +24,7 @@ extension Token.Kind {
     .interpolatedStringLiteralHead("", rawRepresentation: "")
   public static let dummyImplicitParameterName: Token.Kind = .implicitParameterName(0)
   public static let dummyBindingReference: Token.Kind = .bindingReference("")
+  public static let dummyRegexLiteral: Token.Kind = .regexLiteral("", rawRepresentation: "")
   public static let dummyPrefixOperator: Token.Kind = .prefixOperator("")
   public static let dummyBinaryOperator: Token.Kind = .binaryOperator("")
   public static let dummyPostfixOperator: Token.Kind = .postfixOperator("")

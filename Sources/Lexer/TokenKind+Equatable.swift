@@ -54,6 +54,7 @@ extension Token.Kind {
       (.integerLiteral, .integerLiteral),
       (.floatingPointLiteral, .floatingPointLiteral),
       (.staticStringLiteral, .staticStringLiteral),
+      (.regexLiteral, .regexLiteral),
       (.interpolatedStringLiteralHead, .interpolatedStringLiteralHead),
       (.booleanLiteral, .booleanLiteral),
       (.convenience, .convenience),

@@ -321,6 +321,13 @@ public class Lexer {
       appendHead()
       return produce(.eof)
     /////////////////////////////////////////////////////////////
+    case .hash:
+      if _scanner.peek() == "/" {
+        _consume(.hash)  // consume #
+        _consume()       // consume /
+        return produce(lexRegexLiteral())
+      }
+      return consumeAndProduce(.hash)
     default:
       if let kind = roleTokenKindMapping[head] {
         return consumeAndProduce(kind)
@@ -341,7 +348,6 @@ fileprivate let roleTokenKindMapping: [Role: Token.Kind] = [
   .rightSquare: .rightSquare,
   .equal: .assignmentOperator,
   .at: .at,
-  .hash: .hash,
   .backslash: .backslash,
   .colon: .colon,
   .comma: .comma,
