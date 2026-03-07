@@ -797,6 +797,32 @@ class ParserLiteralExpressionTests: XCTestCase {
     )
   }
 
+  func testBareRegexLiteral() {
+    let tests: [(testString: String, expectedPattern: String)] = [
+      ("/abc/", "abc"),
+      ("/\\d+/", "\\d+"),
+      ("/hello world/", "hello world"),
+      ("/[a-z]+/", "[a-z]+"),
+      // Bracket-aware: / inside brackets doesn't close
+      ("/[a/b]/", "[a/b]"),
+      ("/(foo/bar)/", "(foo/bar)"),
+      ("/a{2,3}/", "a{2,3}"),
+      // Backslash escape
+      ("/foo\\/bar/", "foo\\/bar"),
+    ]
+    for t in tests {
+      parseExpressionAndTest(t.testString, t.testString, testClosure: { expr in
+        guard let regexExpr = expr as? LiteralExpression,
+          case let .regex(pattern, raw) = regexExpr.kind else {
+          XCTFail("Failed in getting a regex literal for `\(t.testString)`")
+          return
+        }
+        XCTAssertEqual(pattern, t.expectedPattern)
+        XCTAssertEqual(raw, t.testString)
+      })
+    }
+  }
+
   func testRegexLiteral() {
     let tests: [(testString: String, expectedPattern: String)] = [
       // Single-hash

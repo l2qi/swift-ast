@@ -14,6 +14,63 @@
    limitations under the License.
 */
 
+extension Lexer /* bare regex literal */ {
+  func lexBareRegexLiteral() -> Token.Kind {
+    var pattern = ""
+    var rawRepresentation = "/"
+    var squareBracketDepth = 0
+    var roundBracketDepth = 0
+    var curlyBraceDepth = 0
+
+    while char != .eof {
+      // Escape: \ consumes next character unconditionally
+      if char.unicodeScalar == "\\" {
+        rawRepresentation += char.string
+        pattern += char.string
+        _consume(char.role)
+        if char == .eof || char.unicodeScalar == "\n" || char.unicodeScalar == "\r" {
+          return .invalid(.unterminatedRegexLiteral)
+        }
+        rawRepresentation += char.string
+        pattern += char.string
+        _consume(char.role)
+        continue
+      }
+
+      // Closing / only when all brackets balanced
+      if char.unicodeScalar == "/"
+         && squareBracketDepth == 0
+         && roundBracketDepth == 0
+         && curlyBraceDepth == 0 {
+        rawRepresentation += "/"
+        _consume(nil, andAdvanceScannerBy: 1)
+        return .regexLiteral(pattern, rawRepresentation: rawRepresentation)
+      }
+
+      // Newline terminates (bare regex is single-line only)
+      if char.unicodeScalar == "\n" || char.unicodeScalar == "\r" {
+        return .invalid(.unterminatedRegexLiteral)
+      }
+
+      // Track bracket depth
+      switch char.unicodeScalar {
+      case "[": squareBracketDepth += 1
+      case "]": if squareBracketDepth > 0 { squareBracketDepth -= 1 }
+      case "(": if squareBracketDepth == 0 { roundBracketDepth += 1 }
+      case ")": if squareBracketDepth == 0 && roundBracketDepth > 0 { roundBracketDepth -= 1 }
+      case "{": if squareBracketDepth == 0 { curlyBraceDepth += 1 }
+      case "}": if squareBracketDepth == 0 && curlyBraceDepth > 0 { curlyBraceDepth -= 1 }
+      default: break
+      }
+
+      rawRepresentation += char.string
+      pattern += char.string
+      _consume(char.role)
+    }
+    return .invalid(.unterminatedRegexLiteral)
+  }
+}
+
 extension Lexer /* regex literal */ {
   func lexRegexLiteral(hashCount: Int) -> Token.Kind {
     let delimiter = String(repeating: "#", count: hashCount)

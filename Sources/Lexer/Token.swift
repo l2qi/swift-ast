@@ -72,5 +72,35 @@ public struct Token {
   let roles: [Role] // TODO: wondering if this can be implemented in other ways
 }
 
+extension Token.Kind {
+  var canEndExpression: Bool {
+    switch self {
+    case .identifier, .self, .Self, .super, .nil, .Any, .Type, .Protocol:
+      return true
+    case .booleanLiteral, .integerLiteral, .floatingPointLiteral,
+         .staticStringLiteral, .regexLiteral, .interpolatedStringLiteralHead:
+      return true
+    case .implicitParameterName, .bindingReference:
+      return true
+    case .rightParen, .rightSquare, .rightBrace, .rightChevron:
+      return true
+    case .postfixExclaim, .postfixQuestion, .postfixOperator:
+      return true
+    case .underscore:
+      return true
+    // Contextual keywords that can appear as identifiers
+    case .convenience, .dynamic, .final, .lazy, .mutating, .nonmutating,
+         .nonisolated, .optional, .override, .required, .static,
+         .unowned, .weak,
+         .get, .set, .willSet, .didSet, .safe, .unsafe,
+         .left, .right, .none, .associativity, .precedence,
+         .indirect, .postfix, .prefix, .infix:
+      return true
+    default:
+      return false
+    }
+  }
+}
+
 extension Token : SourceLocatable {
 }

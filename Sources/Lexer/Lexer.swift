@@ -27,6 +27,7 @@ public class Lexer {
   var _loadedTokens: [Token]
   var _checkpoints: [String: [Token]]
   private var _consumedRoles: [Role]
+  private var _prevTokenCanEndExpr: Bool = false
   var _prevRole: Role {
     return _consumedRoles.last ?? .lineFeed
   }
@@ -234,6 +235,14 @@ public class Lexer {
 
     func produce(_ kind: Token.Kind) -> Token {
       let range = SourceRange(start: location, end: _getCurrentLocation())
+      switch kind {
+      case .lineFeed:
+        _prevTokenCanEndExpr = false
+      case .eof:
+        break
+      default:
+        _prevTokenCanEndExpr = kind.canEndExpression
+      }
       return Token(kind: kind, sourceRange: range, roles: loadedRoles)
     }
 
@@ -251,6 +260,22 @@ public class Lexer {
     case .lessThan, .greaterThan, .amp, .question, .exclaim:
       return produce(lexReservedOperator(prev: _prevRole))
     case .operatorHead:
+      if char.unicodeScalar == "/" && !_prevTokenCanEndExpr {
+        if let nc = _scanner.peek(),
+           nc != " " && nc != "\t" && nc != "\n" && nc != "\r"
+           && nc != "\0" && nc != "/" && nc != "*" {
+          let scannerCp = _scanner.checkPoint()
+          let savedRolesCount = _consumedRoles.count
+          _consume(.operatorHead)  // consume opening /
+          let result = lexBareRegexLiteral()
+          if case .regexLiteral = result {
+            return produce(result)
+          }
+          // Backtrack: restore scanner + truncate consumed roles
+          _scanner.restore(fromCheckpoint: scannerCp)
+          _consumedRoles.removeLast(_consumedRoles.count - savedRolesCount)
+        }
+      }
       return produce(lexOperator(prev: _prevRole))
     case .dotOperatorHead:
       guard _scanner.peek() == "." else {
