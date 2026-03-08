@@ -189,7 +189,11 @@ class ParserExplicitMemberExpressionTests: XCTestCase {
         XCTFail("Expected #if clause")
         return
       }
-      XCTAssertTrue(cond.contains("DEBUG"))
+      guard case .identifier(let name) = cond else {
+        XCTFail("Expected identifier condition")
+        return
+      }
+      XCTAssertEqual(name, "DEBUG")
       XCTAssertEqual(condCompExpr.clauses[0].expression.textDescription, "foo.bar")
 
       guard case .else = condCompExpr.clauses[1].condition.kind else {
@@ -220,7 +224,11 @@ class ParserExplicitMemberExpressionTests: XCTestCase {
         XCTFail("Expected #if clause")
         return
       }
-      XCTAssertTrue(cond.contains("DEBUG"))
+      guard case .identifier(let name) = cond else {
+        XCTFail("Expected identifier condition")
+        return
+      }
+      XCTAssertEqual(name, "DEBUG")
       XCTAssertEqual(condCompExpr.clauses[0].expression.textDescription, "foo.bar")
     })
   }
@@ -240,14 +248,22 @@ class ParserExplicitMemberExpressionTests: XCTestCase {
         XCTFail("Expected #if clause")
         return
       }
-      XCTAssertTrue(cond1.contains("DEBUG"))
+      guard case .identifier(let name1) = cond1 else {
+        XCTFail("Expected identifier condition for #if")
+        return
+      }
+      XCTAssertEqual(name1, "DEBUG")
       XCTAssertEqual(condCompExpr.clauses[0].expression.textDescription, "foo.bar")
 
       guard case .elseif(let cond2) = condCompExpr.clauses[1].condition.kind else {
         XCTFail("Expected #elseif clause")
         return
       }
-      XCTAssertTrue(cond2.contains("RELEASE"))
+      guard case .identifier(let name2) = cond2 else {
+        XCTFail("Expected identifier condition for #elseif")
+        return
+      }
+      XCTAssertEqual(name2, "RELEASE")
       XCTAssertEqual(condCompExpr.clauses[1].expression.textDescription, "foo.baz")
 
       guard case .else = condCompExpr.clauses[2].condition.kind else {

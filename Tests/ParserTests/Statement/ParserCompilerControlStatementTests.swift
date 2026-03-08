@@ -33,14 +33,18 @@ class ParserCompilerControlStatementTests: XCTestCase {
         XCTFail("Failed in getting an if directive clause.")
         return
       }
-      XCTAssertEqual(condition, " os(macOS)")
+      guard case .os(let name) = condition else {
+        XCTFail("Expected os() condition.")
+        return
+      }
+      XCTAssertEqual(name, "macOS")
     })
     parseStatementAndTest("#if swift(>=3.1)\nreturn", "#if swift(>=3.1)")
     parseStatementAndTest("#if foo\nreturn", "#if foo")
     parseStatementAndTest("#if true\nreturn", "#if true")
-    parseStatementAndTest("#if(foo)\nreturn", "#if(foo)")
+    parseStatementAndTest("#if(foo)\nreturn", "#if (foo)")
     parseStatementAndTest("#if !bar\nreturn", "#if !bar")
-    parseStatementAndTest("#if foo && bar \nreturn", "#if foo && bar ")
+    parseStatementAndTest("#if foo && bar\nreturn", "#if foo && bar")
     parseStatementAndTest("#if foo || bar\nreturn", "#if foo || bar")
   }
 
@@ -57,14 +61,18 @@ class ParserCompilerControlStatementTests: XCTestCase {
         XCTFail("Failed in getting an elseif directive clause.")
         return
       }
-      XCTAssertEqual(condition, " os(macOS)")
+      guard case .os(let name) = condition else {
+        XCTFail("Expected os() condition.")
+        return
+      }
+      XCTAssertEqual(name, "macOS")
     })
     parseStatementAndTest("#elseif swift(>=3.1)\nreturn", "#elseif swift(>=3.1)")
     parseStatementAndTest("#elseif foo\nreturn", "#elseif foo")
     parseStatementAndTest("#elseif true\nreturn", "#elseif true")
-    parseStatementAndTest("#elseif(foo)\nreturn", "#elseif(foo)")
+    parseStatementAndTest("#elseif(foo)\nreturn", "#elseif (foo)")
     parseStatementAndTest("#elseif !bar\nreturn", "#elseif !bar")
-    parseStatementAndTest("#elseif foo && bar \nreturn", "#elseif foo && bar ")
+    parseStatementAndTest("#elseif foo && bar\nreturn", "#elseif foo && bar")
     parseStatementAndTest("#elseif foo || bar\nreturn", "#elseif foo || bar")
   }
 
@@ -178,7 +186,7 @@ class ParserCompilerControlStatementTests: XCTestCase {
     })
   }
 
-  // MARK: - Phase 6: New Compilation Conditions
+  // MARK: - Structured Compilation Conditions
 
   func testCompilerCondition() {
     parseStatementAndTest("#if compiler(>=5.5)\nreturn", "#if compiler(>=5.5)")
@@ -195,7 +203,12 @@ class ParserCompilerControlStatementTests: XCTestCase {
           XCTFail("Failed in getting an if directive clause.")
           return
         }
-        XCTAssertEqual(condition, " compiler(>=5.5)")
+        guard case .compiler(let op, let version) = condition else {
+          XCTFail("Expected compiler() condition.")
+          return
+        }
+        XCTAssertEqual(op, ">=")
+        XCTAssertEqual(version, "5.5")
       }
     )
   }
@@ -216,13 +229,30 @@ class ParserCompilerControlStatementTests: XCTestCase {
           XCTFail("Failed in getting an if directive clause.")
           return
         }
-        XCTAssertEqual(condition, " canImport(Foundation)")
+        guard case .canImport(let path) = condition else {
+          XCTFail("Expected canImport() condition.")
+          return
+        }
+        XCTAssertEqual(path, "Foundation")
       }
     )
   }
 
   func testCanImportWithSubmodule() {
     parseStatementAndTest("#if canImport(Foundation.Networking)\nreturn", "#if canImport(Foundation.Networking)")
+    parseStatementAndTest(
+      "#if canImport(Foundation.Networking)\nreturn",
+      "#if canImport(Foundation.Networking)",
+      testClosure: { stmt in
+        guard let compCtrlStmt = stmt as? CompilerControlStatement,
+              case .if(let condition) = compCtrlStmt.kind,
+              case .canImport(let path) = condition else {
+          XCTFail("Failed to parse canImport with submodule.")
+          return
+        }
+        XCTAssertEqual(path, "Foundation.Networking")
+      }
+    )
   }
 
   func testTargetEnvironmentMacCatalyst() {
@@ -231,15 +261,13 @@ class ParserCompilerControlStatementTests: XCTestCase {
       "#if targetEnvironment(macCatalyst)\nreturn",
       "#if targetEnvironment(macCatalyst)",
       testClosure: { stmt in
-        guard let compCtrlStmt = stmt as? CompilerControlStatement else {
-          XCTFail("Failed in parsing a compiler control statement.")
+        guard let compCtrlStmt = stmt as? CompilerControlStatement,
+              case .if(let condition) = compCtrlStmt.kind,
+              case .targetEnvironment(let env) = condition else {
+          XCTFail("Failed to parse targetEnvironment condition.")
           return
         }
-        guard case .if(let condition) = compCtrlStmt.kind else {
-          XCTFail("Failed in getting an if directive clause.")
-          return
-        }
-        XCTAssertEqual(condition, " targetEnvironment(macCatalyst)")
+        XCTAssertEqual(env, "macCatalyst")
       }
     )
   }
@@ -254,15 +282,13 @@ class ParserCompilerControlStatementTests: XCTestCase {
       "#if os(visionOS)\nreturn",
       "#if os(visionOS)",
       testClosure: { stmt in
-        guard let compCtrlStmt = stmt as? CompilerControlStatement else {
-          XCTFail("Failed in parsing a compiler control statement.")
+        guard let compCtrlStmt = stmt as? CompilerControlStatement,
+              case .if(let condition) = compCtrlStmt.kind,
+              case .os(let name) = condition else {
+          XCTFail("Failed to parse os() condition.")
           return
         }
-        guard case .if(let condition) = compCtrlStmt.kind else {
-          XCTFail("Failed in getting an if directive clause.")
-          return
-        }
-        XCTAssertEqual(condition, " os(visionOS)")
+        XCTAssertEqual(name, "visionOS")
       }
     )
   }
@@ -274,6 +300,241 @@ class ParserCompilerControlStatementTests: XCTestCase {
     parseStatementAndTest(
       "#if compiler(>=6.0) && canImport(SwiftUI) && os(visionOS)\nreturn",
       "#if compiler(>=6.0) && canImport(SwiftUI) && os(visionOS)"
+    )
+  }
+
+  func testStructuredCombinedCondition() {
+    parseStatementAndTest(
+      "#if compiler(>=5.5) && canImport(SwiftUI)\nreturn",
+      "#if compiler(>=5.5) && canImport(SwiftUI)",
+      testClosure: { stmt in
+        guard let compCtrlStmt = stmt as? CompilerControlStatement,
+              case .if(let condition) = compCtrlStmt.kind,
+              case .and(let lhs, let rhs) = condition else {
+          XCTFail("Failed to parse combined condition.")
+          return
+        }
+        guard case .compiler(let op, let version) = lhs else {
+          XCTFail("Expected compiler() on lhs.")
+          return
+        }
+        XCTAssertEqual(op, ">=")
+        XCTAssertEqual(version, "5.5")
+        guard case .canImport(let path) = rhs else {
+          XCTFail("Expected canImport() on rhs.")
+          return
+        }
+        XCTAssertEqual(path, "SwiftUI")
+      }
+    )
+  }
+
+  func testOrCondition() {
+    parseStatementAndTest(
+      "#if os(iOS) || os(visionOS)\nreturn",
+      "#if os(iOS) || os(visionOS)",
+      testClosure: { stmt in
+        guard let compCtrlStmt = stmt as? CompilerControlStatement,
+              case .if(let condition) = compCtrlStmt.kind,
+              case .or(let lhs, let rhs) = condition else {
+          XCTFail("Failed to parse || condition.")
+          return
+        }
+        guard case .os(let lhsName) = lhs else {
+          XCTFail("Expected os() on lhs.")
+          return
+        }
+        XCTAssertEqual(lhsName, "iOS")
+        guard case .os(let rhsName) = rhs else {
+          XCTFail("Expected os() on rhs.")
+          return
+        }
+        XCTAssertEqual(rhsName, "visionOS")
+      }
+    )
+  }
+
+  func testNegationCondition() {
+    parseStatementAndTest(
+      "#if !bar\nreturn",
+      "#if !bar",
+      testClosure: { stmt in
+        guard let compCtrlStmt = stmt as? CompilerControlStatement,
+              case .if(let condition) = compCtrlStmt.kind,
+              case .not(let inner) = condition else {
+          XCTFail("Failed to parse negation condition.")
+          return
+        }
+        guard case .identifier(let name) = inner else {
+          XCTFail("Expected identifier inside negation.")
+          return
+        }
+        XCTAssertEqual(name, "bar")
+      }
+    )
+  }
+
+  func testParenthesizedCondition() {
+    parseStatementAndTest(
+      "#if(foo)\nreturn",
+      "#if (foo)",
+      testClosure: { stmt in
+        guard let compCtrlStmt = stmt as? CompilerControlStatement,
+              case .if(let condition) = compCtrlStmt.kind,
+              case .parenthesized(let inner) = condition else {
+          XCTFail("Failed to parse parenthesized condition.")
+          return
+        }
+        guard case .identifier(let name) = inner else {
+          XCTFail("Expected identifier inside parens.")
+          return
+        }
+        XCTAssertEqual(name, "foo")
+      }
+    )
+  }
+
+  func testBooleanLiteralCondition() {
+    parseStatementAndTest(
+      "#if true\nreturn",
+      "#if true",
+      testClosure: { stmt in
+        guard let compCtrlStmt = stmt as? CompilerControlStatement,
+              case .if(let condition) = compCtrlStmt.kind,
+              case .booleanLiteral(let value) = condition else {
+          XCTFail("Failed to parse boolean condition.")
+          return
+        }
+        XCTAssertTrue(value)
+      }
+    )
+  }
+
+  func testIdentifierCondition() {
+    parseStatementAndTest(
+      "#if DEBUG\nreturn",
+      "#if DEBUG",
+      testClosure: { stmt in
+        guard let compCtrlStmt = stmt as? CompilerControlStatement,
+              case .if(let condition) = compCtrlStmt.kind,
+              case .identifier(let name) = condition else {
+          XCTFail("Failed to parse identifier condition.")
+          return
+        }
+        XCTAssertEqual(name, "DEBUG")
+      }
+    )
+  }
+
+  func testSwiftVersionCondition() {
+    parseStatementAndTest(
+      "#if swift(>=3.1)\nreturn",
+      "#if swift(>=3.1)",
+      testClosure: { stmt in
+        guard let compCtrlStmt = stmt as? CompilerControlStatement,
+              case .if(let condition) = compCtrlStmt.kind,
+              case .swift(let op, let version) = condition else {
+          XCTFail("Failed to parse swift() condition.")
+          return
+        }
+        XCTAssertEqual(op, ">=")
+        XCTAssertEqual(version, "3.1")
+      }
+    )
+  }
+
+  func testSwiftLessThanCondition() {
+    parseStatementAndTest(
+      "#if swift(<6.0)\nreturn",
+      "#if swift(<6.0)",
+      testClosure: { stmt in
+        guard let compCtrlStmt = stmt as? CompilerControlStatement,
+              case .if(let condition) = compCtrlStmt.kind,
+              case .swift(let op, let version) = condition else {
+          XCTFail("Failed to parse swift(<) condition.")
+          return
+        }
+        XCTAssertEqual(op, "<")
+        XCTAssertEqual(version, "6.0")
+      }
+    )
+  }
+
+  func testArchCondition() {
+    parseStatementAndTest("#if arch(arm64)\nreturn", "#if arch(arm64)")
+    parseStatementAndTest(
+      "#if arch(x86_64)\nreturn",
+      "#if arch(x86_64)",
+      testClosure: { stmt in
+        guard let compCtrlStmt = stmt as? CompilerControlStatement,
+              case .if(let condition) = compCtrlStmt.kind,
+              case .arch(let name) = condition else {
+          XCTFail("Failed to parse arch() condition.")
+          return
+        }
+        XCTAssertEqual(name, "x86_64")
+      }
+    )
+  }
+
+  func testNegationWithPlatformCondition() {
+    parseStatementAndTest(
+      "#if canImport(UIKit) && !os(visionOS)\nreturn",
+      "#if canImport(UIKit) && !os(visionOS)",
+      testClosure: { stmt in
+        guard let compCtrlStmt = stmt as? CompilerControlStatement,
+              case .if(let condition) = compCtrlStmt.kind,
+              case .and(let lhs, let rhs) = condition else {
+          XCTFail("Failed to parse condition.")
+          return
+        }
+        guard case .canImport(let path) = lhs else {
+          XCTFail("Expected canImport on lhs.")
+          return
+        }
+        XCTAssertEqual(path, "UIKit")
+        guard case .not(let inner) = rhs, case .os(let name) = inner else {
+          XCTFail("Expected !os() on rhs.")
+          return
+        }
+        XCTAssertEqual(name, "visionOS")
+      }
+    )
+  }
+
+  func testTripleAndCondition() {
+    parseStatementAndTest(
+      "#if compiler(>=6.0) && canImport(SwiftUI) && os(visionOS)\nreturn",
+      "#if compiler(>=6.0) && canImport(SwiftUI) && os(visionOS)",
+      testClosure: { stmt in
+        guard let compCtrlStmt = stmt as? CompilerControlStatement,
+              case .if(let condition) = compCtrlStmt.kind,
+              case .and(let first, let rest) = condition else {
+          XCTFail("Failed to parse triple && condition.")
+          return
+        }
+        guard case .compiler(let op, let version) = first else {
+          XCTFail("Expected compiler() as first.")
+          return
+        }
+        XCTAssertEqual(op, ">=")
+        XCTAssertEqual(version, "6.0")
+        // rest should be: canImport(SwiftUI) && os(visionOS)
+        guard case .and(let second, let third) = rest else {
+          XCTFail("Expected && for rest.")
+          return
+        }
+        guard case .canImport(let path) = second else {
+          XCTFail("Expected canImport as second.")
+          return
+        }
+        XCTAssertEqual(path, "SwiftUI")
+        guard case .os(let name) = third else {
+          XCTFail("Expected os() as third.")
+          return
+        }
+        XCTAssertEqual(name, "visionOS")
+      }
     )
   }
 }

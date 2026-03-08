@@ -169,6 +169,9 @@ public enum ParserErrorKind : DiagnosticKind {
   case expectedStringLiteralDiagnosticDirective
   case expectedCloseParenDiagnosticDirective
   case expectedValidCompilerCtrlKeyword
+  case expectedCompilationCondition
+  case expectedCloseParenCompilationCondition
+  case expectedArgumentInPlatformCondition
   case invalidLabelOnStatement
   case expectedCaseColon
   case expectedDefaultColon
@@ -422,6 +425,12 @@ public enum ParserErrorKind : DiagnosticKind {
       return "expected ')' in diagnostic directive"
     case .expectedValidCompilerCtrlKeyword:
       return "expected a valid keyword after '#' in compiler-control statement"
+    case .expectedCompilationCondition:
+      return "expected a compilation condition"
+    case .expectedCloseParenCompilationCondition:
+      return "expected ')' in compilation condition"
+    case .expectedArgumentInPlatformCondition:
+      return "expected argument in platform condition"
     case .invalidLabelOnStatement:
       return "labels are only valid on loops, if, and switch statements"
     case .expectedCaseColon:

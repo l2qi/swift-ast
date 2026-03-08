@@ -46,9 +46,9 @@ extension CompilerControlStatement : TTYASTDumpRepresentable {
     var body = String.indent
     switch kind {
     case .if(let condition):
-      body += "kind: `if`, condition: `\(condition)`"
+      body += "kind: `if`, condition: `\(condition.textDescription)`"
     case .elseif(let condition):
-      body += "kind: `elseif`, condition: `\(condition)`"
+      body += "kind: `elseif`, condition: `\(condition.textDescription)`"
     case .else:
       body += "kind: `else`"
     case .endif:

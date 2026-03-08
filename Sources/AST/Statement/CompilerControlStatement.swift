@@ -21,8 +21,8 @@ public class CompilerControlStatement : ASTNode, Statement {
   // and flattly saved along with other statements.
   public enum Kind {
     // conditional compilation block
-    case `if`(String)
-    case elseif(String)
+    case `if`(CompilationCondition)
+    case elseif(CompilationCondition)
     case `else`
     case endif
 
@@ -45,9 +45,9 @@ public class CompilerControlStatement : ASTNode, Statement {
   override public var textDescription: String {
     switch self.kind {
     case .if(let condition):
-      return "#if\(condition)"
+      return "#if \(condition.textDescription)"
     case .elseif(let condition):
-      return "#elseif\(condition)"
+      return "#elseif \(condition.textDescription)"
     case .else:
       return "#else"
     case .endif:
