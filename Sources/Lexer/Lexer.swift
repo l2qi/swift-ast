@@ -352,16 +352,29 @@ public class Lexer {
       while _scanner.peek(ahead: hashCount - 1) == "#" {
         hashCount += 1
       }
-      // Check if character after all hashes is /
-      if _scanner.peek(ahead: hashCount - 1) == "/" {
-        // Consume all # and the /
+      let charAfterHashes = _scanner.peek(ahead: hashCount - 1)
+      // Check if character after all hashes is /  →  regex literal
+      if charAfterHashes == "/" {
         for _ in 0..<hashCount {
           _consume(.hash)
         }
         _consume()  // consume /
         return produce(lexRegexLiteral(hashCount: hashCount))
       }
-      // Not a regex — produce a single .hash token
+      // Check if character after all hashes is "  →  extended string literal
+      if charAfterHashes == "\"" {
+        for _ in 0..<hashCount {
+          _consume(.hash)
+        }
+        _consume(.doubleQuote)  // consume opening "
+        // Check for multiline: two more "s
+        if char.role == .doubleQuote && _scanner.peek() == "\"" {
+          _consume(andAdvanceScannerBy: 2)
+          return produce(lexStringLiteral(isMultiline: true, hashCount: hashCount))
+        }
+        return produce(lexStringLiteral(hashCount: hashCount))
+      }
+      // Not a regex or string — produce a single .hash token
       return consumeAndProduce(.hash)
     default:
       if let kind = roleTokenKindMapping[head] {

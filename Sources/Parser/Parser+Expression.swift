@@ -721,7 +721,7 @@ extension Parser {
       let floatExpr = LiteralExpression(kind: .floatingPoint(d, r))
       floatExpr.setSourceRange(lookedRange)
       return floatExpr
-    case let .staticStringLiteral(s, r):
+    case let .staticStringLiteral(s, r, _):
       let strExpr = LiteralExpression(kind: .staticString(s, r))
       strExpr.setSourceRange(lookedRange)
       return strExpr
@@ -729,8 +729,8 @@ extension Parser {
       let regexExpr = LiteralExpression(kind: .regex(s, r))
       regexExpr.setSourceRange(lookedRange)
       return regexExpr
-    case let .interpolatedStringLiteralHead(s, r):
-      return try parseInterpolatedStringLiteral(head: s, raw: r, startLocation: lookedRange.start)
+    case let .interpolatedStringLiteralHead(s, r, hc):
+      return try parseInterpolatedStringLiteral(head: s, raw: r, hashCount: hc, startLocation: lookedRange.start)
     case .leftSquare:
       return try parseCollectionLiteral(startLocation: lookedRange.start)
     case .hash:
@@ -1396,7 +1396,7 @@ extension Parser {
   }
 
   private func parseInterpolatedStringLiteral( // swift-lint:suppress(high_cyclomatic_complexity,high_ncss)
-    head: String, raw: String, startLocation: SourceLocation
+    head: String, raw: String, hashCount: Int = 0, startLocation: SourceLocation
   ) throws -> LiteralExpression { // swift-lint:suppress(nested_code_block_depth)
     func caliberateExpressions(_ exprs: [ASTExpression]) throws -> [ASTExpression] { // swift-lint:suppress(nested_code_block_depth,long_line)
       let exprCount = exprs.count
@@ -1447,15 +1447,19 @@ extension Parser {
 
     var exprs: [ASTExpression] = []
     var rawText = raw
-    let multilineDelimiter = "\"\"\""
-    let isMultiline = raw.hasPrefix(multilineDelimiter)
+    let hashDelimiter = String(repeating: "#", count: hashCount)
+    let multilineOpenDelimiter = hashDelimiter + "\"\"\""
+    let singleLineOpenDelimiter = hashDelimiter + "\""
+    let multilineCloseDelimiter = "\"\"\"" + hashDelimiter
+    let singleLineCloseDelimiter = "\"" + hashDelimiter
+    let isMultiline = raw.hasPrefix(multilineOpenDelimiter)
     let isInterpolatedHead = startLocation != .DUMMY
 
     func appendRawText(withRawText ir: String) {
-      let startIndexOffset = ir.hasPrefix(multilineDelimiter) ? 3 : 1
-      let endIndexOffset = ir.hasSuffix(multilineDelimiter) ? -3 : -1
-      let startIndex = ir.index(ir.startIndex, offsetBy: startIndexOffset)
-      let endIndex = ir.index(ir.endIndex, offsetBy: endIndexOffset)
+      let startLen = ir.hasPrefix(multilineOpenDelimiter) ? multilineOpenDelimiter.count : singleLineOpenDelimiter.count
+      let endLen = ir.hasSuffix(multilineCloseDelimiter) ? multilineCloseDelimiter.count : singleLineCloseDelimiter.count
+      let startIndex = ir.index(ir.startIndex, offsetBy: startLen)
+      let endIndex = ir.index(ir.endIndex, offsetBy: -endLen)
       rawText += String(ir[startIndex..<endIndex])
     }
 
@@ -1476,9 +1480,9 @@ extension Parser {
     }
 
     var endLocation: SourceLocation
-    let tailString = _lexer.lexStringLiteral(isMultiline: isMultiline, postponeCaliberation: true)
+    let tailString = _lexer.lexStringLiteral(isMultiline: isMultiline, hashCount: hashCount, postponeCaliberation: true)
     switch tailString {
-    case let .staticStringLiteral(str, raw):
+    case let .staticStringLiteral(str, raw, _):
       if !str.isEmpty {
         // Note: static strings inside the interpolated string literals do not need to preserve raw representation,
         // because they are what they are
@@ -1486,8 +1490,8 @@ extension Parser {
         appendRawText(withRawText: raw)
       }
       endLocation = _lexer._getCurrentLocation() // TODO: need to find a better to do it
-    case let .interpolatedStringLiteralHead(headStr, rawStr):
-      let nested = try parseInterpolatedStringLiteral(head: headStr, raw: rawStr, startLocation: .DUMMY)
+    case let .interpolatedStringLiteralHead(headStr, rawStr, hc):
+      let nested = try parseInterpolatedStringLiteral(head: headStr, raw: rawStr, hashCount: hc, startLocation: .DUMMY)
       guard case let .interpolatedString(es, ir) = nested.kind else {
         throw _raiseFatal(.expectedStringInterpolation)
       }
@@ -1502,7 +1506,7 @@ extension Parser {
       exprs = try caliberateExpressions(exprs)
     }
 
-    rawText += isMultiline ? multilineDelimiter : "\""
+    rawText += isMultiline ? multilineCloseDelimiter : singleLineCloseDelimiter
 
     let strExpr = LiteralExpression(kind: .interpolatedString(exprs, rawText))
     strExpr.setSourceRange(startLocation, endLocation)

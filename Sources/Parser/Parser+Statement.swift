@@ -210,7 +210,7 @@ extension Parser {
         kind = .endif
       case "warning", "error":
         try match(.leftParen, orFatal: .expectedOpenParenDiagnosticDirective)
-        guard case let .staticStringLiteral(message, _) = _lexer.read(.dummyStaticStringLiteral) else {
+        guard case let .staticStringLiteral(message, _, _) = _lexer.read(.dummyStaticStringLiteral) else {
           throw _raiseFatal(.expectedStringLiteralDiagnosticDirective)
         }
         endLocation = getEndLocation()
@@ -226,7 +226,7 @@ extension Parser {
         var lineNumber: Int?
         if _lexer.read(.dummyIdentifier) == .identifier("file", false),
           _lexer.match(.colon),
-          case let .staticStringLiteral(name, _) = _lexer.read(.dummyStaticStringLiteral),
+          case let .staticStringLiteral(name, _, _) = _lexer.read(.dummyStaticStringLiteral),
           _lexer.match(.comma),
           _lexer.read(.dummyIdentifier) == .identifier("line", false),
           _lexer.match(.colon),

@@ -970,7 +970,7 @@ extension Parser {
             caseComponents.append((s, nil, .integer(i)))
           case let .floatingPointLiteral(f, _):
             caseComponents.append((s, nil, .floatingPoint(f)))
-          case let .staticStringLiteral(ss, _):
+          case let .staticStringLiteral(ss, _, _):
             caseComponents.append((s, nil, .string(ss)))
           case let .booleanLiteral(b):
             caseComponents.append((s, nil, .boolean(b)))
