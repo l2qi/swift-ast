@@ -720,8 +720,21 @@ extension ASTVisitor {
     guard try visit(expr) else { return false }
 
     switch expr.kind {
-    case .interpolatedString(let exprs, _):
-      return try traverse(exprs)
+    case .interpolatedString(let segments, _):
+      for segment in segments {
+        if case .interpolation(let args) = segment {
+          for arg in args {
+            switch arg {
+            case .expression(let argExpr), .namedExpression(_, let argExpr),
+                 .memoryReference(let argExpr), .namedMemoryReference(_, let argExpr):
+              guard try traverse(argExpr) else { return false }
+            default:
+              continue
+            }
+          }
+        }
+      }
+      return true
     case .array(let exprs):
       return try traverse(exprs)
     case .dictionary(let dictEntries):

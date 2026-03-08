@@ -760,7 +760,7 @@ class DefaultTraverseImplementationTests : XCTestCase {
   func testVisitLiteralExpression() {
     let nodes = [
       LiteralExpression(kind: .nil),
-      LiteralExpression(kind: .interpolatedString([WildcardExpression()], "test")),
+      LiteralExpression(kind: .interpolatedString([.interpolation([.expression(WildcardExpression())])], "test")),
       LiteralExpression(kind: .array([WildcardExpression()])),
       LiteralExpression(kind: .dictionary([
         DictionaryEntry(key: WildcardExpression(), value: WildcardExpression())

@@ -53,6 +53,25 @@ extension PlaygroundLiteral : ASTTextRepresentable {
   }
 }
 
+public enum InterpolationSegment {
+  /// Static text between interpolations
+  case text(String)
+  /// An interpolation `\(...)` parsed as an argument list (SE-0228)
+  case interpolation(FunctionCallExpression.ArgumentList)
+}
+
+extension InterpolationSegment : ASTTextRepresentable {
+  public var textDescription: String {
+    switch self {
+    case .text(let value):
+      return value
+    case .interpolation(let args):
+      let argsText = args.map({ $0.textDescription }).joined(separator: ", ")
+      return "\\(\(argsText))"
+    }
+  }
+}
+
 public class LiteralExpression : ASTNode, PrimaryExpression {
   public enum Kind {
     case `nil`
@@ -60,7 +79,7 @@ public class LiteralExpression : ASTNode, PrimaryExpression {
     case integer(Int, String)
     case floatingPoint(Double, String)
     case staticString(String, String)
-    case interpolatedString([ASTExpression], String)
+    case interpolatedString([InterpolationSegment], String)
     case array([ASTExpression])
     case dictionary([DictionaryEntry])
     case playground(PlaygroundLiteral)

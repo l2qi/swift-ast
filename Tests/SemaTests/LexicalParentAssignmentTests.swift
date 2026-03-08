@@ -635,9 +635,19 @@ class LexicalParentAssignmentTests: XCTestCase {
           return
         }
         switch expr.kind {
-        case .interpolatedString(let es, _):
-          for e in es {
-            XCTAssertTrue(e.lexicalParent === expr)
+        case .interpolatedString(let segments, _):
+          for segment in segments {
+            if case .interpolation(let args) = segment {
+              for arg in args {
+                switch arg {
+                case .expression(let e), .namedExpression(_, let e),
+                     .memoryReference(let e), .namedMemoryReference(_, let e):
+                  XCTAssertTrue(e.lexicalParent === expr)
+                default:
+                  break
+                }
+              }
+            }
           }
         case .array(let es):
           for e in es {

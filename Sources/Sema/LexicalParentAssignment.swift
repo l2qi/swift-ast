@@ -459,9 +459,19 @@ private class AssignmentVisitor : ASTVisitor {
 
   func visit(_ expr: LiteralExpression) throws -> Bool {
     switch expr.kind {
-    case .interpolatedString(let es, _):
-      for e in es {
-        e.setLexicalParent(expr)
+    case .interpolatedString(let segments, _):
+      for segment in segments {
+        if case .interpolation(let args) = segment {
+          for arg in args {
+            switch arg {
+            case .expression(let argExpr), .namedExpression(_, let argExpr),
+                 .memoryReference(let argExpr), .namedMemoryReference(_, let argExpr):
+              argExpr.setLexicalParent(expr)
+            default:
+              break
+            }
+          }
+        }
       }
     case .array(let es):
       for e in es {

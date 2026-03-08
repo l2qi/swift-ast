@@ -438,9 +438,26 @@ private class FoldingVisitor : ASTVisitor {
 
   func visit(_ expr: LiteralExpression) throws -> Bool {
     switch expr.kind {
-    case let .interpolatedString(exprs, str):
-      let foldedExprs = exprs.map(foldExpression)
-      expr.reset(with: .interpolatedString(foldedExprs, str))
+    case let .interpolatedString(segments, str):
+      let foldedSegments: [InterpolationSegment] = segments.map { segment in
+        guard case .interpolation(let args) = segment else { return segment }
+        let foldedArgs: FunctionCallExpression.ArgumentList = args.map { arg in
+          switch arg {
+          case .expression(let argExpr):
+            return .expression(foldExpression(argExpr))
+          case let .namedExpression(name, argExpr):
+            return .namedExpression(name, foldExpression(argExpr))
+          case .memoryReference(let argExpr):
+            return .memoryReference(foldExpression(argExpr))
+          case let .namedMemoryReference(name, argExpr):
+            return .namedMemoryReference(name, foldExpression(argExpr))
+          case .operator, .namedOperator:
+            return arg
+          }
+        }
+        return .interpolation(foldedArgs)
+      }
+      expr.reset(with: .interpolatedString(foldedSegments, str))
     case .array(let exprs):
       let foldedExprs = exprs.map(foldExpression)
       expr.reset(with: .array(foldedExprs))

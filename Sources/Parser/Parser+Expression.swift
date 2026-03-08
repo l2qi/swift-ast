@@ -1398,54 +1398,51 @@ extension Parser {
   private func parseInterpolatedStringLiteral( // swift-lint:suppress(high_cyclomatic_complexity,high_ncss)
     head: String, raw: String, hashCount: Int = 0, startLocation: SourceLocation
   ) throws -> LiteralExpression { // swift-lint:suppress(nested_code_block_depth)
-    func caliberateExpressions(_ exprs: [ASTExpression]) throws -> [ASTExpression] { // swift-lint:suppress(nested_code_block_depth,long_line)
-      let exprCount = exprs.count
+    func caliberateSegments(_ segments: [InterpolationSegment]) throws -> [InterpolationSegment] { // swift-lint:suppress(nested_code_block_depth,long_line)
+      let segmentCount = segments.count
       var indentationPrefix = ""
-      var caliberatedExprs: [ASTExpression] = []
+      var caliberatedSegments: [InterpolationSegment] = []
 
-      for (offset, expr) in exprs.reversed().enumerated() {
-        if let literalExpr = expr as? LiteralExpression,
-          case let .staticString(blockStr, blockRawText) = literalExpr.kind,
-          blockRawText.isEmpty
-        {
-          var blockLines = blockStr.components(separatedBy: .newlines)
-          if offset == 0 { // let's first of all figure out the indentation prefix
-            indentationPrefix = blockLines.removeLast()
+      for (offset, segment) in segments.reversed().enumerated() {
+        guard case let .text(blockStr) = segment else {
+          caliberatedSegments.append(segment)
+          continue
+        }
+
+        var blockLines = blockStr.components(separatedBy: .newlines)
+        if offset == 0 { // let's first of all figure out the indentation prefix
+          indentationPrefix = blockLines.removeLast()
+          try assert(
+            indentationPrefix.filter({ $0 != " " && $0 != "\t"}).isEmpty,
+            orFatal: .newLineExpectedAtTheClosingOfMultilineStringLiteral)
+        }
+
+        let identationLength = indentationPrefix.count
+        var caliberatedLines: [String] = []
+        for (origLineOffset, origLine) in blockLines.enumerated() {
+          if origLineOffset == 0 && offset != segmentCount-1 {
+            caliberatedLines.append(origLine)
+          } else if origLine.isEmpty {
+            caliberatedLines.append(origLine)
+          } else {
             try assert(
-              indentationPrefix.filter({ $0 != " " && $0 != "\t"}).isEmpty,
-              orFatal: .newLineExpectedAtTheClosingOfMultilineStringLiteral)
+              origLine.hasPrefix(indentationPrefix),
+              orFatal: .insufficientIndentationOfLineInMultilineStringLiteral)
+            let startIndex = origLine.index(origLine.startIndex, offsetBy: identationLength)
+            let caliberatedLine = String(origLine[startIndex...])
+            caliberatedLines.append(caliberatedLine)
           }
-
-          let identationLength = indentationPrefix.count
-          var caliberatedLines: [String] = []
-          for (origLineOffset, origLine) in blockLines.enumerated() {
-            if origLineOffset == 0 && offset != exprCount-1 {
-              caliberatedLines.append(origLine)
-            } else if origLine.isEmpty {
-              caliberatedLines.append(origLine)
-            } else {
-              try assert(
-                origLine.hasPrefix(indentationPrefix),
-                orFatal: .insufficientIndentationOfLineInMultilineStringLiteral)
-              let startIndex = origLine.index(origLine.startIndex, offsetBy: identationLength)
-              let caliberatedLine = String(origLine[startIndex...])
-              caliberatedLines.append(caliberatedLine)
-            }
-          }
-          let caliberatedLiteral = caliberatedLines.joined(separator: "\n")
-          if !caliberatedLiteral.isEmpty {
-            let caliberatedLiteralExpr = LiteralExpression(kind: .staticString(caliberatedLiteral, blockRawText))
-            caliberatedExprs.append(caliberatedLiteralExpr)
-          }
-        } else {
-          caliberatedExprs.append(expr)
+        }
+        let caliberatedLiteral = caliberatedLines.joined(separator: "\n")
+        if !caliberatedLiteral.isEmpty {
+          caliberatedSegments.append(.text(caliberatedLiteral))
         }
       }
 
-      return caliberatedExprs.reversed()
+      return caliberatedSegments.reversed()
     }
 
-    var exprs: [ASTExpression] = []
+    var segments: [InterpolationSegment] = []
     var rawText = raw
     let hashDelimiter = String(repeating: "#", count: hashCount)
     let multilineOpenDelimiter = hashDelimiter + "\"\"\""
@@ -1464,14 +1461,29 @@ extension Parser {
     }
 
     if !head.isEmpty {
-      // Note: static strings inside the interpolated string literals do not need to preserve raw representation,
-      // because they are what they are
-      exprs.append(LiteralExpression(kind: .staticString(head, "")))
+      segments.append(.text(head))
     }
 
-    let expr = try parseExpression()
-    exprs.append(expr)
-    rawText += expr.textDescription
+    // Parse interpolation arguments (SE-0228: argument list syntax)
+    var arguments: FunctionCallExpression.ArgumentList = []
+    repeat {
+      if _lexer.look(ahead: 1).kind == .colon {
+        guard let name = readNamedIdentifierOrWildcard() else {
+          throw _raiseFatal(.extraTokenStringInterpolation)
+        }
+        _lexer.advance() // consume ':'
+        let argExpr = try parseExpression()
+        arguments.append(.namedExpression(name, argExpr))
+      } else {
+        let argExpr = try parseExpression()
+        arguments.append(.expression(argExpr))
+      }
+    } while _lexer.match(.comma)
+
+    segments.append(.interpolation(arguments))
+
+    // Build rawText from arguments
+    rawText += arguments.map({ $0.textDescription }).joined(separator: ", ")
 
     if _lexer.matchUnicodeScalar(")") {
       rawText += ")"
@@ -1484,18 +1496,16 @@ extension Parser {
     switch tailString {
     case let .staticStringLiteral(str, raw, _):
       if !str.isEmpty {
-        // Note: static strings inside the interpolated string literals do not need to preserve raw representation,
-        // because they are what they are
-        exprs.append(LiteralExpression(kind: .staticString(str, "")))
+        segments.append(.text(str))
         appendRawText(withRawText: raw)
       }
       endLocation = _lexer._getCurrentLocation() // TODO: need to find a better to do it
     case let .interpolatedStringLiteralHead(headStr, rawStr, hc):
       let nested = try parseInterpolatedStringLiteral(head: headStr, raw: rawStr, hashCount: hc, startLocation: .DUMMY)
-      guard case let .interpolatedString(es, ir) = nested.kind else {
+      guard case let .interpolatedString(nestedSegments, ir) = nested.kind else {
         throw _raiseFatal(.expectedStringInterpolation)
       }
-      exprs.append(contentsOf: es)
+      segments.append(contentsOf: nestedSegments)
       appendRawText(withRawText: ir)
       endLocation = nested.sourceRange.end
     default:
@@ -1503,12 +1513,12 @@ extension Parser {
     }
 
     if isMultiline && isInterpolatedHead {
-      exprs = try caliberateExpressions(exprs)
+      segments = try caliberateSegments(segments)
     }
 
     rawText += isMultiline ? multilineCloseDelimiter : singleLineCloseDelimiter
 
-    let strExpr = LiteralExpression(kind: .interpolatedString(exprs, rawText))
+    let strExpr = LiteralExpression(kind: .interpolatedString(segments, rawText))
     strExpr.setSourceRange(startLocation, endLocation)
     return strExpr
   }
