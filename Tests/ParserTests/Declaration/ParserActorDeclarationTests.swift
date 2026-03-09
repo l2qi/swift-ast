@@ -157,4 +157,100 @@ class ParserActorDeclarationTests: XCTestCase {
       }
     })
   }
+
+  func testActorWithMultipleProtocols() {
+    parseDeclarationAndTest(
+      "actor MyActor: Sendable, CustomStringConvertible {}",
+      "actor MyActor: Sendable, CustomStringConvertible {}",
+      testClosure: { decl in
+        guard let actorDecl = decl as? ActorDeclaration else {
+          XCTFail("Failed in getting an actor declaration.")
+          return
+        }
+        XCTAssertNotNil(actorDecl.typeInheritanceClause)
+      })
+  }
+
+  func testActorWithComputedProperty() {
+    parseDeclarationAndTest(
+      "actor MyActor { var count: Int { get { 0 } } }",
+      "actor MyActor {\nvar count: Int {\nget {\n0\n}\n}\n}",
+      testClosure: { decl in
+        guard let actorDecl = decl as? ActorDeclaration else {
+          XCTFail("Failed in getting an actor declaration.")
+          return
+        }
+        XCTAssertEqual(actorDecl.members.count, 1)
+      })
+  }
+
+  func testActorWithSubscript() {
+    parseDeclarationAndTest(
+      "actor Storage { subscript(key: String) -> Int { get { 0 } } }",
+      "actor Storage {\nsubscript(key: String) -> Int {\nget {\n0\n}\n}\n}",
+      testClosure: { decl in
+        guard let actorDecl = decl as? ActorDeclaration else {
+          XCTFail("Failed in getting an actor declaration.")
+          return
+        }
+        XCTAssertEqual(actorDecl.members.count, 1)
+      })
+  }
+
+  func testActorWithDeinit() {
+    parseDeclarationAndTest(
+      "actor Resource { deinit { cleanup() } }",
+      "actor Resource {\ndeinit {\ncleanup()\n}\n}",
+      testClosure: { decl in
+        guard let actorDecl = decl as? ActorDeclaration else {
+          XCTFail("Failed in getting an actor declaration.")
+          return
+        }
+        XCTAssertEqual(actorDecl.members.count, 1)
+      })
+  }
+
+  func testActorWithInit() {
+    parseDeclarationAndTest(
+      "actor Counter { init(start: Int) { } }",
+      "actor Counter {\ninit(start: Int) {}\n}",
+      testClosure: { decl in
+        guard let actorDecl = decl as? ActorDeclaration else {
+          XCTFail("Failed in getting an actor declaration.")
+          return
+        }
+        XCTAssertEqual(actorDecl.members.count, 1)
+        if case .declaration(let memberDecl) = actorDecl.members[0] {
+          XCTAssertTrue(memberDecl is InitializerDeclaration)
+        } else {
+          XCTFail("Expected init declaration member.")
+        }
+      })
+  }
+
+  func testActorWithMultipleMembers() {
+    parseDeclarationAndTest(
+      "actor Bank { var balance = 0; func deposit(_ amount: Int) { balance += amount }; func withdraw(_ amount: Int) { balance -= amount } }",
+      "actor Bank {\nvar balance = 0\nfunc deposit(_ amount: Int) {\nbalance += amount\n}\nfunc withdraw(_ amount: Int) {\nbalance -= amount\n}\n}",
+      testClosure: { decl in
+        guard let actorDecl = decl as? ActorDeclaration else {
+          XCTFail("Failed in getting an actor declaration.")
+          return
+        }
+        XCTAssertEqual(actorDecl.members.count, 3)
+      })
+  }
+
+  func testPackageActor() {
+    parseDeclarationAndTest(
+      "package actor InternalActor {}",
+      "package actor InternalActor {}",
+      testClosure: { decl in
+        guard let actorDecl = decl as? ActorDeclaration else {
+          XCTFail("Failed in getting an actor declaration.")
+          return
+        }
+        XCTAssertEqual(actorDecl.accessLevelModifier, .packageLevel)
+      })
+  }
 }

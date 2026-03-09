@@ -303,6 +303,127 @@ class ParserSwitchStatementTests: XCTestCase {
     })
   }
 
+  func testConditionalCompilationWithElseIf() {
+    parseStatementAndTest(
+    """
+    switch mode {
+    #if os(iOS)
+    case .touch:
+        handleTouch()
+    #elseif os(macOS)
+    case .click:
+        handleClick()
+    #else
+    case .generic:
+        handleGeneric()
+    #endif
+    }
+    """,
+    """
+    switch mode {
+    #if os(iOS)
+    case .touch:
+    handleTouch()
+    #elseif os(macOS)
+    case .click:
+    handleClick()
+    #else
+    case .generic:
+    handleGeneric()
+    #endif
+    }
+    """,
+    testClosure: { stmt in
+      guard let switchStmt = stmt as? SwitchStatement else {
+        XCTFail("Failed in parsing a switch statement.")
+        return
+      }
+      // Should have compiler control cases for #if, case, #elseif, case, #else, case, #endif
+      XCTAssertTrue(switchStmt.cases.count >= 7)
+    })
+  }
+
+  func testMultipleConditionalBlocks() {
+    parseStatementAndTest(
+    """
+    switch value {
+    case .a:
+        handleA()
+    #if DEBUG
+    case .debug:
+        debugOnly()
+    #endif
+    #if VERBOSE
+    case .verbose:
+        verboseOnly()
+    #endif
+    default:
+        handleDefault()
+    }
+    """,
+    """
+    switch value {
+    case .a:
+    handleA()
+    #if DEBUG
+    case .debug:
+    debugOnly()
+    #endif
+    #if VERBOSE
+    case .verbose:
+    verboseOnly()
+    #endif
+    default:
+    handleDefault()
+    }
+    """,
+    testClosure: { stmt in
+      guard let switchStmt = stmt as? SwitchStatement else {
+        XCTFail("Failed in parsing a switch statement.")
+        return
+      }
+      // case .a + #if + case .debug + #endif + #if + case .verbose + #endif + default = 8
+      XCTAssertTrue(switchStmt.cases.count >= 8)
+    })
+  }
+
+  func testConditionalAroundDefault() {
+    parseStatementAndTest(
+    """
+    switch x {
+    case 1:
+        one()
+    #if DEBUG
+    default:
+        debugDefault()
+    #else
+    default:
+        releaseDefault()
+    #endif
+    }
+    """,
+    """
+    switch x {
+    case 1:
+    one()
+    #if DEBUG
+    default:
+    debugDefault()
+    #else
+    default:
+    releaseDefault()
+    #endif
+    }
+    """,
+    testClosure: { stmt in
+      guard let switchStmt = stmt as? SwitchStatement else {
+        XCTFail("Failed in parsing a switch statement.")
+        return
+      }
+      XCTAssertTrue(switchStmt.cases.count >= 5)
+    })
+  }
+
   func testSourceRange() {
     parseStatementAndTest("switch foo {}", "switch foo {}", testClosure: { stmt in
       XCTAssertEqual(stmt.sourceRange, getRange(1, 1, 1, 14))

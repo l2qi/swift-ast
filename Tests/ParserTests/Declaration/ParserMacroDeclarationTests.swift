@@ -92,10 +92,80 @@ class ParserMacroDeclarationTests: XCTestCase {
     })
   }
 
-  static let allTests = [
-    ("testMacroWithDefinition", testMacroWithDefinition),
-    ("testPublicMacro", testPublicMacro),
-    ("testMacroWithGenerics", testMacroWithGenerics),
-    ("testMacroWithAttributes", testMacroWithAttributes),
-  ]
+  func testMacroWithWhereClause() {
+    parseDeclarationAndTest(
+      "macro convert<T>(value: T) -> String where T: CustomStringConvertible",
+      "macro convert<T>(value: T) -> String where T: CustomStringConvertible",
+      testClosure: { decl in
+      guard let macroDecl = decl as? MacroDeclaration else {
+        XCTFail("Failed in getting a macro declaration")
+        return
+      }
+      ASTTextEqual(macroDecl.name, "convert")
+      XCTAssertNotNil(macroDecl.genericParameterClause)
+      XCTAssertNotNil(macroDecl.genericWhereClause)
+      XCTAssertNotNil(macroDecl.signature.result)
+      XCTAssertNil(macroDecl.definition)
+    })
+  }
+
+  func testMacroWithMultipleParameters() {
+    parseDeclarationAndTest(
+      "macro assertEqual(_ lhs: Any, _ rhs: Any)",
+      "macro assertEqual(_ lhs: Any, _ rhs: Any)",
+      testClosure: { decl in
+      guard let macroDecl = decl as? MacroDeclaration else {
+        XCTFail("Failed in getting a macro declaration")
+        return
+      }
+      ASTTextEqual(macroDecl.name, "assertEqual")
+      XCTAssertEqual(macroDecl.signature.parameterList.count, 2)
+      XCTAssertNil(macroDecl.signature.result)
+      XCTAssertNil(macroDecl.definition)
+    })
+  }
+
+  func testMacroWithMultipleAttributes() {
+    parseDeclarationAndTest(
+      "@attached(member) @attached(conformance) macro MyMacro() = #externalMacro(module: \"M\", type: \"T\")",
+      "@attached(member) @attached(conformance) macro MyMacro() = #externalMacro(module: \"M\", type: \"T\")",
+      testClosure: { decl in
+      guard let macroDecl = decl as? MacroDeclaration else {
+        XCTFail("Failed in getting a macro declaration")
+        return
+      }
+      XCTAssertEqual(macroDecl.attributes.count, 2)
+      XCTAssertNotNil(macroDecl.definition)
+    })
+  }
+
+  func testPackageMacro() {
+    parseDeclarationAndTest(
+      "package macro internalMacro()",
+      "package macro internalMacro()",
+      testClosure: { decl in
+      guard let macroDecl = decl as? MacroDeclaration else {
+        XCTFail("Failed in getting a macro declaration")
+        return
+      }
+      XCTAssertEqual(macroDecl.accessLevelModifier, .packageLevel)
+      ASTTextEqual(macroDecl.name, "internalMacro")
+    })
+  }
+
+  func testMacroNoParams() {
+    parseDeclarationAndTest(
+      "macro line() -> Int = #externalMacro(module: \"M\", type: \"T\")",
+      "macro line() -> Int = #externalMacro(module: \"M\", type: \"T\")",
+      testClosure: { decl in
+      guard let macroDecl = decl as? MacroDeclaration else {
+        XCTFail("Failed in getting a macro declaration")
+        return
+      }
+      ASTTextEqual(macroDecl.name, "line")
+      XCTAssertEqual(macroDecl.signature.parameterList.count, 0)
+      XCTAssertNotNil(macroDecl.signature.result)
+      XCTAssertNotNil(macroDecl.definition)
+    })
+  }
 }

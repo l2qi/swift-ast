@@ -36,4 +36,38 @@ class ParserBoxedProtocolTypeTests: XCTestCase {
       XCTAssertTrue(type is BoxedProtocolType)
     })
   }
+
+  func testBoxedProtocolComposition() {
+    parseTypeAndTest("any Foo & Bar", "any protocol<Foo, Bar>", testClosure: { type in
+      guard let boxedType = type as? BoxedProtocolType else {
+        XCTFail("Expected BoxedProtocolType")
+        return
+      }
+      XCTAssertTrue(boxedType.wrappedType is ProtocolCompositionType)
+    })
+  }
+
+  func testBoxedProtocolTripleComposition() {
+    parseTypeAndTest("any A & B & C", "any protocol<A, B, C>", testClosure: { type in
+      XCTAssertTrue(type is BoxedProtocolType)
+    })
+  }
+
+  func testBoxedProtocolWithGenericComposition() {
+    parseTypeAndTest("any Sequence<Int> & Sendable", "any protocol<Sequence<Int>, Sendable>", testClosure: { type in
+      XCTAssertTrue(type is BoxedProtocolType)
+    })
+  }
+
+  func testBoxedProtocolInFunctionParam() {
+    parseDeclarationAndTest("func foo(x: any Protocol)", "func foo(x: any Protocol)")
+  }
+
+  func testBoxedProtocolInReturnType() {
+    parseDeclarationAndTest("func bar() -> any Collection<String>", "func bar() -> any Collection<String>")
+  }
+
+  func testBoxedProtocolInVariable() {
+    parseDeclarationAndTest("var x: any Hashable", "var x: any Hashable")
+  }
 }

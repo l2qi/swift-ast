@@ -89,4 +89,56 @@ class ParserAwaitExpressionTests: XCTestCase {
   func testAwaitInAssignment() {
     parseStatementAndTest("let x = await foo()", "let x = await foo()")
   }
+
+  func testAwaitSubscriptAccess() {
+    parseExpressionAndTest("await array[0]", "await array[0]", testClosure: { expr in
+      guard let awaitExpr = expr as? AwaitExpression else {
+        XCTFail("Failed in getting an await expression.")
+        return
+      }
+      XCTAssertTrue(awaitExpr.expression is SubscriptExpression)
+    })
+  }
+
+  func testAwaitOptionalChaining() {
+    parseExpressionAndTest("await obj?.method()", "await obj?.method()", testClosure: { expr in
+      guard let awaitExpr = expr as? AwaitExpression else {
+        XCTFail("Failed in getting an await expression.")
+        return
+      }
+      XCTAssertEqual(awaitExpr.expression.textDescription, "obj?.method()")
+    })
+  }
+
+  func testAwaitForcedValue() {
+    parseExpressionAndTest("await obj!.method()", "await obj!.method()", testClosure: { expr in
+      guard let awaitExpr = expr as? AwaitExpression else {
+        XCTFail("Failed in getting an await expression.")
+        return
+      }
+      XCTAssertEqual(awaitExpr.expression.textDescription, "obj!.method()")
+    })
+  }
+
+  func testAwaitWithArguments() {
+    parseExpressionAndTest("await fetch(url: u, timeout: 30)", "await fetch(url: u, timeout: 30)", testClosure: { expr in
+      guard let awaitExpr = expr as? AwaitExpression else {
+        XCTFail("Failed in getting an await expression.")
+        return
+      }
+      XCTAssertTrue(awaitExpr.expression is FunctionCallExpression)
+    })
+  }
+
+  func testAwaitChainedMethodCalls() {
+    parseExpressionAndTest("await session.data(from: url).0", "await session.data(from: url).0")
+  }
+
+  func testAwaitInReturnStatement() {
+    parseStatementAndTest("return await fetchData()", "return await fetchData()")
+  }
+
+  func testAwaitWithClosure() {
+    parseExpressionAndTest("await withCheckedContinuation { c in }", "await withCheckedContinuation { c in }")
+  }
 }

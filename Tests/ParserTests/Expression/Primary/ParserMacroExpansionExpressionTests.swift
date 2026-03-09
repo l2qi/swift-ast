@@ -103,12 +103,74 @@ class ParserMacroExpansionExpressionTests: XCTestCase {
     })
   }
 
-  static let allTests = [
-    ("testSimpleMacro", testSimpleMacro),
-    ("testExternalMacro", testExternalMacro),
-    ("testEmptyArgsMacro", testEmptyArgsMacro),
-    ("testGenericMacro", testGenericMacro),
-    ("testBareMacro", testBareMacro),
-    ("testSourceRange", testSourceRange),
-  ]
+  func testMacroWithTrailingClosure() {
+    parseExpressionAndTest("#myMacro { body }", "#myMacro { body }", testClosure: { expr in
+      guard let macroExpr = expr as? MacroExpansionExpression else {
+        XCTFail("Failed in getting a macro expansion expression")
+        return
+      }
+      XCTAssertEqual(macroExpr.macroName, "myMacro")
+      XCTAssertNil(macroExpr.argumentClause)
+      XCTAssertNotNil(macroExpr.trailingClosure)
+      XCTAssertTrue(macroExpr.additionalTrailingClosures.isEmpty)
+    })
+  }
+
+  func testMacroWithMultipleArgs() {
+    parseExpressionAndTest(
+      "#assert(x > 0, \"must be positive\")",
+      "#assert(x > 0, \"must be positive\")",
+      testClosure: { expr in
+      guard let macroExpr = expr as? MacroExpansionExpression else {
+        XCTFail("Failed in getting a macro expansion expression")
+        return
+      }
+      XCTAssertEqual(macroExpr.macroName, "assert")
+      XCTAssertEqual(macroExpr.argumentClause?.count, 2)
+    })
+  }
+
+  func testMacroWithLabeledArgs() {
+    parseExpressionAndTest(
+      "#externalMacro(module: \"SwiftSyntaxMacros\", type: \"StringifyMacro\")",
+      "#externalMacro(module: \"SwiftSyntaxMacros\", type: \"StringifyMacro\")",
+      testClosure: { expr in
+      guard let macroExpr = expr as? MacroExpansionExpression else {
+        XCTFail("Failed in getting a macro expansion expression")
+        return
+      }
+      XCTAssertEqual(macroExpr.macroName, "externalMacro")
+      XCTAssertEqual(macroExpr.argumentClause?.count, 2)
+    })
+  }
+
+  func testMacroWithArgsAndTrailingClosure() {
+    parseExpressionAndTest(
+      "#Preview(\"My View\") { Text(\"Hello\") }",
+      "#Preview(\"My View\") { Text(\"Hello\") }",
+      testClosure: { expr in
+      guard let macroExpr = expr as? MacroExpansionExpression else {
+        XCTFail("Failed in getting a macro expansion expression")
+        return
+      }
+      XCTAssertEqual(macroExpr.macroName, "Preview")
+      XCTAssertEqual(macroExpr.argumentClause?.count, 1)
+      XCTAssertNotNil(macroExpr.trailingClosure)
+    })
+  }
+
+  func testMacroWithGenericAndArgs() {
+    parseExpressionAndTest(
+      "#convert<String>(value: 42)",
+      "#convert<String>(value: 42)",
+      testClosure: { expr in
+      guard let macroExpr = expr as? MacroExpansionExpression else {
+        XCTFail("Failed in getting a macro expansion expression")
+        return
+      }
+      XCTAssertEqual(macroExpr.macroName, "convert")
+      XCTAssertNotNil(macroExpr.genericArgumentClause)
+      XCTAssertEqual(macroExpr.argumentClause?.count, 1)
+    })
+  }
 }

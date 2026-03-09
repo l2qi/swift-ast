@@ -74,4 +74,64 @@ class ParserMultipleTrailingClosuresTests: XCTestCase {
         XCTAssertEqual(macroExpr.additionalTrailingClosures[0].0.textDescription, "label")
       })
   }
+
+  func testThreeAdditionalTrailingClosures() {
+    parseExpressionAndTest(
+      "animate { start } completion: { done } cleanup: { tidy } finally: { end }",
+      "animate { start } completion: { done } cleanup: { tidy } finally: { end }",
+      testClosure: { expr in
+        guard let funcCallExpr = expr as? FunctionCallExpression else {
+          XCTFail("Failed in getting a function call expression")
+          return
+        }
+        XCTAssertNotNil(funcCallExpr.trailingClosure)
+        XCTAssertEqual(funcCallExpr.additionalTrailingClosures.count, 3)
+        XCTAssertEqual(funcCallExpr.additionalTrailingClosures[0].0.textDescription, "completion")
+        XCTAssertEqual(funcCallExpr.additionalTrailingClosures[1].0.textDescription, "cleanup")
+        XCTAssertEqual(funcCallExpr.additionalTrailingClosures[2].0.textDescription, "finally")
+      })
+  }
+
+  func testTrailingClosureWithParameters() {
+    parseExpressionAndTest(
+      "fetch { data in process(data) } error: { err in handle(err) }",
+      "fetch { data in\nprocess(data)\n} error: { err in\nhandle(err)\n}",
+      testClosure: { expr in
+        guard let funcCallExpr = expr as? FunctionCallExpression else {
+          XCTFail("Failed in getting a function call expression")
+          return
+        }
+        XCTAssertNotNil(funcCallExpr.trailingClosure)
+        XCTAssertEqual(funcCallExpr.additionalTrailingClosures.count, 1)
+      })
+  }
+
+  func testMethodCallWithMultipleTrailingClosures() {
+    parseExpressionAndTest(
+      "obj.configure { setup } completion: { done }",
+      "obj.configure { setup } completion: { done }",
+      testClosure: { expr in
+        guard let funcCallExpr = expr as? FunctionCallExpression else {
+          XCTFail("Failed in getting a function call expression")
+          return
+        }
+        XCTAssertNotNil(funcCallExpr.trailingClosure)
+        XCTAssertEqual(funcCallExpr.additionalTrailingClosures.count, 1)
+      })
+  }
+
+  func testTrailingClosuresWithExplicitArgs() {
+    parseExpressionAndTest(
+      "foo(a: 1, b: 2) { x } then: { y }",
+      "foo(a: 1, b: 2) { x } then: { y }",
+      testClosure: { expr in
+        guard let funcCallExpr = expr as? FunctionCallExpression else {
+          XCTFail("Failed in getting a function call expression")
+          return
+        }
+        XCTAssertEqual(funcCallExpr.argumentClause?.count, 2)
+        XCTAssertNotNil(funcCallExpr.trailingClosure)
+        XCTAssertEqual(funcCallExpr.additionalTrailingClosures.count, 1)
+      })
+  }
 }

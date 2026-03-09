@@ -906,4 +906,48 @@ class ParserFunctionDeclarationTests: XCTestCase {
       XCTAssertEqual(funcDecl.signature.parameterList[0].textDescription, "x: consuming String")
     })
   }
+
+  func testBorrowingAndConsumingParameters() {
+    parseDeclarationAndTest(
+      "func transfer(from source: borrowing Account, to dest: consuming Account)",
+      "func transfer(from source: borrowing Account, to dest: consuming Account)",
+      testClosure: { decl in
+      guard let funcDecl = decl as? FunctionDeclaration else {
+        XCTFail("Failed in getting a function declaration.")
+        return
+      }
+      XCTAssertEqual(funcDecl.signature.parameterList.count, 2)
+      XCTAssertEqual(funcDecl.signature.parameterList[0].textDescription, "from source: borrowing Account")
+      XCTAssertEqual(funcDecl.signature.parameterList[1].textDescription, "to dest: consuming Account")
+    })
+  }
+
+  func testBorrowingGenericParameter() {
+    parseDeclarationAndTest(
+      "func process<T>(value: borrowing T)",
+      "func process<T>(value: borrowing T)",
+      testClosure: { decl in
+      guard let funcDecl = decl as? FunctionDeclaration else {
+        XCTFail("Failed in getting a function declaration.")
+        return
+      }
+      XCTAssertNotNil(funcDecl.genericParameterClause)
+      XCTAssertEqual(funcDecl.signature.parameterList.count, 1)
+      XCTAssertEqual(funcDecl.signature.parameterList[0].textDescription, "value: borrowing T")
+    })
+  }
+
+  func testConsumingWithReturnType() {
+    parseDeclarationAndTest(
+      "func take(item: consuming Widget) -> Receipt",
+      "func take(item: consuming Widget) -> Receipt",
+      testClosure: { decl in
+      guard let funcDecl = decl as? FunctionDeclaration else {
+        XCTFail("Failed in getting a function declaration.")
+        return
+      }
+      XCTAssertEqual(funcDecl.signature.parameterList.count, 1)
+      XCTAssertNotNil(funcDecl.signature.result)
+    })
+  }
 }
