@@ -1,6 +1,6 @@
 BUILD_DIR=.build/debug
 
-.PHONY: all clean build test
+.PHONY: all clean build test snapshot
 
 all: build
 
@@ -13,3 +13,6 @@ build:
 
 test: build
 	swift test
+
+snapshot: build
+	RECORD_SNAPSHOTS=1 swift test --filter IntegrationTests

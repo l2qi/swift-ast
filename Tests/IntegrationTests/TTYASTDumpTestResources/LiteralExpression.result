@@ -1,4 +1,4 @@
-top_level_decl <range: TTYASTDumpTestResources/LiteralExpressionTests.swift:17:1-80:71>
+top_level_decl <range: TTYASTDumpTestResources/LiteralExpressionTests.swift:17:1-96:27>
   literal_expr <range: TTYASTDumpTestResources/LiteralExpressionTests.swift:17:1-17:4>
     kind: `nil`, literal: `nil`
   literal_expr <range: TTYASTDumpTestResources/LiteralExpressionTests.swift:18:1-18:5>
@@ -143,3 +143,23 @@ top_level_decl <range: TTYASTDumpTestResources/LiteralExpressionTests.swift:17:1
     wildcard_expr <range: TTYASTDumpTestResources/LiteralExpressionTests.swift:80:1-80:2>
     literal_expr <range: TTYASTDumpTestResources/LiteralExpressionTests.swift:80:5-80:71>
       kind: `playground`, literal: `#imageLiteral(resourceName: #fileLiteral(resourceName: "bar.png"))`
+  literal_expr <range: TTYASTDumpTestResources/LiteralExpressionTests.swift:83:1-83:10>
+    kind: `string`, raw_text: `#"hello"#`
+  literal_expr <range: TTYASTDumpTestResources/LiteralExpressionTests.swift:84:1-84:23>
+    kind: `string`, raw_text: `#"She said \"hello\""#`
+  literal_expr <range: TTYASTDumpTestResources/LiteralExpressionTests.swift:85:1-85:10>
+    kind: `string`, raw_text: `#"a\#nb"#`
+  literal_expr <range: TTYASTDumpTestResources/LiteralExpressionTests.swift:86:1-86:12>
+    kind: `string`, raw_text: `##"hello"##`
+  literal_expr <range: TTYASTDumpTestResources/LiteralExpressionTests.swift:87:1-87:13>
+    kind: `string`, raw_text: `##"a\##nb"##`
+  literal_expr <range: TTYASTDumpTestResources/LiteralExpressionTests.swift:90:1-90:6>
+    kind: `regex`, raw_text: `/abc/`
+  literal_expr <range: TTYASTDumpTestResources/LiteralExpressionTests.swift:91:1-91:6>
+    kind: `regex`, raw_text: `/\d+/`
+  literal_expr <range: TTYASTDumpTestResources/LiteralExpressionTests.swift:92:1-92:9>
+    kind: `regex`, raw_text: `/[a-z]+/`
+  literal_expr <range: TTYASTDumpTestResources/LiteralExpressionTests.swift:95:1-95:26>
+    kind: `interpolated_string`, raw_text: `"\(x, format: .fixed(2))"`
+  literal_expr <range: TTYASTDumpTestResources/LiteralExpressionTests.swift:96:1-96:27>
+    kind: `interpolated_string`, raw_text: `"\(x, specifier: "%0.2f")"`

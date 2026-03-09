@@ -18,6 +18,10 @@ import XCTest
 
 @testable import Source
 
+private let recordSnapshots: Bool = {
+  ProcessInfo.processInfo.environment["RECORD_SNAPSHOTS"] != nil
+}()
+
 func testIntegration(
   _ resourceName: String,
   _ testName: String,
@@ -29,10 +33,9 @@ func testIntegration(
   let testPath = "\(integrationPath)/\(testTarget)"
   let sourcePath = "\(testPath).source"
   let resultPath = "\(testPath).result"
-  guard let sourceContent = try? String(contentsOfFile: sourcePath, encoding: .utf8),
-    let resultContent = try? String(contentsOfFile: resultPath, encoding: .utf8)
-  else {
-    XCTFail("Failed in reading contents for \(testPath)")
+
+  guard let sourceContent = try? String(contentsOfFile: sourcePath, encoding: .utf8) else {
+    XCTFail("Missing source file: \(sourcePath)")
     return
   }
 
@@ -44,6 +47,24 @@ func testIntegration(
     for i in 0..<10 {
       result = result.replacingOccurrences(of: "\u{001B}[\(30+i)m", with: "")
     }
+  }
+
+  if recordSnapshots {
+    let existingContent = try? String(contentsOfFile: resultPath, encoding: .utf8)
+    if existingContent == result {
+      return
+    }
+    try! result.write(toFile: resultPath, atomically: true, encoding: .utf8)
+    XCTFail("Recorded snapshot for \(testName) at \(resultPath)")
+    return
+  }
+
+  guard let resultContent = try? String(contentsOfFile: resultPath, encoding: .utf8) else {
+    XCTFail(
+      "Missing snapshot: \(resultPath)\n"
+      + "Run with RECORD_SNAPSHOTS=1 to generate it."
+    )
+    return
   }
 
   XCTAssertEqual(result, resultContent)
