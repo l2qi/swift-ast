@@ -14,7 +14,6 @@
    limitations under the License.
 */
 
-import Foundation
 import AST
 import Lexer
 import Source
@@ -399,7 +398,7 @@ extension Parser {
           }
           condCompBase = resultExpr
           condCompClauses.append((ctrl, nil))
-        } else if condCompBase != nil {
+        } else if let base = condCompBase {
           if let lastIdx = condCompClauses.indices.last,
             condCompClauses[lastIdx].1 == nil
           {
@@ -411,15 +410,15 @@ extension Parser {
           switch ctrl.kind {
           case .else, .elseif:
             condCompClauses.append((ctrl, nil))
-            resultExpr = condCompBase!
+            resultExpr = base
           case .endif:
             let clauses = condCompClauses.map {
               ConditionalCompilationExpression.Clause(
-                condition: $0.0, expression: $0.1 ?? condCompBase!)
+                condition: $0.0, expression: $0.1 ?? base)
             }
             let condCompExpr = ConditionalCompilationExpression(
-              base: condCompBase!, clauses: clauses, endifStatement: ctrl)
-            condCompExpr.setSourceRange(condCompBase!.sourceRange.start, ctrl.sourceRange.end)
+              base: base, clauses: clauses, endifStatement: ctrl)
+            condCompExpr.setSourceRange(base.sourceRange.start, ctrl.sourceRange.end)
             resultExpr = condCompExpr
             condCompBase = nil
             condCompClauses = []

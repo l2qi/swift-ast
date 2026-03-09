@@ -50,7 +50,7 @@ extension Parser {
     case .lazy:
       return .lazy
     case .nonisolated:
-      return DeclarationModifier.nonisolated
+      return .nonisolated
     case .optional:
       return .optional
     case .override:
