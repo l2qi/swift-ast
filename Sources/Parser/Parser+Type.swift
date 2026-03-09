@@ -306,11 +306,11 @@ extension Parser {
     _ type: Type, attributes attrs: Attributes = []
   ) throws -> Type {
     func getAtomicType() throws -> Type {
-      do {
-        if let parenthesizedType = type as? ParenthesizedType {
-          return try parenthesizedType.toTupleType()
-        }
+      guard let parenthesizedType = type as? ParenthesizedType else {
         return type
+      }
+      do {
+        return try parenthesizedType.toTupleType()
       } catch ParenthesizedType.TupleConversionError.isVariadic {
         throw _raiseFatal(.tupleTypeVariadicElement)
       } catch ParenthesizedType.TupleConversionError.multipleLabels {

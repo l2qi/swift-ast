@@ -114,7 +114,7 @@ let package = Package(
         "Bocho",
       ]
     ),
-    .target(
+    .executableTarget(
       name: "swift-ast",
       dependencies: [
         "Frontend",
@@ -190,6 +190,12 @@ let package = Package(
       name: "IntegrationTests",
       dependencies: [
         "Frontend",
+      ],
+      exclude: [
+        "TTYASTDumpTestResources",
+        "TTYASTPrintTestResources",
+        "ShebangResources",
+        "SemaTestResources",
       ]
     ),
   ],

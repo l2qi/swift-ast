@@ -225,7 +225,7 @@ public class Lexer {
   }
 
   func lex(previousRoles: [Role] = []) -> Token { // swift-lint:suppress(high_cyclomatic_complexity,high_ncss)
-    var location = _getCurrentLocation()
+    let location = _getCurrentLocation()
     var loadedRoles = previousRoles
     let head = char.role
 
