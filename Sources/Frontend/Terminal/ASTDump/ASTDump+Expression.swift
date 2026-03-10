@@ -328,8 +328,38 @@ extension LiteralExpression : TTYASTDumpRepresentable {
       body += "kind: `double`, literal: `\(d)`, raw_text: `\(rawText)`"
     case let .staticString(_, rawText):
       body += "kind: `string`, raw_text: `\(rawText)`"
-    case let .interpolatedString(_, rawText):
+    case let .interpolatedString(segments, rawText):
       body += "kind: `interpolated_string`, raw_text: `\(rawText)`"
+      for (index, segment) in segments.enumerated() {
+        body += "\n"
+        switch segment {
+        case .text(let value):
+          body += "\(index): kind: `text`, value: `\(value)`".indented
+        case .interpolation(let args):
+          body += "\(index): kind: `interpolation`".indented
+          for (argIndex, arg) in args.enumerated() {
+            body += "\n" + "\(argIndex): ".indented.indented
+            switch arg {
+            case .expression(let expr):
+              body += "kind: `expression`\n"
+              body += expr.ttyDump.indented.indented.indented
+            case let .namedExpression(identifier, expr):
+              body += "kind: `named_expression`, name: `\(identifier)`\n"
+              body += expr.ttyDump.indented.indented.indented
+            case .memoryReference(let expr):
+              body += "kind: `memory_reference`\n"
+              body += expr.ttyDump.indented.indented.indented
+            case let .namedMemoryReference(name, expr):
+              body += "kind: `named_memory_reference`, name: `\(name)`\n"
+              body += expr.ttyDump.indented.indented.indented
+            case .operator(let op):
+              body += "kind: `operator`, operator: `\(op)`"
+            case let .namedOperator(identifier, op):
+              body += "kind: `named_operator`, name: `\(identifier)`, operator: `\(op)`"
+            }
+          }
+        }
+      }
     case .array(let exprs):
       body += "kind: `array`"
       if exprs.isEmpty {

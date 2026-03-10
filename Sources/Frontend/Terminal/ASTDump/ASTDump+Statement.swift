@@ -46,9 +46,11 @@ extension CompilerControlStatement : TTYASTDumpRepresentable {
     var body = String.indent
     switch kind {
     case .if(let condition):
-      body += "kind: `if`, condition: `\(condition.textDescription)`"
+      body += "kind: `if`"
+      body += "\n" + dumpCondition(condition).indented
     case .elseif(let condition):
-      body += "kind: `elseif`, condition: `\(condition.textDescription)`"
+      body += "kind: `elseif`"
+      body += "\n" + dumpCondition(condition).indented
     case .else:
       body += "kind: `else`"
     case .endif:
@@ -64,6 +66,35 @@ extension CompilerControlStatement : TTYASTDumpRepresentable {
       body += "kind: `error`, message: `\(message)`"
     }
     return "\(head)\n\(body)"
+  }
+
+  private func dumpCondition(_ condition: CompilationCondition) -> String {
+    switch condition {
+    case .os(let name):
+      return "condition: `os(\(name))`"
+    case .arch(let name):
+      return "condition: `arch(\(name))`"
+    case let .swift(op, version):
+      return "condition: `swift(\(op)\(version))`"
+    case let .compiler(op, version):
+      return "condition: `compiler(\(op)\(version))`"
+    case .canImport(let path):
+      return "condition: `canImport(\(path))`"
+    case .targetEnvironment(let env):
+      return "condition: `targetEnvironment(\(env))`"
+    case .identifier(let name):
+      return "condition: `\(name)`"
+    case .booleanLiteral(let value):
+      return "condition: `\(value)`"
+    case .not(let inner):
+      return "condition: `not`\n" + dumpCondition(inner).indented
+    case let .and(lhs, rhs):
+      return "condition: `and`\n" + dumpCondition(lhs).indented + "\n" + dumpCondition(rhs).indented
+    case let .or(lhs, rhs):
+      return "condition: `or`\n" + dumpCondition(lhs).indented + "\n" + dumpCondition(rhs).indented
+    case .parenthesized(let inner):
+      return "condition: `parenthesized`\n" + dumpCondition(inner).indented
+    }
   }
 }
 

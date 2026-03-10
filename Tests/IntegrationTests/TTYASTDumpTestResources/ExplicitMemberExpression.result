@@ -35,7 +35,8 @@ top_level_decl <range: TTYASTDumpTestResources/ExplicitMemberExpressionTests.swi
     base: identifier_expr <range: TTYASTDumpTestResources/ExplicitMemberExpressionTests.swift:24:1-24:4>
       kind: `identifier`, identifier: `foo`
     0: compiler_ctrl_stmt <range: TTYASTDumpTestResources/ExplicitMemberExpressionTests.swift:25:1-25:10>
-    kind: `if`, condition: `DEBUG`
+    kind: `if`
+    condition: `DEBUG`
       explicit_member_expr <range: TTYASTDumpTestResources/ExplicitMemberExpressionTests.swift:24:1-26:5>
         identifier_expr <range: TTYASTDumpTestResources/ExplicitMemberExpressionTests.swift:24:1-24:4>
           kind: `identifier`, identifier: `foo`

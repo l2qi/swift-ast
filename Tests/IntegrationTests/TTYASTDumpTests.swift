@@ -39,6 +39,8 @@ class TTYASTDumpTests : XCTestCase {
       "KeyPathStringExpression",
       "IfExpression",
       "SwitchExpression",
+      "ConditionalCompilationExpression",
+      "MacroExpansionExpression",
 
       // postfix expressions
       "PostfixOperatorExpression",
@@ -60,6 +62,9 @@ class TTYASTDumpTests : XCTestCase {
       "TernaryConditionalOperatorExpression",
       "TypeCastingOperatorExpression",
       "SequenceExpression",
+
+      // await expression
+      "AwaitExpression",
 
       // try expression
       "TryOperatorExpression",
@@ -96,6 +101,8 @@ class TTYASTDumpTests : XCTestCase {
       "StructDeclaration",
       "SubscriptDeclaration",
       "TypealiasDeclaration",
+      "ActorDeclaration",
+      "MacroDeclaration",
       "VariableDeclaration",
     ]
     for testName in testNames {
