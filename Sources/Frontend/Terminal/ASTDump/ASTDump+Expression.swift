@@ -327,9 +327,9 @@ extension LiteralExpression : TTYASTDumpRepresentable {
     case let .floatingPoint(d, rawText):
       body += "kind: `double`, literal: `\(d)`, raw_text: `\(rawText)`"
     case let .staticString(_, rawText):
-      body += "kind: `string`, raw_text: `\(rawText)`"
+      body += "kind: `string`, raw_text: `\(rawText.dedentedMultilineString)`"
     case let .interpolatedString(segments, rawText):
-      body += "kind: `interpolated_string`, raw_text: `\(rawText)`"
+      body += "kind: `interpolated_string`, raw_text: `\(rawText.dedentedMultilineString)`"
       for (index, segment) in segments.enumerated() {
         body += "\n"
         switch segment {

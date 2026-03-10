@@ -180,7 +180,7 @@ extension LiteralExpression : TTYASTPrintRepresentable {
         .joined(separator: ", ")
       return "[\(dictText)]"
     default:
-      return textDescription
+      return textDescription.dedentedMultilineString
     }
   }
 }
