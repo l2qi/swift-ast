@@ -17,6 +17,7 @@
 import XCTest
 
 @testable import AST
+@testable import Diagnostic
 @testable import Parser
 
 class ParserDeclarationModifierTests: XCTestCase {
@@ -29,6 +30,7 @@ class ParserDeclarationModifierTests: XCTestCase {
       "infix": .infix,
       "lazy": .lazy,
       "nonisolated": .nonisolated,
+      "nonisolated(unsafe)": .nonisolatedUnsafe,
       "optional": .optional,
       "override": .override,
       "postfix": .postfix,
@@ -48,20 +50,12 @@ class ParserDeclarationModifierTests: XCTestCase {
     }
   }
 
-  func testNonisolatedUnsafeIsRejectedInDeclarationGrammar() {
+  func testNonisolatedUnsafeIsAcceptedInDeclarationGrammar() {
     parseDeclarationAndTest(
       "nonisolated func f() {}",
       "nonisolated func f() {}")
-
-    var capturedError: Error?
     parseDeclarationAndTest(
       "nonisolated(unsafe) func f() {}",
-      "",
-      errorClosure: { capturedError = $0 })
-    guard let capturedError = capturedError else {
-      XCTFail("Expected nonisolated(unsafe) to be rejected")
-      return
-    }
-    XCTAssertEqual(String(describing: type(of: capturedError)), "DiagnosticStopper")
+      "nonisolated(unsafe) func f() {}")
   }
 }

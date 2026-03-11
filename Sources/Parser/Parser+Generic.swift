@@ -116,20 +116,22 @@ extension Parser {
         }
         let suppressedType = try parseIdentifierType(suppressedName, suppressedRange)
         return .suppressedConformance(idType, suppressedType)
-      } else if let name = readNamedIdentifier() {
+      } else {
         let nameRange = getLookedRange()
-        let firstType = try parseIdentifierType(name, nameRange)
-        if testAmp() {
-          let type = try parseProtocolCompositionType(firstType)
+        if let name = readNamedIdentifier() {
+          let firstType = try parseIdentifierType(name, nameRange)
+          if testAmp() {
+            let type = try parseProtocolCompositionType(firstType)
+            return .protocolConformance(idType, type)
+          } else {
+            return .typeConformance(idType, firstType)
+          }
+          } else if _lexer.match(.protocol) {
+          let type = try parseOldSyntaxProtocolCompositionType(typeStartLocation)
           return .protocolConformance(idType, type)
         } else {
-          return .typeConformance(idType, firstType)
+          throw _raiseFatal(.expectedGenericTypeRestriction(idType.textDescription))
         }
-      } else if _lexer.match(.protocol) {
-        let type = try parseOldSyntaxProtocolCompositionType(typeStartLocation)
-        return .protocolConformance(idType, type)
-      } else {
-        throw _raiseFatal(.expectedGenericTypeRestriction(idType.textDescription))
       }
     case .binaryOperator("=="):
       let type = try parseType()

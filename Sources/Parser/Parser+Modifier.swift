@@ -50,7 +50,12 @@ extension Parser {
     case .lazy:
       return .lazy
     case .nonisolated:
-      return .nonisolated
+      guard _lexer.match(.leftParen) else {
+        return .nonisolated
+      }
+      guard _lexer.match(.unsafe) else { return nil }
+      guard _lexer.match(.rightParen) else { return nil }
+      return .nonisolatedUnsafe
     case .optional:
       return .optional
     case .override:

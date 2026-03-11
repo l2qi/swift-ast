@@ -41,6 +41,10 @@ class ParserTupleTypeTests: XCTestCase {
         XCTFail("Failed in converting to a tuple type.")
         return
       }
+      XCTAssertEqual(tupleType.elements.count, 3)
+      guard tupleType.elements.count == 3 else {
+        return
+      }
       XCTAssertEqual(tupleType.elements[0].ownershipModifier, .inout)
       XCTAssertEqual(tupleType.elements[1].ownershipModifier, .borrowing)
       XCTAssertEqual(tupleType.elements[2].ownershipModifier, .consuming)

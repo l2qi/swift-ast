@@ -17,6 +17,7 @@
 import XCTest
 
 @testable import AST
+@testable import Diagnostic
 
 class ParserLiteralExpressionTests: XCTestCase {
   func testNilLiteral() {
@@ -470,11 +471,10 @@ class ParserLiteralExpressionTests: XCTestCase {
     parseExpressionAndTest(
       "\"\\()\"", "\"\\()\"",
       errorClosure: { capturedError = $0 })
-    guard let capturedError = capturedError else {
+    guard let _ = capturedError as? DiagnosticStopper else {
       XCTFail("Expected empty interpolation to be rejected")
       return
     }
-    XCTAssertEqual(String(describing: type(of: capturedError)), "DiagnosticStopper")
   }
 
   // MARK: - SE-0228: Multi-argument string interpolation

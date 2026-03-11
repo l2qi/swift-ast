@@ -16,6 +16,7 @@
 
 import XCTest
 
+@testable import AST
 @testable import Parser
 
 class ParserGenericWhereClauseTests: XCTestCase {
@@ -44,6 +45,21 @@ class ParserGenericWhereClauseTests: XCTestCase {
       } else {
         XCTFail("Failed in getting right size of requirement list.")
       }
+    } catch {
+      XCTFail("Failed in getting a generic where clause.")
+    }
+  }
+
+  func testProtocolConformanceRequirementSourceRange() {
+    let genericParser = getParser("where S1: T1 & T2")
+    do {
+      let genericWhereClause = try genericParser.parseGenericWhereClause()
+      guard let requirement = genericWhereClause?.requirementList.first,
+            case let .protocolConformance(_, type) = requirement else {
+        XCTFail("Failed in getting a protocol conformance requirement.")
+        return
+      }
+      XCTAssertEqual(type.sourceRange, getRange(1, 11, 1, 18))
     } catch {
       XCTFail("Failed in getting a generic where clause.")
     }

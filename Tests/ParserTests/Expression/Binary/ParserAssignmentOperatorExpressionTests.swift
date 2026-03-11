@@ -52,6 +52,7 @@ class ParserAssignmentOperatorExpressionTests: XCTestCase {
   func testSourceRange() {
     let testExprs: [(testString: String, expectedEndColumn: Int)] = [
       ("foo = bar", 10),
+      ("foo = await bar", 16),
       ("(a, b) = (1, 2)", 16),
     ]
     for t in testExprs {

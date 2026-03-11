@@ -17,6 +17,7 @@
 import XCTest
 
 @testable import AST
+@testable import Diagnostic
 
 class ParserTypeCastingPatternTests: XCTestCase {
   func testIsPattern() {
@@ -35,11 +36,10 @@ class ParserTypeCastingPatternTests: XCTestCase {
   func testIsPatternOnlyAvilableInSwitchCase() {
     var capturedError: Error?
     parsePatternAndTest("is Foo", "", errorClosure: { capturedError = $0 })
-    guard let capturedError = capturedError else {
+    guard let _ = capturedError as? DiagnosticStopper else {
       XCTFail("Expected 'is Foo' to be rejected outside switch-case pattern matching")
       return
     }
-    XCTAssertEqual(String(describing: type(of: capturedError)), "DiagnosticStopper")
   }
 
   func testAsPattern() {

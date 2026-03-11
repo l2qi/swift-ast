@@ -354,6 +354,44 @@ class SequenceExpressionFoldingTests: XCTestCase {
     })
   }
 
+  func testFoldExpressionPatternInsideSwitchCase() {
+    let topLevelDecl = parse("""
+      switch foo {
+      case (1 + 2):
+        foo()
+      default:
+        bar()
+      }
+      """)
+    let seqExprFolding = SequenceExpressionFolding()
+    seqExprFolding.fold([topLevelDecl])
+
+    guard let switchStmt = topLevelDecl.statements.first as? SwitchStatement,
+          case let .case(items, _) = switchStmt.cases.first,
+          let exprPattern = items.first?.pattern as? ExpressionPattern,
+          let parenthesizedExpr = exprPattern.expression as? ParenthesizedExpression else {
+      XCTFail("Failed in getting folded switch expression pattern.")
+      return
+    }
+    XCTAssertTrue(parenthesizedExpr.expression is BinaryOperatorExpression)
+  }
+
+  func testFoldMacroExpansionMemoryReferenceArgument() {
+    let topLevelDecl = parse("#foo(&(1 + 2))")
+    let seqExprFolding = SequenceExpressionFolding()
+    seqExprFolding.fold([topLevelDecl])
+
+    guard let macroExpr = topLevelDecl.statements.first as? MacroExpansionExpression,
+          let arguments = macroExpr.argumentClause,
+          arguments.count == 1,
+          case let .memoryReference(argExpr) = arguments[0],
+          let parenthesizedExpr = argExpr as? ParenthesizedExpression else {
+      XCTFail("Failed in getting folded macro memory-reference argument.")
+      return
+    }
+    XCTAssertTrue(parenthesizedExpr.expression is BinaryOperatorExpression)
+  }
+
   func testNestedSequenceExpressionFolding() {
     semaSeqExprFoldingAndTest("a = b ? a && b ? b : c : bar", testFlat: { seqExpr in
       XCTAssertEqual(seqExpr.elements.count, 5)

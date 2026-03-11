@@ -214,7 +214,7 @@ extension Parser {
         }
         rhs = tryKind.wrap(expr: rhs)
         let assignOpExpr = AssignmentOperatorExpression(leftExpression: resultExpr, rightExpression: rhs)
-        assignOpExpr.setSourceRange(resultExpr.sourceRange.start, prefixExpr.sourceRange.end)
+        assignOpExpr.setSourceRange(resultExpr.sourceRange.start, rhs.sourceRange.end)
         append(assignOpExpr)
       case .binaryQuestion:
         let trueTryKind = parseTryKind()

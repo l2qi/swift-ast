@@ -158,6 +158,31 @@ class ParserActorDeclarationTests: XCTestCase {
     })
   }
 
+  func testActorWithNonisolatedUnsafeProperty() {
+    parseDeclarationAndTest(
+      "actor MyActor { nonisolated(unsafe) var cache: Int = 0 }",
+      """
+      actor MyActor {
+      nonisolated(unsafe) var cache: Int = 0
+      }
+      """,
+      testClosure: { decl in
+      guard let actorDecl = decl as? ActorDeclaration else {
+        XCTFail("Failed in getting an actor declaration.")
+        return
+      }
+
+      XCTAssertEqual(actorDecl.members.count, 1)
+      if case .declaration(let memberDecl) = actorDecl.members[0],
+         let varDecl = memberDecl as? VariableDeclaration {
+        XCTAssertEqual(varDecl.modifiers.count, 1)
+        XCTAssertEqual(varDecl.modifiers[0], .nonisolatedUnsafe)
+      } else {
+        XCTFail("Expected a variable declaration member.")
+      }
+    })
+  }
+
   func testActorWithMultipleProtocols() {
     parseDeclarationAndTest(
       "actor MyActor: Sendable, CustomStringConvertible {}",

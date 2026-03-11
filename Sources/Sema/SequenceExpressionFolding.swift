@@ -306,11 +306,9 @@ private class FoldingVisitor : ASTVisitor {
     }
 
     var foldedPattern = item.pattern
-    if let exprPattern = item.pattern as? ExpressionPattern,
-      let patternSeqExpr = exprPattern.expression as? SequenceExpression
-    {
-      let foldedPatternSeqExpr = foldSequenceExpression(patternSeqExpr)
-      foldedPattern = ExpressionPattern(expression: foldedPatternSeqExpr)
+    if let exprPattern = item.pattern as? ExpressionPattern {
+      let foldedPatternExpr = foldExpression(exprPattern.expression)
+      foldedPattern = ExpressionPattern(expression: foldedPatternExpr)
     }
 
     return SwitchStatement.Case.Item(
@@ -427,6 +425,12 @@ private class FoldingVisitor : ASTVisitor {
         case let .namedExpression(name, argExpr):
           let foldedExpr = foldExpression(argExpr)
           expr.replaceArgument(at: i, with: .namedExpression(name, foldedExpr))
+        case .memoryReference(let argExpr):
+          let foldedExpr = foldExpression(argExpr)
+          expr.replaceArgument(at: i, with: .memoryReference(foldedExpr))
+        case let .namedMemoryReference(name, argExpr):
+          let foldedExpr = foldExpression(argExpr)
+          expr.replaceArgument(at: i, with: .namedMemoryReference(name, foldedExpr))
         default:
           continue
         }
