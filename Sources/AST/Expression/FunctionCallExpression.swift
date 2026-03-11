@@ -73,8 +73,8 @@ public class FunctionCallExpression : ASTNode, PostfixExpression {
     if let trailingClosure = trailingClosure {
       trailingText = " \(trailingClosure.textDescription)"
     }
-    let additionalText = additionalTrailingClosures.map({
-      " \($0.0): \($0.1.textDescription)"
+    let additionalText = additionalTrailingClosures.map({ (label, closure) in
+      " \(label): \(closure.textDescription)"
     }).joined()
     return "\(postfixExpression.textDescription)\(parameterText)\(trailingText)\(additionalText)"
   }

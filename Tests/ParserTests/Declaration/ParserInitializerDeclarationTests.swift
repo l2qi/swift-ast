@@ -32,6 +32,7 @@ class ParserInitializerDeclarationTests: XCTestCase {
       XCTAssertEqual(initDecl.kind, .nonfailable)
       XCTAssertNil(initDecl.genericParameterClause)
       XCTAssertTrue(initDecl.parameterList.isEmpty)
+      XCTAssertFalse(initDecl.isAsync)
       XCTAssertEqual(initDecl.throwsKind, .nothrowing)
       XCTAssertNil(initDecl.genericWhereClause)
       XCTAssertEqual(initDecl.body.textDescription, "{}")
@@ -448,17 +449,6 @@ class ParserInitializerDeclarationTests: XCTestCase {
       XCTAssertEqual(initDecl.throwsKind, .throwing)
       XCTAssertEqual(initDecl.parameterList.count, 1)
       XCTAssertEqual(initDecl.body.textDescription, "{}")
-    })
-  }
-
-  func testNonAsyncInitializer() {
-    parseDeclarationAndTest("init() {}", "init() {}", testClosure: { decl in
-      guard let initDecl = decl as? InitializerDeclaration else {
-        XCTFail("Failed in getting an initializer declaration.")
-        return
-      }
-
-      XCTAssertFalse(initDecl.isAsync)
     })
   }
 

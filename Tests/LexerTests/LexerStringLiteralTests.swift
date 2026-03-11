@@ -22,12 +22,13 @@ import XCTest
 class LexerStringLiteralTests: XCTestCase {
   func testEmptyStringLiteral() {
     lexAndTest("\"\"") { t in
-      guard case let .staticStringLiteral(s, rawRepresentation: r, hashCount: _) = t else {
+      guard case let .staticStringLiteral(s, rawRepresentation: r, hashCount: hashCount) = t else {
         XCTFail("Cannot lex a string literal.")
         return
       }
       XCTAssertEqual(s, "")
       XCTAssertEqual(r, "\"\"")
+      XCTAssertEqual(hashCount, 0)
     }
   }
 

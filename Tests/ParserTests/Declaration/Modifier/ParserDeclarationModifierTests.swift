@@ -47,4 +47,21 @@ class ParserDeclarationModifierTests: XCTestCase {
       XCTAssertEqual(modifiers[0], modifier)
     }
   }
+
+  func testNonisolatedUnsafeIsRejectedInDeclarationGrammar() {
+    parseDeclarationAndTest(
+      "nonisolated func f() {}",
+      "nonisolated func f() {}")
+
+    var capturedError: Error?
+    parseDeclarationAndTest(
+      "nonisolated(unsafe) func f() {}",
+      "",
+      errorClosure: { capturedError = $0 })
+    guard let capturedError = capturedError else {
+      XCTFail("Expected nonisolated(unsafe) to be rejected")
+      return
+    }
+    XCTAssertEqual(String(describing: type(of: capturedError)), "DiagnosticStopper")
+  }
 }

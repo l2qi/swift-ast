@@ -25,18 +25,15 @@ public class TypeAnnotation : LocatableNode {
 
   public let type: Type
   public let attributes: Attributes
-  public let isInOutParameter: Bool
   public let ownershipModifier: OwnershipModifier?
 
   public init(
     type: Type,
     attributes: Attributes = [],
-    isInOutParameter: Bool = false,
     ownershipModifier: OwnershipModifier? = nil
   ) {
     self.type = type
     self.attributes = attributes
-    self.isInOutParameter = isInOutParameter
     self.ownershipModifier = ownershipModifier
   }
 
@@ -44,14 +41,7 @@ public class TypeAnnotation : LocatableNode {
 
   override public var textDescription: String {
     let attr = attributes.isEmpty ? "" : "\(attributes.textDescription) "
-    let ownershipStr: String
-    if let modifier = ownershipModifier {
-      ownershipStr = "\(modifier.rawValue) "
-    } else if isInOutParameter {
-      ownershipStr = "inout "
-    } else {
-      ownershipStr = ""
-    }
+    let ownershipStr = ownershipModifier.map { "\($0.rawValue) " } ?? ""
     return ": \(attr)\(ownershipStr)\(type.textDescription)"
   }
 }

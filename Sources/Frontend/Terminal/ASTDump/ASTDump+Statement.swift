@@ -80,6 +80,8 @@ extension CompilerControlStatement : TTYASTDumpRepresentable {
       return "condition: `compiler(\(op)\(version))`"
     case .canImport(let path):
       return "condition: `canImport(\(path))`"
+    case .hasFeature(let feature):
+      return "condition: `hasFeature(\(feature))`"
     case .targetEnvironment(let env):
       return "condition: `targetEnvironment(\(env))`"
     case .identifier(let name):

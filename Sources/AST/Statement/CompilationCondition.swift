@@ -21,6 +21,7 @@ public indirect enum CompilationCondition {
   case swift(String, String)           // (operator, version) e.g. (">=", "5.5")
   case compiler(String, String)        // (operator, version) e.g. ("<", "6.0")
   case canImport(String)               // import path e.g. "Foundation.Networking"
+  case hasFeature(String)              // feature name e.g. "ExistentialAny"
   case targetEnvironment(String)       // e.g. "simulator", "macCatalyst"
 
   // Logical conditions
@@ -47,6 +48,8 @@ extension CompilationCondition : CustomStringConvertible {
       return "compiler(\(op)\(version))"
     case .canImport(let path):
       return "canImport(\(path))"
+    case .hasFeature(let feature):
+      return "hasFeature(\(feature))"
     case .targetEnvironment(let env):
       return "targetEnvironment(\(env))"
     case .identifier(let name):

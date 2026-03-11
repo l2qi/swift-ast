@@ -117,7 +117,8 @@ extension Parser {
         let suppressedType = try parseIdentifierType(suppressedName, suppressedRange)
         return .suppressedConformance(idType, suppressedType)
       } else if let name = readNamedIdentifier() {
-        let firstType = try parseIdentifierType(name, idTypeRange)
+        let nameRange = getLookedRange()
+        let firstType = try parseIdentifierType(name, nameRange)
         if testAmp() {
           let type = try parseProtocolCompositionType(firstType)
           return .protocolConformance(idType, type)

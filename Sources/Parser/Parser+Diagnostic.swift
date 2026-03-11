@@ -187,6 +187,7 @@ public enum ParserErrorKind : DiagnosticKind {
   case expectedForEachIn
   case expectedElseAfterGuard
   case expectedElseForIfExpr
+  case malformedConditionalCompilationClause
 
   // types
   case expectedType
@@ -461,6 +462,8 @@ public enum ParserErrorKind : DiagnosticKind {
       return "expected 'else' after 'guard' condition"
     case .expectedElseForIfExpr:
       return "expected 'else' in if expression"
+    case .malformedConditionalCompilationClause:
+      return "expected an expression in the conditional compilation clause"
     case .expectedType:
       return "expected type"
     case .expectedCloseSquareArrayType:

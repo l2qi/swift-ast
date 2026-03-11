@@ -191,6 +191,51 @@ class ParserSwitchStatementTests: XCTestCase {
     """)
   }
 
+  func testCompilerControlStatementsInsideCaseBody() {
+    parseStatementAndTest(
+    """
+    switch foo {
+    case 1:
+    #warning("message")
+    print(1)
+    default:
+    #sourceLocation(file: "file-name", line: 10)
+    print(2)
+    }
+    """,
+    """
+    switch foo {
+    case 1:
+    #warning("message")
+    print(1)
+    default:
+    #sourceLocation(file: "file-name", line: 10)
+    print(2)
+    }
+    """,
+    testClosure: { stmt in
+      guard let switchStmt = stmt as? SwitchStatement else {
+        XCTFail("Failed in parsing a switch statement.")
+        return
+      }
+      XCTAssertEqual(switchStmt.cases.count, 2)
+      guard case let .case(_, caseStatements) = switchStmt.cases[0] else {
+        XCTFail("Failed in getting the first case body.")
+        return
+      }
+      XCTAssertEqual(caseStatements.count, 2)
+      XCTAssertTrue(caseStatements[0] is CompilerControlStatement)
+      XCTAssertTrue(caseStatements[1] is FunctionCallExpression)
+      guard case let .default(defaultStatements) = switchStmt.cases[1] else {
+        XCTFail("Failed in getting the default case body.")
+        return
+      }
+      XCTAssertEqual(defaultStatements.count, 2)
+      XCTAssertTrue(defaultStatements[0] is CompilerControlStatement)
+      XCTAssertTrue(defaultStatements[1] is FunctionCallExpression)
+    })
+  }
+
   func testConditionalCompilationCase() {
     parseStatementAndTest(
     """
@@ -339,7 +384,7 @@ class ParserSwitchStatementTests: XCTestCase {
         return
       }
       // Should have compiler control cases for #if, case, #elseif, case, #else, case, #endif
-      XCTAssertTrue(switchStmt.cases.count >= 7)
+      XCTAssertEqual(switchStmt.cases.count, 7)
     })
   }
 
@@ -383,7 +428,7 @@ class ParserSwitchStatementTests: XCTestCase {
         return
       }
       // case .a + #if + case .debug + #endif + #if + case .verbose + #endif + default = 8
-      XCTAssertTrue(switchStmt.cases.count >= 8)
+      XCTAssertEqual(switchStmt.cases.count, 8)
     })
   }
 
@@ -420,7 +465,7 @@ class ParserSwitchStatementTests: XCTestCase {
         XCTFail("Failed in parsing a switch statement.")
         return
       }
-      XCTAssertTrue(switchStmt.cases.count >= 5)
+      XCTAssertEqual(switchStmt.cases.count, 6)
     })
   }
 

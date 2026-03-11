@@ -16,17 +16,31 @@
 
 import XCTest
 
+@testable import Diagnostic
 @testable import Source
 
 private let recordSnapshots: Bool = {
-  ProcessInfo.processInfo.environment["RECORD_SNAPSHOTS"] != nil
+  switch ProcessInfo.processInfo.environment["RECORD_SNAPSHOTS"]?.lowercased() {
+  case "1", "true", "yes":
+    return true
+  default:
+    return false
+  }
 }()
+
+private final class DiagnosticCollector: DiagnosticConsumer {
+  var diagnostics: [Diagnostic] = []
+
+  func consume(diagnostics: [Diagnostic]) {
+    self.diagnostics = diagnostics
+  }
+}
 
 func testIntegration(
   _ resourceName: String,
   _ testName: String,
   decolor: Bool = true,
-  convertor convert: (SourceFile) -> String
+  convertor convert: (SourceFile, DiagnosticPool) -> String
 ) {
   let integrationPath = URL(fileURLWithPath: #filePath).deletingLastPathComponent().path
   let testTarget = "\(resourceName)/\(testName)"
@@ -41,7 +55,16 @@ func testIntegration(
 
   let sourceFile = SourceFile(
     path: "\(testTarget)Tests.swift", content: sourceContent)
-  var result = convert(sourceFile)
+  let diagnosticPool = DiagnosticPool()
+  var result = convert(sourceFile, diagnosticPool)
+
+  let collector = DiagnosticCollector()
+  diagnosticPool.report(withConsumer: collector)
+  if !collector.diagnostics.isEmpty && !result.hasPrefix("error: failed in parsing") {
+    let rendered = collector.diagnostics.map { "\($0)" }.joined(separator: "\n")
+    result = (result.isEmpty ? "" : result + "\n") + "error: unexpected diagnostics\n\(rendered)"
+  }
+
   if decolor {
     result = result.replacingOccurrences(of: "\u{001B}[0m", with: "")
     for i in 0..<10 {
@@ -54,8 +77,12 @@ func testIntegration(
     if existingContent == result {
       return
     }
-    try! result.write(toFile: resultPath, atomically: true, encoding: .utf8)
-    XCTFail("Recorded snapshot for \(testName) at \(resultPath)")
+    do {
+      try result.write(toFile: resultPath, atomically: true, encoding: .utf8)
+      XCTFail("Recorded snapshot for \(testName) at \(resultPath)")
+    } catch {
+      XCTFail("Failed to record snapshot for \(testName) at \(resultPath): \(error)")
+    }
     return
   }
 

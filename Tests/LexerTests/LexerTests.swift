@@ -265,6 +265,9 @@ class LexerTests: XCTestCase {
     XCTAssertFalse(
       Token.Kind.staticStringLiteral("1", rawRepresentation: "1", hashCount: 0).isEqual(to:
         .staticStringLiteral("1", rawRepresentation: "2", hashCount: 0)))
+    XCTAssertFalse(
+      Token.Kind.staticStringLiteral("1", rawRepresentation: "2", hashCount: 0).isEqual(to:
+        .staticStringLiteral("1", rawRepresentation: "2", hashCount: 1)))
 
     XCTAssertTrue(
       Token.Kind.interpolatedStringLiteralHead("1", rawRepresentation: "2", hashCount: 0).isEqual(to:
@@ -275,6 +278,9 @@ class LexerTests: XCTestCase {
     XCTAssertFalse(
       Token.Kind.interpolatedStringLiteralHead("1", rawRepresentation: "1", hashCount: 0).isEqual(to:
         .interpolatedStringLiteralHead("1", rawRepresentation: "2", hashCount: 0)))
+    XCTAssertFalse(
+      Token.Kind.interpolatedStringLiteralHead("1", rawRepresentation: "2", hashCount: 0).isEqual(to:
+        .interpolatedStringLiteralHead("1", rawRepresentation: "2", hashCount: 1)))
 
     XCTAssertTrue(Token.Kind.booleanLiteral(true).isEqual(toKindOf: .booleanLiteral(true)))
     XCTAssertTrue(Token.Kind.booleanLiteral(true).isEqual(toKindOf: .booleanLiteral(false)))

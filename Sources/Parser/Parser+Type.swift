@@ -25,14 +25,13 @@ extension Parser {
       return nil
     }
 
-    var isInOutParameter = false
     var ownershipModifier: TypeAnnotation.OwnershipModifier?
 
     let attrs = try parseAttributes()
 
     if _lexer.look().kind == .inout {
       _lexer.advance()
-      isInOutParameter = true
+      ownershipModifier = .inout
     } else if _lexer.look().kind == .borrowing {
       _lexer.advance()
       ownershipModifier = .borrowing
@@ -42,7 +41,7 @@ extension Parser {
     }
 
     let type = try parseType()
-    let typeAnnotation = TypeAnnotation(type: type, attributes: attrs, isInOutParameter: isInOutParameter, ownershipModifier: ownershipModifier)
+    let typeAnnotation = TypeAnnotation(type: type, attributes: attrs, ownershipModifier: ownershipModifier)
     typeAnnotation.setSourceRange(startLocation, type.sourceRange.end)
     return typeAnnotation
   }
@@ -191,16 +190,36 @@ extension Parser {
     var localName: Identifier?
     let type: Type
     var attributes: [Attribute] = []
-    var isInOutParameter = false
+    var ownershipModifier: TypeAnnotation.OwnershipModifier?
 
     let looked = _lexer.look()
     switch looked.kind {
     case .at:
       attributes = try parseAttributes()
-      isInOutParameter = _lexer.match(.inout)
+      switch _lexer.look().kind {
+      case .inout:
+        _lexer.advance()
+        ownershipModifier = .inout
+      case .borrowing:
+        _lexer.advance()
+        ownershipModifier = .borrowing
+      case .consuming:
+        _lexer.advance()
+        ownershipModifier = .consuming
+      default:
+        break
+      }
       type = try parseType()
     case .inout:
-      isInOutParameter = true
+      ownershipModifier = .inout
+      _lexer.advance()
+      type = try parseType()
+    case .borrowing:
+      ownershipModifier = .borrowing
+      _lexer.advance()
+      type = try parseType()
+    case .consuming:
+      ownershipModifier = .consuming
       _lexer.advance()
       type = try parseType()
     default:
@@ -210,7 +229,7 @@ extension Parser {
         externalName = elementBody.externalName
         localName = elementBody.localName
         attributes = elementBody.attributes
-        isInOutParameter = elementBody.isInOutParameter
+        ownershipModifier = elementBody.ownershipModifier
       } else {
         type = try parseType()
       }
@@ -227,7 +246,7 @@ extension Parser {
       externalName: externalName,
       localName: localName,
       attributes: attributes,
-      isInOutParameter: isInOutParameter,
+      ownershipModifier: ownershipModifier,
       isVariadic: isVariadic)
   }
 
@@ -253,7 +272,7 @@ extension Parser {
       externalName: externalName,
       localName: internalName,
       attributes: typeAnnotation.attributes,
-      isInOutParameter: typeAnnotation.isInOutParameter)
+      ownershipModifier: typeAnnotation.ownershipModifier)
   }
 
   func parseProtocolCompositionType(_ type: Type) throws -> ProtocolCompositionType {
@@ -399,7 +418,7 @@ extension Parser {
         externalName: $0.externalName,
         localName: $0.localName,
         attributes: $0.attributes,
-        isInOutParameter: $0.isInOutParameter,
+        ownershipModifier: $0.ownershipModifier,
         isVariadic: $0.isVariadic)
     }
     let returnType = try parseType()
@@ -461,21 +480,21 @@ fileprivate class ParenthesizedType : Type {
     fileprivate let localName: Identifier?
     fileprivate let type: Type
     fileprivate let attributes: Attributes
-    fileprivate let isInOutParameter: Bool
+    fileprivate let ownershipModifier: TypeAnnotation.OwnershipModifier?
     fileprivate let isVariadic: Bool
 
     fileprivate init(type: Type,
       externalName: Identifier? = nil,
       localName: Identifier? = nil,
       attributes: Attributes = [],
-      isInOutParameter: Bool = false,
+      ownershipModifier: TypeAnnotation.OwnershipModifier? = nil,
       isVariadic: Bool = false)
     {
       self.externalName = externalName
       self.localName = localName
       self.type = type
       self.attributes = attributes
-      self.isInOutParameter = isInOutParameter
+      self.ownershipModifier = ownershipModifier
       self.isVariadic = isVariadic
     }
   }
@@ -504,7 +523,7 @@ fileprivate class ParenthesizedType : Type {
           type: e.type,
           name: name,
           attributes: e.attributes,
-          isInOutParameter: e.isInOutParameter)
+          ownershipModifier: e.ownershipModifier)
         tupleElements.append(tupleElement)
       } else {
         let tupleElement = TupleType.Element(type: e.type)

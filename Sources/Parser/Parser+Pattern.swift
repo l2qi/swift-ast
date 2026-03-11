@@ -55,12 +55,25 @@ struct ParserPatternConfig {
     }
   }
 
+  fileprivate func isIdentifierHeadKeyword(_ tokenKind: Token.Kind) -> Bool {
+    switch tokenKind {
+    case .Any, .Self,
+      .async, .await, .borrowing, .consuming,
+      .get, .set, .left, .right, .open,
+      .nonisolated, .package, .prefix, .postfix:
+      return true
+    default:
+      return false
+    }
+  }
+
   fileprivate var tokenKinds: [Token.Kind] {
     var tokenKinds: [Token.Kind] = [
       .underscore,
       .dummyIdentifier,
       .leftParen,
-      // below are keywords also can be used as identifier pattern
+    ]
+    tokenKinds += [
       .Any,
       .Self,
       .async,
@@ -129,10 +142,12 @@ extension Parser {
       return typeCastingPttrn
     case .underscore:
       return try parseUnderscoreHeadedPattern(config: config, startRange: lookedRange)
-    case .identifier, .Any, .Self,
-      .async, .await, .borrowing, .consuming,
-      .get, .set, .left, .right, .open,
-      .nonisolated, .package, .prefix, .postfix:
+    case .identifier:
+      guard let idHead = patternHead.namedIdentifier?.id else {
+        throw _raiseFatal(.expectedPattern)
+      }
+      return try parseIdentifierHeadedPattern(idHead, config: config, startRange: lookedRange)
+    case _ where config.isIdentifierHeadKeyword(patternHead):
       guard let idHead = patternHead.namedIdentifier?.id else {
         throw _raiseFatal(.expectedPattern)
       }

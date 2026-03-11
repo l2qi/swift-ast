@@ -151,6 +151,13 @@ class KeywordUsedAsIdentifierTests: XCTestCase {
       }
       """)
     XCTAssertEqual(result.statements.count, 1)
+    let textDescription = result.statements[0].textDescription
+    XCTAssertTrue(textDescription.contains("async"))
+    XCTAssertTrue(textDescription.contains("await"))
+    XCTAssertTrue(textDescription.contains("borrowing"))
+    XCTAssertTrue(textDescription.contains("consuming"))
+    XCTAssertTrue(textDescription.contains("nonisolated"))
+    XCTAssertTrue(textDescription.contains("package"))
   }
 
   func testKeywordUsedInTuplePattern() {

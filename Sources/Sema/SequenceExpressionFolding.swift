@@ -299,39 +299,49 @@ private class FoldingVisitor : ASTVisitor {
     }
   }
 
+  private func foldSwitchCaseItem(_ item: SwitchStatement.Case.Item) -> SwitchStatement.Case.Item {
+    var foldedWhereExpression: ASTExpression? = item.whereExpression
+    if let whereSeqExpr = item.whereExpression as? SequenceExpression {
+      foldedWhereExpression = foldSequenceExpression(whereSeqExpr)
+    }
+
+    var foldedPattern = item.pattern
+    if let exprPattern = item.pattern as? ExpressionPattern,
+      let patternSeqExpr = exprPattern.expression as? SequenceExpression
+    {
+      let foldedPatternSeqExpr = foldSequenceExpression(patternSeqExpr)
+      foldedPattern = ExpressionPattern(expression: foldedPatternSeqExpr)
+    }
+
+    return SwitchStatement.Case.Item(
+      pattern: foldedPattern, whereExpression: foldedWhereExpression)
+  }
+
+  private func foldSwitchCases(_ cases: [SwitchStatement.Case]) -> [SwitchStatement.Case] {
+    return cases.map { switchCase in
+      switch switchCase {
+      case let .case(items, statements):
+        let foldedItems = items.map(foldSwitchCaseItem)
+        let foldedStatements = foldStatements(statements)
+        return .case(foldedItems, foldedStatements)
+      case .default(let statements):
+        let foldedStatements = foldStatements(statements)
+        return .default(foldedStatements)
+      case .compilerControl:
+        return switchCase
+      }
+    }
+  }
+
   func visit(_ stmt: SwitchStatement) throws -> Bool {
     if let seqExpr = stmt.expression as? SequenceExpression {
       let foldedExpr = foldSequenceExpression(seqExpr)
       stmt.replaceExpression(with: foldedExpr)
     }
 
-    for i in stmt.cases.indices {
-      let eachCase = stmt.cases[i]
-      switch eachCase {
-      case let .case(items, statements):
-        let foldedItems = items.map { i -> SwitchStatement.Case.Item in
-          var foldedWhereExpression: ASTExpression? = i.whereExpression
-          if let whereSeqExpr = i.whereExpression as? SequenceExpression {
-            foldedWhereExpression = foldSequenceExpression(whereSeqExpr)
-          }
-          var foldedPattern = i.pattern
-          if let exprPattern = i.pattern as? ExpressionPattern,
-            let pttrnSeqExpr = exprPattern.expression as? SequenceExpression
-          {
-            let foldedPttrnSeqExpr = foldSequenceExpression(pttrnSeqExpr)
-            foldedPattern = ExpressionPattern(expression: foldedPttrnSeqExpr)
-          }
-          return SwitchStatement.Case.Item(
-            pattern: foldedPattern, whereExpression: foldedWhereExpression)
-        }
-        let foldedStmts = foldStatements(statements)
-        stmt.replaceCase(at: i, with: .case(foldedItems, foldedStmts))
-      case .default(let statements):
-        let foldedStmts = foldStatements(statements)
-        stmt.replaceCase(at: i, with: .default(foldedStmts))
-      case .compilerControl:
-        break
-      }
+    let foldedCases = foldSwitchCases(stmt.cases)
+    for i in foldedCases.indices {
+      stmt.replaceCase(at: i, with: foldedCases[i])
     }
 
     return true
@@ -512,33 +522,9 @@ private class FoldingVisitor : ASTVisitor {
       expr.replaceExpression(with: foldedExpr)
     }
 
-    for i in expr.cases.indices {
-      let eachCase = expr.cases[i]
-      switch eachCase {
-      case let .case(items, statements):
-        let foldedItems = items.map { i -> SwitchStatement.Case.Item in
-          var foldedWhereExpression: ASTExpression? = i.whereExpression
-          if let whereSeqExpr = i.whereExpression as? SequenceExpression {
-            foldedWhereExpression = foldSequenceExpression(whereSeqExpr)
-          }
-          var foldedPattern = i.pattern
-          if let exprPattern = i.pattern as? ExpressionPattern,
-            let pttrnSeqExpr = exprPattern.expression as? SequenceExpression
-          {
-            let foldedPttrnSeqExpr = foldSequenceExpression(pttrnSeqExpr)
-            foldedPattern = ExpressionPattern(expression: foldedPttrnSeqExpr)
-          }
-          return SwitchStatement.Case.Item(
-            pattern: foldedPattern, whereExpression: foldedWhereExpression)
-        }
-        let foldedStmts = foldStatements(statements)
-        expr.replaceCase(at: i, with: .case(foldedItems, foldedStmts))
-      case .default(let statements):
-        let foldedStmts = foldStatements(statements)
-        expr.replaceCase(at: i, with: .default(foldedStmts))
-      case .compilerControl:
-        break
-      }
+    let foldedCases = foldSwitchCases(expr.cases)
+    for i in foldedCases.indices {
+      expr.replaceCase(at: i, with: foldedCases[i])
     }
 
     return true

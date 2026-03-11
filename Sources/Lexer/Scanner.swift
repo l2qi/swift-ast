@@ -61,6 +61,7 @@ class Scanner {
   }
 
   func peek(ahead offset: Int) -> UnicodeScalar? {
+    guard _currentPointer < _content.endIndex else { return nil }
     var ptr = _content.index(after: _currentPointer)
     for _ in 0..<offset {
       guard ptr < _content.endIndex else { return nil }

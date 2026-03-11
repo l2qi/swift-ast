@@ -255,6 +255,23 @@ class ParserCompilerControlStatementTests: XCTestCase {
     )
   }
 
+  func testHasFeatureCondition() {
+    parseStatementAndTest("#if hasFeature(ExistentialAny)\nreturn", "#if hasFeature(ExistentialAny)")
+    parseStatementAndTest(
+      "#if hasFeature(ExistentialAny)\nreturn",
+      "#if hasFeature(ExistentialAny)",
+      testClosure: { stmt in
+        guard let compCtrlStmt = stmt as? CompilerControlStatement,
+              case .if(let condition) = compCtrlStmt.kind,
+              case .hasFeature(let feature) = condition else {
+          XCTFail("Failed to parse hasFeature condition.")
+          return
+        }
+        XCTAssertEqual(feature, "ExistentialAny")
+      }
+    )
+  }
+
   func testTargetEnvironmentMacCatalyst() {
     parseStatementAndTest("#if targetEnvironment(macCatalyst)\nreturn", "#if targetEnvironment(macCatalyst)")
     parseStatementAndTest(
@@ -297,6 +314,7 @@ class ParserCompilerControlStatementTests: XCTestCase {
     parseStatementAndTest("#if compiler(>=5.5) && canImport(SwiftUI)\nreturn", "#if compiler(>=5.5) && canImport(SwiftUI)")
     parseStatementAndTest("#if os(iOS) || os(visionOS)\nreturn", "#if os(iOS) || os(visionOS)")
     parseStatementAndTest("#if canImport(UIKit) && !os(visionOS)\nreturn", "#if canImport(UIKit) && !os(visionOS)")
+    parseStatementAndTest("#if compiler(>=5.8) && hasFeature(ExistentialAny)\nreturn", "#if compiler(>=5.8) && hasFeature(ExistentialAny)")
     parseStatementAndTest(
       "#if compiler(>=6.0) && canImport(SwiftUI) && os(visionOS)\nreturn",
       "#if compiler(>=6.0) && canImport(SwiftUI) && os(visionOS)"
@@ -406,6 +424,19 @@ class ParserCompilerControlStatementTests: XCTestCase {
           return
         }
         XCTAssertTrue(value)
+      }
+    )
+    parseStatementAndTest(
+      "#if false\nreturn",
+      "#if false",
+      testClosure: { stmt in
+        guard let compCtrlStmt = stmt as? CompilerControlStatement,
+              case .if(let condition) = compCtrlStmt.kind,
+              case .booleanLiteral(let value) = condition else {
+          XCTFail("Failed to parse boolean false condition.")
+          return
+        }
+        XCTAssertFalse(value)
       }
     )
   }

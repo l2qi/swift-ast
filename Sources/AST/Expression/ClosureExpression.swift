@@ -170,11 +170,11 @@ extension ClosureExpression.Signature.ParameterClause : ASTTextRepresentable {
 extension ClosureExpression.Signature : ASTTextRepresentable {
   public var textDescription: String {
     var signatureText = [String]()
-    if let captureList = captureList {
-      signatureText.append("[\(captureList.map({ $0.textDescription }).joined(separator: ", "))]")
-    }
     if !attributes.isEmpty {
       signatureText.append(attributes.textDescription)
+    }
+    if let captureList = captureList {
+      signatureText.append("[\(captureList.map({ $0.textDescription }).joined(separator: ", "))]")
     }
     if let parameterClause = parameterClause {
       signatureText.append(parameterClause.textDescription)

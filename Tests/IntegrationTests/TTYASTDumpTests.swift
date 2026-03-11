@@ -106,8 +106,7 @@ class TTYASTDumpTests : XCTestCase {
       "VariableDeclaration",
     ]
     for testName in testNames {
-      testIntegration(resourceName, testName) { source -> String in
-        let diagnosticPool = DiagnosticPool()
+      testIntegration(resourceName, testName) { source, diagnosticPool -> String in
         let parser = Parser(source: source, diagnosticPool: diagnosticPool)
         guard let topLevelDecl = try? parser.parse() else {
           return "error: failed in parsing the source \(source.identifier)."

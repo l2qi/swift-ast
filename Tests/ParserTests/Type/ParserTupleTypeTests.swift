@@ -16,6 +16,8 @@
 
 import XCTest
 
+@testable import AST
+
 class ParserTupleTypeTests: XCTestCase {
   func testElementsWithTypeOnly() {
     parseTypeAndTest("()", "()")
@@ -31,6 +33,18 @@ class ParserTupleTypeTests: XCTestCase {
       "(p1: foo, p2: Optional<bar>, p3: Dictionary<key, value>, p4: (a) -> b, p5: ())")
     parseTypeAndTest("(p1: @a foo, p2:bar?, p3   :   @x @y @z [key: value], p4    :(a) -> b, p5: inout ())",
       "(p1: @a foo, p2: Optional<bar>, p3: @x @y @z Dictionary<key, value>, p4: (a) -> b, p5: inout ())")
+  }
+
+  func testTupleOwnershipModifierModel() {
+    parseTypeAndTest("(a: inout foo, b: borrowing bar, c: consuming baz)", "(a: inout foo, b: borrowing bar, c: consuming baz)", testClosure: { type in
+      guard let tupleType = type as? TupleType else {
+        XCTFail("Failed in converting to a tuple type.")
+        return
+      }
+      XCTAssertEqual(tupleType.elements[0].ownershipModifier, .inout)
+      XCTAssertEqual(tupleType.elements[1].ownershipModifier, .borrowing)
+      XCTAssertEqual(tupleType.elements[2].ownershipModifier, .consuming)
+    })
   }
 
   func testSourceRange() {

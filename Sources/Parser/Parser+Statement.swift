@@ -80,7 +80,7 @@ extension Parser {
       {
         _lexer.advance(by: 2)
         stmt = try parseLabeledStatement(withLabelName: .name(name), startLocation: lookedRange.start)
-      } else if name == "precedencegroup" {
+      } else if ["precedencegroup", "actor", "macro"].contains(name) {
         stmt = try parseDeclaration()
       } else {
         // if identifier is not immediately followed by a colon
@@ -317,6 +317,10 @@ extension Parser {
       let path = try readImportPath()
       try match(.rightParen, orFatal: .expectedCloseParenCompilationCondition)
       return .canImport(path)
+    case "hasFeature":
+      let feature = try readPlatformConditionArgument()
+      try match(.rightParen, orFatal: .expectedCloseParenCompilationCondition)
+      return .hasFeature(feature)
     case "swift", "compiler":
       let (op, version) = try readVersionConstraint()
       try match(.rightParen, orFatal: .expectedCloseParenCompilationCondition)
@@ -491,8 +495,27 @@ extension Parser {
         var stmts: Statements = []
         while true {
           switch _lexer.look().kind {
-          case .eof, .rightBrace, .default, .case, .hash:
+          case .eof, .rightBrace, .default, .case:
             break
+          case .hash:
+            let nextKind = _lexer.look(ahead: 1).kind
+            let switchLevelDirective: Bool
+            switch nextKind {
+            case .if, .else:
+              switchLevelDirective = true
+            default:
+              switch nextKind.namedIdentifier {
+              case .name("elseif")?, .name("endif")?:
+                switchLevelDirective = true
+              default:
+                switchLevelDirective = false
+              }
+            }
+            if switchLevelDirective {
+              break
+            }
+            stmts.append(try parseStatement())
+            continue
           default:
             stmts.append(try parseStatement())
             continue
@@ -506,8 +529,27 @@ extension Parser {
         var stmts: Statements = []
         while true {
           switch _lexer.look().kind {
-          case .eof, .rightBrace, .default, .case, .hash:
+          case .eof, .rightBrace, .default, .case:
             break
+          case .hash:
+            let nextKind = _lexer.look(ahead: 1).kind
+            let switchLevelDirective: Bool
+            switch nextKind {
+            case .if, .else:
+              switchLevelDirective = true
+            default:
+              switch nextKind.namedIdentifier {
+              case .name("elseif")?, .name("endif")?:
+                switchLevelDirective = true
+              default:
+                switchLevelDirective = false
+              }
+            }
+            if switchLevelDirective {
+              break
+            }
+            stmts.append(try parseStatement())
+            continue
           default:
             stmts.append(try parseStatement())
             continue

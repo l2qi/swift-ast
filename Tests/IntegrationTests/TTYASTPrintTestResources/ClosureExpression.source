@@ -39,4 +39,4 @@ _ = { [weak foo = self.foo] (a, b, c) throws -> @x @y @z Bar in print(foo!.title
 // closure attributes
 _ = { @Sendable in }
 _ = { @Sendable (x: Int) -> Void in }
-_ = { [weak self] @Sendable in }
+_ = { @Sendable [weak self] in }

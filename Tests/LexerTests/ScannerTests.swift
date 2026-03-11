@@ -43,6 +43,15 @@ class ScannerTests: XCTestCase {
     XCTAssertNil(scanner.peek())
   }
 
+  func testPeekAheadAtEOF() {
+    let scanner = Scanner(content: "a")
+    XCTAssertEqual(scanner.scan(), char("a", .identifierHead))
+    scanner.advance()
+    XCTAssertNil(scanner.peek())
+    XCTAssertNil(scanner.peek(ahead: 0))
+    XCTAssertNil(scanner.peek(ahead: 1))
+  }
+
   func testEmoji() {
     let scanner = Scanner(content: "🔪🍣")
     XCTAssertEqual(scanner.line, 1)

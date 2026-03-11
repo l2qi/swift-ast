@@ -412,9 +412,19 @@ extension Parser {
             condCompClauses.append((ctrl, nil))
             resultExpr = base
           case .endif:
-            let clauses = condCompClauses.map {
-              ConditionalCompilationExpression.Clause(
-                condition: $0.0, expression: $0.1 ?? base)
+            let clauses = try condCompClauses.map {
+              if let expression = $0.1 {
+                return ConditionalCompilationExpression.Clause(
+                  condition: $0.0, expression: expression)
+              }
+              // Recover with the shared base expression so parsing can continue,
+              // but still emit an explicit error because an empty/malformed
+              // conditional compilation clause is not valid input.
+              try _diagnosticPool.appendError(
+                kind: ParserErrorKind.malformedConditionalCompilationClause,
+                sourceLocatable: $0.0)
+              return ConditionalCompilationExpression.Clause(
+                condition: $0.0, expression: base)
             }
             let condCompExpr = ConditionalCompilationExpression(
               base: base, clauses: clauses, endifStatement: ctrl)
@@ -1620,14 +1630,6 @@ extension Parser {
     let signatureOpeningCp = _lexer.checkPoint()
     let signatureOpeningDiagnosticCp = _diagnosticPool.checkPoint()
     var signature: ClosureExpression.Signature?
-    if _lexer.match(.leftSquare) {
-      if let captureList = parseCaptureList() {
-        signature = ClosureExpression.Signature(captureList: captureList)
-      } else {
-        _lexer.restore(fromCheckpoint: signatureOpeningCp)
-        _diagnosticPool.restore(fromCheckpoint: signatureOpeningDiagnosticCp)
-      }
-    }
 
     var closureAttributes: Attributes = []
     if _lexer.look().kind == .at {
@@ -1638,6 +1640,15 @@ extension Parser {
       } catch {
         _lexer.restore(fromCheckpoint: attrCp)
         _diagnosticPool.restore(fromCheckpoint: attrDiagnosticCp)
+      }
+    }
+
+    if _lexer.match(.leftSquare) {
+      if let captureList = parseCaptureList() {
+        signature = ClosureExpression.Signature(captureList: captureList, attributes: closureAttributes)
+      } else {
+        _lexer.restore(fromCheckpoint: signatureOpeningCp)
+        _diagnosticPool.restore(fromCheckpoint: signatureOpeningDiagnosticCp)
       }
     }
 

@@ -466,10 +466,15 @@ class ParserLiteralExpressionTests: XCTestCase {
   }
 
   func testEmptyInterpolatedTextItem() {
-    // "\()" — should produce an error (no expression inside interpolation)
+    var capturedError: Error?
     parseExpressionAndTest(
-      "\"\\()\"", "",
-      errorClosure: { _ in })
+      "\"\\()\"", "\"\\()\"",
+      errorClosure: { capturedError = $0 })
+    guard let capturedError = capturedError else {
+      XCTFail("Expected empty interpolation to be rejected")
+      return
+    }
+    XCTAssertEqual(String(describing: type(of: capturedError)), "DiagnosticStopper")
   }
 
   // MARK: - SE-0228: Multi-argument string interpolation

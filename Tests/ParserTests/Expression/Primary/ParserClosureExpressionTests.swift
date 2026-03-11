@@ -821,8 +821,8 @@ class ParserClosureExpressionTests: XCTestCase {
 
   func testAttributeWithCaptureList() {
     parseExpressionAndTest(
-      "{ [weak self] @Sendable in }",
-      "{ [weak self] @Sendable in }",
+      "{ @Sendable [weak self] in }",
+      "{ @Sendable [weak self] in }",
       testClosure: { expr in
       guard let closureExpr = expr as? ClosureExpression else {
         XCTFail("Failed in getting a closure expression.")

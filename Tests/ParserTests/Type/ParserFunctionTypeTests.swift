@@ -61,6 +61,18 @@ class ParserFunctionTypeTests: XCTestCase {
     parseTypeAndTest("(a, @x inout a) -> (@y inout b) -> (c)", "(a, @x inout a) -> (@y inout b) -> (c)")
   }
 
+  func testArgumentOwnershipModifierModel() {
+    parseTypeAndTest("(inout foo, borrowing bar, consuming baz) -> qux", "(inout foo, borrowing bar, consuming baz) -> qux", testClosure: { type in
+      guard let functionType = type as? FunctionType else {
+        XCTFail("Failed in converting to a function type.")
+        return
+      }
+      XCTAssertEqual(functionType.arguments[0].ownershipModifier, .inout)
+      XCTAssertEqual(functionType.arguments[1].ownershipModifier, .borrowing)
+      XCTAssertEqual(functionType.arguments[2].ownershipModifier, .consuming)
+    })
+  }
+
   func testArgumentName() {
     parseTypeAndTest("(i: foo) -> bar", "(i: foo) -> bar")
     parseTypeAndTest("(i: @a @b @c foo) -> bar", "(i: @a @b @c foo) -> bar")

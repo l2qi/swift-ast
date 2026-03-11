@@ -17,6 +17,7 @@
 import XCTest
 
 @testable import AST
+@testable import Parser
 
 class ParserBoxedProtocolTypeTests: XCTestCase {
   func testBoxedProtocolType() {

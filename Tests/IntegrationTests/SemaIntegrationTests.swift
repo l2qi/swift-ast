@@ -26,8 +26,7 @@ class SemaIntegrationTests : XCTestCase {
     // This test focuses on where to perform the foldings, check out
     // SequenceExpressionFoldingTests for testing the actual folding logic
 
-    testIntegration("SemaTestResources", "SequenceExpressionFolding") { source -> String in
-      let diagnosticPool = DiagnosticPool()
+    testIntegration("SemaTestResources", "SequenceExpressionFolding") { source, diagnosticPool -> String in
       let parser = Parser(source: source, diagnosticPool: diagnosticPool)
       guard let topLevelDecl = try? parser.parse() else {
         return "error: failed in parsing the source \(source.identifier)."

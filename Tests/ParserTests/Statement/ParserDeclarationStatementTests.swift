@@ -139,6 +139,23 @@ class ParserDeclarationStatementTests: XCTestCase {
     })
   }
 
+  func testActorDeclarationAsStatement() {
+    parseStatementAndTest("actor Counter {}", "actor Counter {}", testClosure: { stmt in
+      XCTAssertTrue(stmt is Declaration)
+      XCTAssertTrue(stmt is ActorDeclaration)
+    })
+  }
+
+  func testMacroDeclarationAsStatement() {
+    parseStatementAndTest(
+      "macro stringify(_: Any) = #externalMacro(module: \"M\", type: \"T\")",
+      "macro stringify(_: Any) = #externalMacro(module: \"M\", type: \"T\")",
+      testClosure: { stmt in
+        XCTAssertTrue(stmt is Declaration)
+        XCTAssertTrue(stmt is MacroDeclaration)
+      })
+  }
+
   func testPrecedenceGroupDeclaration() {
     parseStatementAndTest("precedencegroup foo {}", "precedencegroup foo {}", testClosure: { stmt in
       XCTAssertTrue(stmt is Declaration)

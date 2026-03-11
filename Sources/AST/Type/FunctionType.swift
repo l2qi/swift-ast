@@ -20,7 +20,7 @@ public class FunctionType : TypeBase {
     public let localName: Identifier?
     public let type: Type
     public let attributes: Attributes
-    public let isInOutParameter: Bool
+    public let ownershipModifier: TypeAnnotation.OwnershipModifier?
     public let isVariadic: Bool
 
     public init(
@@ -28,14 +28,14 @@ public class FunctionType : TypeBase {
       externalName: Identifier? = nil,
       localName: Identifier? = nil,
       attributes: Attributes = [],
-      isInOutParameter: Bool = false,
+      ownershipModifier: TypeAnnotation.OwnershipModifier? = nil,
       isVariadic: Bool = false
     ) {
       self.externalName = externalName
       self.localName = localName
       self.type = type
       self.attributes = attributes
-      self.isInOutParameter = isInOutParameter
+      self.ownershipModifier = ownershipModifier
       self.isVariadic = isVariadic
     }
   }
@@ -74,12 +74,12 @@ public class FunctionType : TypeBase {
 extension FunctionType.Argument : ASTTextRepresentable {
   public var textDescription: String {
     let attr = attributes.isEmpty ? "" : "\(attributes.textDescription) "
-    let inoutStr = isInOutParameter ? "inout " : ""
+    let ownershipText = ownershipModifier.map { "\($0.rawValue) " } ?? ""
     var nameStr = externalName.map({ "\($0) " }) ?? ""
     if let localName = localName {
       nameStr += "\(localName): "
     }
     let variadicDots = isVariadic ? "..." : ""
-    return "\(nameStr)\(attr)\(inoutStr)\(type.textDescription)\(variadicDots)"
+    return "\(nameStr)\(attr)\(ownershipText)\(type.textDescription)\(variadicDots)"
   }
 }
